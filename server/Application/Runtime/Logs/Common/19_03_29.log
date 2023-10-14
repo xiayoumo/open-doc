@@ -1,0 +1,30 @@
+[ 2019-03-29T06:54:43+08:00 ] 47.104.24.136 /scripts/setup.php
+ERR: 无法加载模块:Scripts
+
+[ 2019-03-29T06:54:44+08:00 ] 47.104.24.136 /phpmyadmin/scripts/db___.init.php
+ERR: 无法加载模块:Phpmyadmin
+
+[ 2019-03-29T06:54:44+08:00 ] 47.104.24.136 /plugins/weathermap/editor.php
+ERR: 无法加载模块:Plugins
+
+[ 2019-03-29T06:55:08+08:00 ] 47.104.24.136 /dbadmin/index.php
+ERR: 无法加载模块:Dbadmin
+
+[ 2019-03-29T06:55:13+08:00 ] 47.104.24.136 /phpMyAdmin-4.4.0/index.php
+ERR: 无法加载模块:PhpMyAdmin-4.4.0
+
+[ 2019-03-29T06:55:15+08:00 ] 47.104.24.136 /xampp/phpmyadmin/index.php
+ERR: 无法加载模块:Xampp
+
+[ 2019-03-29T06:55:18+08:00 ] 47.104.24.136 /phpma/index.php
+ERR: 无法加载模块:Phpma
+
+[ 2019-03-29T06:55:20+08:00 ] 47.104.24.136 /phpMyAbmin/index.php
+ERR: 无法加载模块:PhpMyAbmin
+
+[ 2019-03-29T06:55:21+08:00 ] 47.104.24.136 /shaAdmin/index.php
+ERR: 无法加载模块:ShaAdmin
+
+[ 2019-03-29T06:55:28+08:00 ] 47.104.24.136 /wp-content/plugins/portable-phpmyadmin/wp-pma-mod/index.php
+ERR: 无法加载模块:Wp-content
+

@@ -1,0 +1,21 @@
+[ 2019-06-20T09:39:50+08:00 ] 60.195.249.127 /TP/public/index.php
+ERR: 无法加载模块:TP
+
+[ 2019-06-20T09:39:51+08:00 ] 60.195.249.127 /TP/index.php
+ERR: 无法加载模块:TP
+
+[ 2019-06-20T09:39:51+08:00 ] 60.195.249.127 /thinkphp/html/public/index.php
+ERR: 无法加载模块:Thinkphp
+
+[ 2019-06-20T09:39:52+08:00 ] 60.195.249.127 /html/public/index.php
+ERR: 无法加载模块:Html
+
+[ 2019-06-20T09:39:52+08:00 ] 60.195.249.127 /public/index.php
+ERR: 无法加载模块:Public
+
+[ 2019-06-20T09:39:52+08:00 ] 60.195.249.127 /TP/html/public/index.php
+ERR: 无法加载模块:TP
+
+[ 2019-06-20T09:39:53+08:00 ] 60.195.249.127 /elrekt.php?s=index/\think\app/invokefunction&function=call_user_func_array&vars[0]=phpinfo&vars[1][]=1
+ERR: 无法加载模块:Index
+

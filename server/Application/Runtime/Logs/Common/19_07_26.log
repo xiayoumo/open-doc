@@ -1,0 +1,18 @@
+[ 2019-07-26T17:31:22+08:00 ] 94.102.50.96 /phpMyAdmin/scripts/setup.php
+ERR: 无法加载模块:PhpMyAdmin
+
+[ 2019-07-26T17:32:51+08:00 ] 94.102.50.96 /phpmyadmin/scripts/setup.php
+ERR: 无法加载模块:Phpmyadmin
+
+[ 2019-07-26T17:34:28+08:00 ] 94.102.50.96 /myadmin/scripts/setup.php
+ERR: 无法加载模块:Myadmin
+
+[ 2019-07-26T17:35:42+08:00 ] 94.102.50.96 /MyAdmin/scripts/setup.php
+ERR: 无法加载模块:MyAdmin
+
+[ 2019-07-26T17:37:44+08:00 ] 94.102.50.96 /pma/scripts/setup.php
+ERR: 无法加载模块:Pma
+
+[ 2019-07-26T17:39:22+08:00 ] 94.102.50.96 /scripts/setup.php
+ERR: 无法加载模块:Scripts
+

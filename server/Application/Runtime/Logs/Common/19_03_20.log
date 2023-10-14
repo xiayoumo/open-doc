@@ -1,0 +1,15 @@
+[ 2019-03-20T12:28:23+08:00 ] 223.112.190.70 /phpMyAdmin/scripts/setup.php
+ERR: 无法加载模块:PhpMyAdmin
+
+[ 2019-03-20T12:28:24+08:00 ] 223.112.190.70 /phpmyadmin/scripts/setup.php
+ERR: 无法加载模块:Phpmyadmin
+
+[ 2019-03-20T12:28:24+08:00 ] 223.112.190.70 /pma/scripts/setup.php
+ERR: 无法加载模块:Pma
+
+[ 2019-03-20T12:28:24+08:00 ] 223.112.190.70 /myadmin/scripts/setup.php
+ERR: 无法加载模块:Myadmin
+
+[ 2019-03-20T12:28:24+08:00 ] 223.112.190.70 /MyAdmin/scripts/setup.php
+ERR: 无法加载模块:MyAdmin
+

@@ -1,0 +1,45 @@
+[ 2023-09-27T11:15:46+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 no such column: create_time
+
+[ 2023-09-27T13:48:36+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-27T13:48:48+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-27T13:48:52+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-27T13:50:18+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-27T13:50:47+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-27T13:50:58+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-27T18:40:18+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/info
+ERR: syntax error, unexpected 'return' (T_RETURN), expecting function (T_FUNCTION) or const (T_CONST)
+
+[ 2023-09-27T18:41:24+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/info
+ERR: syntax error, unexpected 'return' (T_RETURN), expecting function (T_FUNCTION) or const (T_CONST)
+
+[ 2023-09-27T18:42:09+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/info
+ERR: syntax error, unexpected 'return' (T_RETURN), expecting function (T_FUNCTION) or const (T_CONST)
+
+[ 2023-09-27T21:16:20+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 no such column: member_uid
+
+[ 2023-09-27T21:16:25+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 no such column: member_uid
+
+[ 2023-09-27T21:20:24+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 no such column: item_id
+
+[ 2023-09-27T21:21:25+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 no such column: item_id
+
+[ 2023-09-27T21:29:16+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectTableCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 no such column: item_member.member_uid
+

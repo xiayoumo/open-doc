@@ -1,0 +1,12 @@
+[ 2023-10-06T19:28:33+08:00 ] 127.0.0.1 /server/index.php?s=/api/user/info
+ERR: SQLSTATE[HY000]: General error: 1 no such table: user
+
+[ 2023-10-06T19:28:33+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/myList
+ERR: SQLSTATE[HY000]: General error: 1 no such table: item_member
+
+[ 2023-10-06T19:28:44+08:00 ] 127.0.0.1 /server/index.php?s=/api/user/info
+ERR: SQLSTATE[HY000]: General error: 1 no such table: user
+
+[ 2023-10-06T19:28:44+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/myList
+ERR: SQLSTATE[HY000]: General error: 1 no such table: item_member
+

@@ -1,0 +1,218 @@
+[ 2023-09-26T10:14:55+08:00 ] 127.0.0.1 /server/index.php?s=/api/page/info
+ERR: Think\Model:set方法不存在！
+
+[ 2023-09-26T10:31:11+08:00 ] 127.0.0.1 /server/index.php?s=/api/page/info
+ERR: 19:NOT NULL constraint failed: page_visit_log.uid
+ [ SQL语句 ] : INSERT INTO page_visit_log (page_id,item_id,cat_id,uid,create_time) VALUES ('517','1','100',NULL,'1695695471')
+
+[ 2023-09-26T10:31:35+08:00 ] 127.0.0.1 /server/index.php?s=/api/page/info
+ERR: 19:NOT NULL constraint failed: page_visit_log.uid
+ [ SQL语句 ] : INSERT INTO page_visit_log (page_id,item_id,cat_id,uid,create_time) VALUES ('517','1','100',NULL,'1695695495')
+
+[ 2023-09-26T10:32:55+08:00 ] 127.0.0.1 /server/index.php?s=/api/page/info
+ERR: 19:NOT NULL constraint failed: page_visit_log.uid
+ [ SQL语句 ] : INSERT INTO page_visit_log (page_id,item_id,cat_id,uid,create_time) VALUES ('517','1','100',NULL,'1695695575')
+
+[ 2023-09-26T10:34:01+08:00 ] 127.0.0.1 /server/index.php?s=/api/page/info
+ERR: 19:UNIQUE constraint failed: page_visit_log.page_id
+ [ SQL语句 ] : INSERT INTO page_visit_log (page_id,item_id,cat_id,uid,create_time) VALUES ('517','1','100','0','1695695641')
+
+[ 2023-09-26T10:37:21+08:00 ] 127.0.0.1 /server/index.php?s=/api/page/info
+ERR: 19:UNIQUE constraint failed: page_visit_log.page_id
+ [ SQL语句 ] : INSERT INTO page_visit_log (page_id,item_id,cat_id,uid,create_time) VALUES ('517','1','100','0','1695695841')
+
+[ 2023-09-26T15:56:54+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T15:56:55+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T15:59:24+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T15:59:24+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:02:54+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:02:54+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:03:07+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:04:15+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:04:15+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:05:23+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:05:24+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:07:59+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:07:59+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:08:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:08:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:10:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:10:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:10:32+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:10:32+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:12:21+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:12:21+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:14:26+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:14:26+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:14:43+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:14:43+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:30:38+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:30:38+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:31:35+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:31:35+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:31:39+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:32:33+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:32:33+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:37:39+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:37:39+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:38:28+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:38:28+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:40:17+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:40:17+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:43:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:43:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:43:08+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:44:03+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:45:03+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:45:04+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:45:15+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:45:20+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:47:36+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:47:36+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:49:10+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:49:10+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:49:19+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:51:13+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:52:36+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:52:36+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:53:38+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:53:38+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:53:41+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:53:52+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T16:53:53+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function parseTemplate() on null
+
+[ 2023-09-26T17:46:55+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/info
+ERR: syntax error, unexpected '}'
+
+[ 2023-09-26T18:41:06+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function select() on array
+
+[ 2023-09-26T18:41:51+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: Call to a member function select() on string
+
+[ 2023-09-26T18:45:45+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 near "&": syntax error
+
+[ 2023-09-26T18:46:19+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 near "create": syntax error
+
+[ 2023-09-26T18:46:34+08:00 ] 127.0.0.1 /server/index.php?s=/api/item/getProjectCountByItemId
+ERR: SQLSTATE[HY000]: General error: 1 near "create": syntax error
+
