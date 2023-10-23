@@ -17,13 +17,13 @@ class IndexController extends BaseController {
     	$login_user = session("login_user");
     	$this->assign("login_user" ,$login_user);
     	if (LANG_SET == 'en-us') {
-    		$demo_url = "http://open-doc.docker-sky.cn/demo-en";
-    		$help_url = "http://open-doc.docker-sky.cn/help-en";
+    		$demo_url = C("HOME_URL")."/demo-en";
+    		$help_url = C("HOME_URL")."/help-en";
     		$creator_url = "https://gitee.com/xiayoumo";
     	}
     	else{
-    		$demo_url = "http://open-doc.docker-sky.cn/demo";
-    		$help_url = "http://open-doc.docker-sky.cn/help";
+    		$demo_url = C("HOME_URL")."/demo";
+    		$help_url = C("HOME_URL")."/help";
     		$creator_url = "https://gitee.com/xiayoumo/open-doc";
     	}
     	$this->assign("demo_url" ,$demo_url);

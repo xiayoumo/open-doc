@@ -8,7 +8,7 @@ class UpdateController extends BaseController {
         $this->_clear_runtime();
         if (strtolower(C("DB_TYPE")) == 'mysql' ) {
             //$this->mysql();
-            echo 'OpenDoc does not support mysql any more . http://open-doc.docker-sky.cn/help ';
+            echo 'OpenDoc does not support mysql any more . '.C("HOME_URL").'/help ';
         }
         elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
             $this->sqlite();

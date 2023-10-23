@@ -25,8 +25,8 @@
                     </p>
                   <p><span class="common-card-content card-content-1"  ><div class="typing">{{$t('section_description1')}}</div></span></p>
                     <p>
-                      <a class="el-button go-show-btn" href="http://open-doc.docker-sky.cn/item-show/cb7b18" target="_blank">{{$t("demo")}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <a class="el-button go-show-btn" href="http://open-doc.docker-sky.cn/item-show/5e4c22" target="_blank" >{{$t("help")}}&nbsp;</a>
+                      <a class="el-button go-show-btn" :href="homeUrl+'/item-show/cb7b18'" target="_blank">{{$t("demo")}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <a class="el-button go-show-btn" :href="homeUrl+'/item-show/5e4c22'" target="_blank" >{{$t("help")}}&nbsp;</a>
                     </p>
                 </div>
 <!--              </div>-->
@@ -84,6 +84,7 @@ export default {
   },
   data () {
     return {
+      homeUrl:DocConfig.homeUrl,
       pageLoading:false,
       showBox:{
         1:false,

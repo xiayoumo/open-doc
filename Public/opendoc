@@ -1,0 +1,186 @@
+#!/bin/bash                                                                                                                                       
+OPENDOC_SCRIPT_VERSION='2.0'                                                                                                                      
+if [[  -n "$1" ]] ; then                                                                                                                          
+        action=$1                                                                                                                                 
+else                                                                                                                                              
+        action='install'                                                                                                                          
+fi                                                                                                                                                
+if [ "$action" == "start" ] ;then                                                                                                                 
+        sudo -s  service docker start                                                                                                             
+        sudo -s docker start opendoc                                                                                                              
+        exit 1                                                                                                                                    
+fi                                                                                                                                                
+if [ "$action" == "restart" ] ;then                                                                                                               
+        sudo -s docker restart opendoc                                                                                                            
+        exit 1                                                                                                                                    
+fi                                                                                                                                                
+if [ "$action" == "stop" ] ;then                                                                                                                  
+        sudo -s docker stop opendoc                                                                                                               
+        exit 1                                                                                                                                    
+fi                                                                                                                                                
+if [ "$action" == "update" ] ;then                                                                                                                
+        DATE=$(date +%Y%m%d_%H%M%S_%N)                                                                                                            
+        if [ ! -d "/opendoc_data/html" ]; then                                                                                                    
+                echo  "Directory /opendoc_data/html does not exist"                                                                               
+                echo "/opendoc_data/html 目录不存在"                                                                                              
+                exit 1 ;                                                                                                                          
+        fi                                                                                                                                        
+        # 判断语言                                                                                                                                
+        result=$(tail -n 1000 /opendoc_data/html/web/index.html | grep zh)                                                                        
+        if [ ! -z "$result" ] ; then                                                                                                              
+                sudo -s docker pull registry.cn-hangzhou.aliyuncs.com/xiayoumo/open-doc                                                             
+                sudo -s docker tag registry.cn-hangzhou.aliyuncs.com/xiayoumo/open-doc:latest xiayoumo/open-doc:latest                                
+        else                                                                                                                                      
+                sudo -s docker pull xiayoumo/open-doc                                                                                               
+        fi                                                                                                                                        
+                                                                                                                                                  
+        sudo -s mv /opendoc_data/html /opendoc_data/html_bak_${DATE}                                                                              
+                                                                                                                                                  
+        sudo -s mkdir -p /opendoc_data/html                                                                                                       
+        sudo -s chmod  -R 777 /opendoc_data/html                                                                                                  
+        sudo -s docker stop opendoc && sudo -s docker rm opendoc                                                                                  
+        sudo -s docker run -d --name opendoc --env OPENDOC_SCRIPT_VERSION=${OPENDOC_SCRIPT_VERSION}  --user=root --privileged=true -p 5000:5000 -v /
+opendoc_data/html:/var/www/html/ xiayoumo/open-doc                                                                                                  
+                                                                                                                                                  
+        seconds_left=10                                                                                                                           
+        while [ $seconds_left -gt 0 ];do                                                                                                          
+                echo -n $seconds_left                                                                                                             
+                sleep 1                                                                                                                           
+                seconds_left=$(($seconds_left - 1))                                                                                               
+                echo -ne "\r     \r" #清除本行文字                                                                                                
+        done                                                                                                                                      
+                                                                                                                                                  
+                                                                                                                                                  
+        result=$(tail -n 1000 /opendoc_data/html_bak_${DATE}/web/index.html | grep zh)                                                            
+        if [ ! -z "$result" ] ; then                                                                                                              
+                curl http://localhost:5000/install/non_interactive.php?lang=zh                                                                    
+        else                                                                                                                                      
+                curl http://localhost:5000/install/non_interactive.php?lang=en                                                                    
+        fi                                                                                                                                        
+                                                                                                                                                  
+        \cp  -f  /opendoc_data/html_bak_${DATE}/Sqlite/opendoc.db.php /opendoc_data/html/Sqlite/opendoc.db.php                                    
+        \cp -r -f /opendoc_data/html_bak_${DATE}/Public/Uploads /opendoc_data/html/Public/                                                        
+        sudo -s curl http://localhost:5000?s=/home/update/db                                                                                      
+                                                                                                                                                  
+        sudo -s curl https://www.opendoc.cc/Public/opendoc > ./opendoc                                                                        
+                                                                                                                                                  
+        exit 1                                                                                                                                    
+fi                                                                                                                                                
+if [ "$action" == "uninstall" ] ;then                                                                                                             
+数据? [Y/n]  "                                                                                                                                    
+        read -r -p '' input                                                                                                                       
+        case $input in                                                                                                                            
+            [yY][eE][sS]|[yY])                                                                                                                    
+        echo -e " Opendoc is about to be uninstalled. Are you sure to delete all opendoc data? [Y/n] \n 即将卸载opendoc，你是否确认删除opendoc所有
+                                sudo -s docker stop opendoc                                                                                       
+                                sudo -s docker rm opendoc                                                                                         
+                                echo "uninstalling..."                                                                                            
+                                echo "正在卸载..."                                                                                                
+                                # 删除所有含有opendoc关键字的镜像                                                                                 
+                                sudo -s docker rmi  -f `docker images | grep opendoc| awk '{print $3}'` >/dev/null 2>&1                           
+                                # 删除数据目录                                                                                                    
+                                sudo -s rm -rf /opendoc_data                                                                                      
+                                echo "Done"                                                                                                       
+                                echo "完成"                                                                                                       
+                                                                                                                                                  
+                        ;;                                                                                                                        
+                                                                                                                                                  
+            [nN][oO]|[nN])                                                                                                                        
+                        ;;                                                                                                                        
+            *)                                                                                                                                    
+                exit 1                                                                                                                            
+                ;;                                                                                                                                
+        esac                                                                                                                                      
+        exit 1                                                                                                                                    
+fi                                                                                                                                                
+if ! [ -x "$(command -v docker)" ]; then                                                                                                          
+  echo 'It was detected that Docker was not installed. Attempting to install from the network... The time required is related to your network envi
+ronment.'                                                                                                                                         
+  echo '检测到Docker尚未安装。正在试图从网络安装...所需时间与你的网络环境有关'                                                                    
+  sudo -s curl -sSL https://get.daocloud.io/docker | sh                                                                                           
+  sudo -s  chkconfig docker on                                                                                                                    
+fi                                                                                                                                                
+if ! [ -x "$(command -v docker)" ]; then                                                                                                          
+  echo 'It was detected that Docker was not installed. Attempting to install from the network... The time required is related to your network envi
+ronment.'                                                                                                                                         
+  echo '检测到Docker尚未安装。正在试图从网络安装...所需时间与你的网络环境有关'                                                                    
+  sudo -s curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -                                           
+  sudo -s  chkconfig docker on                                                                                                                    
+fi                                                                                                                                                
+if ! [ -x "$(command -v docker)" ]; then                                                                                                          
+  echo 'Docker failed to install automatically. It is recommended that you install the docker environment manually before starting this script.'  
+  echo 'Docker自动安装失败,建议你手动安装好docker环境后再启动本脚本'                                                                              
+  exit 1                                                                                                                                          
+fi                                                                                                                                                
+                                                                                                                                                  
+if  [  "$(docker images  |grep opendoc)" ]; then                                                                                                  
+  echo ""                                                                                                                                         
+  echo "You have installed opendoc image"                                                                                                         
+  echo "If you want to update opendoc, please execute  ./opendoc update "                                                                         
+  echo "If you want to restart opendoc, please execute    ./opendoc restart "                                                                     
+  echo "If you want to uninstall opendoc, please execute    ./opendoc uninstall "                                                                 
+  echo ""                                                                                                                                         
+  echo "你已经安装过opendoc镜像"                                                                                                                  
+  echo "如果你想更新opendoc，请执行  ./opendoc update "                                                                                           
+  echo "如果你想重启opendoc，请执行  ./opendoc restart "                                                                                          
+  echo "如果你想卸载opendoc，请执行  ./opendoc uninstall "                                                                                        
+  exit 1                                                                                                                                          
+fi                                                                                                                                                
+sudo -s  service docker start                                                                                                                     
+echo 'The opendoc image is being retrieved, please wait a moment... The time required is related to your network environment.'                    
+echo '正在拉取opendoc镜像，请稍后...所需时间与你的网络环境有关'                                                                                   
+                                                                                                                                                  
+if [ "$action" == "en" ] ;then                                                                                                                    
+        sudo -s docker pull xiayoumo/open-doc                                                                                                       
+else                                                                                                                                              
+        sudo -s docker pull registry.cn-hangzhou.aliyuncs.com/xiayoumo/open-doc                                                                     
+        sudo -s docker tag registry.cn-hangzhou.aliyuncs.com/xiayoumo/open-doc:latest xiayoumo/open-doc:latest                                        
+fi                                                                                                                                                
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+sudo -s mkdir /opendoc_data                                                                                                                       
+if  [ ! -d "/opendoc_data" ]; then                                                                                                                
+        echo "/opendoc_data directory does not exist. Make sure you have create permissions"                                                      
+        echo "/opendoc_data 目录不存在，请确保有创建权限"                                                                                         
+        exit 1 ;                                                                                                                                  
+fi                                                                                                                                                
+sudo -s mkdir /opendoc_data/html                                                                                                                  
+sudo -s chmod  -R 777 /opendoc_data                                                                                                               
+sudo -s docker run -d --name opendoc --env OPENDOC_SCRIPT_VERSION=${OPENDOC_SCRIPT_VERSION}   --user=root --privileged=true -p 5000:5000 -v /opendoc
+_data/html:/var/www/html/ xiayoumo/open-doc                                                                                                         
+                                                                                                                                                  
+seconds_left=15                                                                                                                                   
+while [ $seconds_left -gt 0 ];do                                                                                                                  
+  echo -n $seconds_left                                                                                                                           
+  sleep 1                                                                                                                                         
+  seconds_left=$(($seconds_left - 1))                                                                                                             
+  echo -ne "\r     \r" #清除本行文字                                                                                                              
+done                                                                                                                                              
+                                                                                                                                                  
+if [ "$action" == "en" ] ;then                                                                                                                    
+        sudo -s curl http://localhost:5000/install/non_interactive.php?lang=en                                                                    
+else                                                                                                                                              
+        sudo -s curl http://localhost:5000/install/non_interactive.php?lang=zh                                                                    
+fi                                                                                                                                                
+sudo -s wget http://localhost:5000/install/install.lock                                                                                           
+if [  -f "install.lock" ]; then                                                                                                                   
+        rm -rf install.lock                                                                                                                       
+        if [ "$action" == "en" ] ;then                                                                                                            
+                echo -e "\n \033[32m Successful installation , The address is：http://localhost:5000 (You can also use LAN or public IP / domain n
+ame access)  \033[0m \n"                                                                                                                          
+                echo -e " \033[32m The account password is opendoc/opendoc123456 , After you log in, you can see the admin buttun at the top right.Sugges
+ted password modification after login   \033[0m \n"                                                                                               
+                echo -e " \033[32m For questions or suggestions on opendoc, please go to  https://github.com/xiayoumo/open-doc   \033[0m \n"        
+                                                                                                                                                  
+        else                                                                                                                                      
+                echo -e "\n \033[32m 安装成功，访问地址：http://localhost:5000 (你也可以用局域网或者公网IP/域名访问)  \033[0m \n"                 
+                echo -e " \033[32m 如打算用局域网或者公网IP/域名访问，请注意防火墙/安全组等要对5000端口放行  \033[0m \n"                          
+                echo -e " \033[32m 账户密码是opendoc/opendoc123456，登录后你便可以看到右上方的管理后台入口。建议登录后修改密码。   \033[0m \n"           
+                echo -e " \033[32m 对opendoc的问题或建议请至https://github.com/xiayoumo/open-doc 提issue   \033[0m \n"                              
+                echo -e " \033[32m 若觉得opendoc好用，不妨到github点个star。良好的关注度和参与度有助于开源项目的长远发展   \033[0m \n"            
+        fi                                                                                                                                        
+                                                                                                                                                  
+                                                                                                                                                  
+                                                                                                                                                  
+fi                                                                                                                                                

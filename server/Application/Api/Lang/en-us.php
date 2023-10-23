@@ -40,7 +40,7 @@ return array(
     'section_title6' => 'Open Source',
     'section_description6' => 'OpenDoc is a free, open source tool that <br>you can deploy it to your own server',
     'section_title7' => 'Hosted online',
-    'section_description7' => 'open-doc.docker-sky.cn provide security and stability of the document hosting service',
+    'section_description7' => 'opendoc.cc provide security and stability of the document hosting service',
     'section_title8' => 'Try it now',
     'section_description8' => 'Over 6000+ IT team is using OpenDoc',
 

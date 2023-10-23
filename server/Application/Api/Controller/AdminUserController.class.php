@@ -95,7 +95,7 @@ class AdminUserController extends BaseController {
         $text = file_get_contents("../composer.json");
         $composer = json_decode($text, true);
         $version = $composer['version'] ;
-        $url = "http://open-doc.docker-sky.cn/server/api/open/checkUpdate";
+        $url = C("HOME_URL")."/server/api/open/checkUpdate";
         $ch = curl_init();
         $timeout = 2;
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);

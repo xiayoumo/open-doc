@@ -40,7 +40,7 @@ return array(
     'section_title6' => '免费开源',
     'section_description6' => 'OpenDoc提供免费开源的版本<br>你可以选择将OpenDoc部署到你的服务器',
     'section_title7' => '在线托管',
-    'section_description7' => 'open-doc.docker-sky.cn 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
+    'section_description7' => 'opendoc.cc 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
     'section_title8' => '立即体验',
     'section_description8' => '超过6000+互联网团队正在使用OpenDoc',
 

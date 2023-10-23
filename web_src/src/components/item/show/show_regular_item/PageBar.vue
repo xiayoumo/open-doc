@@ -44,7 +44,7 @@
       </p>
         <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText2" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
         <p style="border-bottom: 1px solid #eee;"><img  id="qr-single-link" style="width:114px;height:114px;" :src="qr_single_link"> </p>
-     <p><a href="http://open-doc.docker-sky.cn/help" target="_blank">{{$t('page_diff_tips')}}</a></p><p>
+     <p><a :href="homeUrl+'/help'" target="_blank">{{$t('page_diff_tips')}}</a></p><p>
       </p>
 
 
@@ -80,6 +80,7 @@
   },
     data() {
       return {
+        homeUrl:DocConfig.homeUrl,
         menu: [],
         dialogVisible:false,
         qr_page_link:"#",

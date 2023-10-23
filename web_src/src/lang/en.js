@@ -123,9 +123,9 @@ export default {
     success_jump: 'The operation is successful! Skipping...',
     reset_token: 'reset token',
     open_api_tips1: 'OpenDoc开放文档编辑的API，供使用者更加方便地操作文档数据。<br>利用开放API，已支持自动化功能如下：',
-    open_api_tips2: '如果您想自动化生成API文档，则可参考 【<a target="_bank" href="http://open-doc.docker-sky.cn">API文档</a>】',
-    open_api_tips3: '如果您想自动化生成数据字典，则可参考 【<a target="_bank" href="http://open-doc.docker-sky.cn">数据字典</a>】',
-    open_api_tips4: '如果您更自由地生成自己所需要的格式，则可参考 【<a target="_bank" href="http://open-doc.docker-sky.cn">开放API</a>】',
+    open_api_tips2: '如果您想自动化生成API文档，则可参考 【<a target="_bank" href="'+DocConfig.homeUrl+'">API文档</a>】',
+    open_api_tips3: '如果您想自动化生成数据字典，则可参考 【<a target="_bank" href="'+DocConfig.homeUrl+'">数据字典</a>】',
+    open_api_tips4: '如果您更自由地生成自己所需要的格式，则可参考 【<a target="_bank" href="'+DocConfig.homeUrl+'">开放API</a>】',
     //item/show
     item: 'item',
     share: 'share',

@@ -29,10 +29,10 @@ class ItemController extends BaseController {
             
         }
         if (LANG_SET == 'en-us') {
-            $help_url = "http://open-doc.docker-sky.cn/help-en";
+            $help_url = C("HOME_URL")."/help-en";
         }
         else{
-            $help_url = "http://open-doc.docker-sky.cn/help";
+            $help_url = C("HOME_URL")."/help";
         }
 
         $this->assign("help_url" , $help_url);
@@ -134,10 +134,10 @@ class ItemController extends BaseController {
         $ItemCreator = $this->checkItemCreator($uid , $item_id);
 
         if (LANG_SET == 'en-us') {
-            $help_url = "http://open-doc.docker-sky.cn/help-en";
+            $help_url = C("HOME_URL")."/help-en";
         }
         else{
-            $help_url = "http://open-doc.docker-sky.cn/help";
+            $help_url = C("HOME_URL")."/help";
         }
         
         $this->assign("help_url" , $help_url);

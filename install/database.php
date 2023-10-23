@@ -143,7 +143,7 @@ if (!$go) {
         <br>
         <div>
         	 <button class="btn btn-large btn-primary " id="start" type="submit"><?php echo L("go");?>&nbsp;&nbsp;<i class="icon-circle-arrow-right"></i></button>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://open-doc.docker-sky.cn" target="_blank"><?php echo L("FAQ");?></a>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo C("HOME_URL");?>" target="_blank"><?php echo L("FAQ");?></a>
         </div>
       </form>
 

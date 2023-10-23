@@ -403,7 +403,7 @@ export default {
     },
 
     ShowRunApi(){
-      window.open('http://open-doc.docker-sky.cn/');
+      window.open(DocConfig.homeUrl);
     },
     //更多模板、模板列表
     ShowTemplateList(){

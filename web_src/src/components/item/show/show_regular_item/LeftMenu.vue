@@ -142,9 +142,20 @@
 };
 </script>
 
+<style lang="scss">
+@import '~@/components/common/base.scss';
+.el-menu-item-group .el-menu-item-group__title{
+  padding: 0px;
+}
+.el-menu-item, .el-submenu__title {
+  height: 40px;
+  line-height: 40px;
+}
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+
   .search-keyword-input{
     border-radius: 0px;
     margin: 15px 10px 10px 10px;
@@ -203,14 +214,10 @@
   margin-top: -5px;
 }
 
-.el-menu-item, .el-submenu__title{
-    height: 30px;
-    line-height: 30px;
-}
 
 .el-submenu .el-menu-item {
-    height: 40px;
-    line-height: 40px;
+    height: 30px;
+    line-height: 30px;
 }
 
 

@@ -9,7 +9,7 @@
               <el-form-item label="" >
                   <el-radio v-model="item_type" label="1">{{$t('item_type1')}}</el-radio>
                   <el-radio v-model="item_type" label="2">{{$t('item_type2')}}</el-radio>
-              &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://open-doc.docker-sky.cn/" target="_blank"><i class="el-icon-question"></i></a>
+              &nbsp;&nbsp;&nbsp;&nbsp;<a :href="homeUrl" target="_blank"><i class="el-icon-question"></i></a>
               </el-form-item>
 
 
@@ -72,6 +72,7 @@ export default {
   },
   data () {
     return {
+      homeUrl:DocConfig.homeUrl,
       item_type: '1',
       item_name: '',
       item_description:'',
@@ -134,9 +135,9 @@ export default {
           });
     },
     auto_doc(){
-      var msg = '<p>如果你想自动化生成API文档，则可参考<a target="_bank" href="http://open-doc.docker-sky.cn/">API文档</a></p>';
-      msg += '<p>如果你想自动化生成数据字典，则可参考<a target="_bank" href="http://open-doc.docker-sky.cn/">数据字典</a></p>';
-      msg += '<p>如果你更自由地生成自己所需要的格式，则可参考<a target="_bank" href="http://open-doc.docker-sky.cn/">开放API</a></p>';
+      var msg = '<p>如果你想自动化生成API文档，则可参考<a target="_bank" href="'+this.homeUrl+'">API文档</a></p>';
+      msg += '<p>如果你想自动化生成数据字典，则可参考<a target="_bank" href="'+this.homeUrl+'">数据字典</a></p>';
+      msg += '<p>如果你更自由地生成自己所需要的格式，则可参考<a target="_bank" href="'+this.homeUrl+'">开放API</a></p>';
       this.$alert(msg, {
           dangerouslyUseHTMLString: true
         });

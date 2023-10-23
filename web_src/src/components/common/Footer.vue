@@ -1,7 +1,7 @@
 <template>
   <div class="login-footer">
     <span class="footer-pic"> <img src="../../../static/logo/doc-log3.png" style="width:100px;height:36px;margin-bottom:-10px;" alt=""></span>
-<!--    <a href="https://www.showdoc.com.cn/" class="other-web-a" target="_blank"> 友情推荐：ShowDoc</a>-->
+<!--    <a href="https://www.opendoc.com.cn/" class="other-web-a" target="_blank"> 友情推荐：ShowDoc</a>-->
     <div class="footer-copyright"><span>Copyright © 2019-2023 Open Doc. All Rights Reserved.</span> </div>
   </div>
 </template>

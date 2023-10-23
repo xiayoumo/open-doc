@@ -1,6 +1,7 @@
 <?php
 return array(
     //'配置项'=>'配置值'
+    'HOME_URL'=>'https://www.opendoc.cc',// C("HOME_URL")
     //使用sqlite数据库
     'DB_TYPE'   => 'Sqlite', 
     'DB_NAME'   => '../Sqlite/opendoc.db.php',

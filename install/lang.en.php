@@ -1,4 +1,5 @@
 <?php
+$homeUrl = C("HOME_URL");
 return array(
   
   "install_title"=>'Install OpenDoc',
@@ -11,7 +12,7 @@ return array(
   "db_password"=>' Database Password',
   "sqlite_tips"=>'Sqlite has supported by PHP and you just need to click the Go buttun',
   "go"=>'Go',
-  "install_success_help"=>'Installation success!The password of the default administrator account is opendoc/123456 ,After login, you can see the management backstage access in the upper right corner.In addition, it is strongly recommended to modify the administrator password .<br>More help :<a href="http://open-doc.docker-sky.cn/help-en" target="_blank">http://open-doc.docker-sky.cn/help-en</a>',
+  "install_success_help"=>'Installation success!The password of the default administrator account is opendoc/123456 ,After login, you can see the management backstage access in the upper right corner.In addition, it is strongly recommended to modify the administrator password .<br>More help :<a href="'.$homeUrl.'/help-en" target="_blank">'.$homeUrl.'/help-en</a>',
   "home"=>'Website Home',
   "FAQ"=>'FAQ',
 

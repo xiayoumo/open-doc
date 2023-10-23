@@ -40,7 +40,7 @@
               <div v-if="!item_info.is_login">
                   <router-link to="/user/login">{{$t('login_or_register')}}</router-link>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="http://open-doc.docker-sky.cn/help" target="_blank">{{$t('about_opendoc')}}</a>
+                  <a :href="homeUrl+'/help'" target="_blank">{{$t('about_opendoc')}}</a>
               </div>
 
             </div>
@@ -120,6 +120,7 @@
     },
     data() {
       return {
+        homeUrl:DocConfig.homeUrl,
         content:"###正在加载...",
         page_id:'',
         page_title:'',

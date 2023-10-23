@@ -11,7 +11,8 @@ class BaseController extends Controller {
 
 	public function checkLogin($redirect = true){
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
-            echo 'OpenDoc does not support mysql any more . http://open-doc.docker-sky.cn ';
+            $homeUrl = C("HOME_URL");
+            echo 'OpenDoc does not support mysql any more . '.$homeUrl;
             clear_runtime();
             exit();
     	}

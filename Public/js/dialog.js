@@ -1,6 +1,6 @@
 /**
  *  将layer.js的一些方法封装为opendoc常用的对话框.
- *  调用方法如$.window("http://open-doc.docker-sky.cn/","测试","50%","50%");
+ *  调用方法如$.window("http://www.opendoc.cc/","测试","50%","50%");
  */
 $(document).ready(function(){
     jQuery.extend({

@@ -1,4 +1,5 @@
 <?php
+$homeUrl = C("HOME_URL");
 return array(
 
   "install_title"=>'安装OpenDoc',
@@ -11,7 +12,7 @@ return array(
   "db_password"=>'数据库密码',
   "sqlite_tips"=>'PHP内置支持Sqlite数据库，你无须再配置数据库，直接点击开始即可',
   "go"=>'开始',
-  "install_success_help"=>'安装成功！默认管理员账户密码是opendoc/123456。登录后，在右上角可以看到管理后台入口。此外，强烈建议修改管理员初始密码。若再遇到问题，可参考OpenDoc帮助文档：<a href="http://open-doc.docker-sky.cn" target="_blank">http://open-doc.docker-sky.cn/help</a>',
+  "install_success_help"=>'安装成功！默认管理员账户密码是opendoc/123456。登录后，在右上角可以看到管理后台入口。此外，强烈建议修改管理员初始密码。若再遇到问题，可参考OpenDoc帮助文档：<a href="'.$homeUrl.'" target="_blank">'.$homeUrl.'/help</a>',
   "home"=>'进入网站首页',
   "FAQ"=>'常见问题',
 

@@ -19,7 +19,7 @@ function user_sqlite(){
         
         $ret = write_home_config();
         if ($ret) {
-          file_put_contents("./install.lock","http://open-doc.docker-sky.cn/");
+          file_put_contents("./install.lock",C("HOME_URL")."/");
             echo 'install success !!!'."\n";
         }else{
             echo "\n".L("not_writable_home_config")."\n";
