@@ -8,7 +8,6 @@
       element-loading-background="rgba(0, 0, 0, 0.2)"
       >
         <el-row class="masthead" id="edit-page-container">
-<!--          <div :class="isFullPage?'page-edit-div':'page-edit-full-div'">-->
             <el-form>
               <el-descriptions :title="title" :column="1" :colon="false" size="mini">
                 <template slot="extra">
@@ -81,7 +80,7 @@
                 </el-descriptions-item>
               </el-descriptions>
             </el-form>
-            <Editormd v-if="page_use=='api'&&content"  :key="page_id" :content="content" @finishLoad="editormdFinishLoad" ref="Editormd"  type="editor" ></Editormd>
+            <Editormd v-if="page_use=='api'&&content"  :key="page_id" :content="content" :pageId="page_id" ref="Editormd"  type="editor" ></Editormd>
             <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" ref="Tinymce"  type="editor" ></Tinymce>
             <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="title" :sheetPageId="page_id" :sheetContent="content" ref="Luckysheet"  type="editor" ></Luckysheet>
         </el-row>
@@ -236,7 +235,6 @@ export default {
       copy_page_id:0,
       // catalogs:[],
       pageLoading:false,
-      isEditormdFinishLoad:false,
       nowCatName:'',
       page_use:'',
     };
@@ -271,12 +269,6 @@ export default {
         console.log(e)
       });
     },
-    editormdFinishLoad(data){// 当子组件加载完成后插入数据
-      this.isEditormdFinishLoad = true;
-      if(this.content>''){
-        this._setContentToEditormd();
-      }
-    },
     //获取页面内容
     async get_page_content(targetPageId,isByCopy=false){
         var that = this ;
@@ -293,9 +285,6 @@ export default {
             that.isFullPage = false;
           }
           that.content = response.data.page_content;
-          if (that.editorType == 'editormd' && that.isEditormdFinishLoad) { // 当子页面提前加载完成了
-            that._setContentToEditormd();
-          }
           let titleTip = isByCopy ? '-copy' : '';
           that.title = response.data.page_title + titleTip;
           that.item_id = response.data.item_id;
@@ -304,11 +293,6 @@ export default {
           that.$alert(response.error_message);
         }
         that.pageLoading = false;
-
-        // .catch(function (error) {
-        //   that.pageLoading = false;
-        //   console.log(error);
-        // });
     },
     getContentByPageUse(nowPageUse='doc'){
       let content;
@@ -378,15 +362,6 @@ export default {
       }
       return pageTypeByEditorTypeObject[editorType];
     },
-    _setContentToEditormd(){
-      this.insertValue(this.content ,1) ;
-      //如果长度大于3000,则关闭预览
-      if (this.content.length > 3000) {
-        this.editor_unwatch();//关闭预览
-      }else{
-        this.editor_watch();// 开启
-      }
-    },
     //获取默认该选中的目录
     get_default_cat(){
       var that = this ;
@@ -405,13 +380,13 @@ export default {
           }else{
             that.$alert(response.data.error_message);
           }
-
         });
     },
     //插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
     insertValue(value,is_cover){
       if (value) {
-          let refsKey = this.page_use=='doc'?'Tinymce':'Editormd';
+          let editType = this.getEditorTypeByPageUse(this.page_use);
+          let refsKey = editType.toLowerCase();
           let childRef = this.$refs[refsKey];//获取子组件
           if (is_cover) {
             // 清空
@@ -445,22 +420,6 @@ export default {
     //流程图模板
     insert_sequence_diagram_template(){
       this.insertValue(this.$refs.SystemTemplate.getSequenceDiagramTempl() ) ;
-    },
-    //关闭预览
-    editor_unwatch(){
-      let childRef = this.$refs.Editormd ;//获取子组件
-      childRef.editor_unwatch();
-      if ( sessionStorage.getItem("page_id_unwatch_"+this.page_id) ) {
-
-      }else{
-        this.$alert("检测到本页面内容比较多，OpenDoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
-         sessionStorage.setItem("page_id_unwatch_"+this.page_id,1)
-      }
-    },
-    //
-    editor_watch(){
-        let childRef = this.$refs.Editormd ;//获取子组件
-        childRef.editor_watch();
     },
     //json转参数表格
     ShowJsonTool(){

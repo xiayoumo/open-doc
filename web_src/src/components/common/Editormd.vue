@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="editormdLoading" element-loading-background="transparent">
     <el-row  :gutter="20">
       <el-col :span="showMarkdownNav?18:24" >
         <div v-if="type=='html'||type=='editor'" :id="id" class="main-editor">
@@ -56,6 +56,10 @@ export default {
     }
   },
   props: {
+    pageId:{
+      type: String,
+      default: '0'
+    },
     pageType:{
       type: String,
       default: 'many'
@@ -146,7 +150,8 @@ export default {
                   tocAdd : "fa-reorder",  // 指定一个FontAawsome的图标类
                 },
                 onload: () => { // 只在编辑状态被调用，展示状态不执行
-                    this.$emit("finishLoad",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
+                  this.editormdFinishLoad();
+                    //this.$emit("finishLoad",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
                     console.log('onload');
                 }
           };
@@ -161,6 +166,7 @@ export default {
   // markdown-nav
   data() {
     return {
+      editormdLoading:true,
       markdownNavData: [],
       instance: null,
       showImg:false,
@@ -202,6 +208,26 @@ export default {
 
   },
   methods: {
+    editormdFinishLoad(){// 当子组件加载完成后插入数据
+      // this.isEditormdFinishLoad = true;
+      if(this.content>''){
+        this.initContentToEditormd();
+      }
+    },
+    initContentToEditormd(){
+      // this.insertValue(this.content ,1) ;
+      //如果长度大于3000,则关闭预览
+      if (this.content.length > 3000) {
+        this.editor_unwatch();//关闭预览
+        if (!sessionStorage.getItem("page_id_unwatch_"+this.pageId) ){
+          this.$alert("检测到本页面内容比较多，OpenDoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
+          sessionStorage.setItem("page_id_unwatch_"+this.pageId,1)
+        }
+      }else{
+        this.editor_watch();// 开启预览
+      }
+      this.editormdLoading = false;
+    },
     markdownDataToHtml(markdownData){// 获取文件之间的翻译
       var newHtml = window.editormd.markdownToHTML("show-editormd-view", {
         markdown: markdownData,
@@ -238,6 +264,7 @@ export default {
             this.setLanguage(editorMD,this.$i18n.locale);// locale zh/en
           } else {// 查看
             this.instance = editorMD.markdownToHTML(this.id, this.editorConfig);
+            this.editormdLoading = false;
             //获取便捷目录
             // 获取便捷菜单内容
             this.$refs.QuickNav.setQuickNavLoading(true);

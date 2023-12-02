@@ -13,7 +13,6 @@
 <!--    打印预览 start    -->
     <el-row v-if="type=='editor'">
         <el-col class="upload-excel-file-box">
-
           <el-button type="primary" :loading="downloadFileLoading" size="small" @click="exportExcel">{{ $t('excel_export') }}</el-button>
           <el-upload
             class="upload-excel-file"
@@ -40,7 +39,7 @@
         </el-col>
     </el-row>
     <!--web spreadsheet组件-->
-    <div :class="type=='editor'?'excel':'excel-html'">
+    <div :class="type=='editor'?'excel':'excel-html'" v-loading="luckysheetLoading" element-loading-background="transparent">
       <div v-if="type=='editor'" :key="sheetPageId+'-'+type" :id="sheetEditId+sheetPageId" class="luckysheet-view-box"></div>
       <div v-if="type=='html'" :key="sheetPageId+'-'+type" :id="sheetHtmlId+sheetPageId" class="luckysheet-view-box"></div>
     </div>
@@ -60,7 +59,6 @@ import { exportExcel } from '@/js/export-sheet.js';
 import Vue from 'vue'
 import Print from 'vue-print-nb'
 Vue.use(Print)
-
 
 export default {
   name: 'luckysheet',
@@ -84,6 +82,7 @@ export default {
   },
   data() {
     return {
+      luckysheetLoading:true,
       sheetAllowEdit:false,
       nowUserName:'',
       downloadFileLoading:false,
@@ -154,8 +153,7 @@ export default {
     });
   },
   methods: {
-    init() {
-
+    async init() {
       this.$forceUpdate();// 解决页面来回切换后的顶部出现断层问题
       var luckysheet = window.luckysheet
       let dataConfig = this.getConfig();
@@ -185,7 +183,8 @@ export default {
         dataConfig.plugins = ['chart'];// 参考文档 https://blog.csdn.net/qq_34645412/article/details/127209040
         dataConfig.showtoolbarConfig = {importExcel: false, exportExcel: false, saveExcel: false};
       }
-      luckysheet.create(dataConfig);
+      await luckysheet.create(dataConfig);
+      this.luckysheetLoading = false;
     },
     getConfig(){
       let dataConfig = false;
