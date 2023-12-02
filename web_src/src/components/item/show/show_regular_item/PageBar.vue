@@ -1,26 +1,25 @@
 <template>
   <div>
       <ul class="page-bar">
-        <li>
-            <el-tooltip class="item" effect="dark" :content="$t('edit_page')" placement="right">
-                  <el-button type="text" icon="el-icon-edit" @click="edit_page"></el-button>
-            </el-tooltip>
+        <li v-if="!isMobileDevice">
+            <el-button type="text" class="hover-word-btn" @click="edit_page">
+              <span class="iconfont icon-bianji word-btn-default"></span><span class="word-btn-content">{{$t('edit_page')}}</span>
+            </el-button>
         </li>
         <li>
-            <el-tooltip class="item" effect="dark" :content="$t('share_page')" placement="right">
-                  <el-button type="text" icon="el-icon-share" @click="share_page"></el-button>
-            </el-tooltip>
-
-          </li>
+          <el-button type="text" class="hover-word-btn" @click="share_page">
+            <span class="iconfont icon-arrow- word-btn-default"></span><span class="word-btn-content">{{$t('share_page')}}</span>
+          </el-button>
+        </li>
         <li>
           <el-dropdown @command="dropdown_callback" class="">
             <span class="el-dropdown-link">
               <i class="el-icon-arrow-down el-icon--down"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <router-link :to="'/page/edit/'+item_id+'/0?copy_page_id='+page_id"><el-dropdown-item>{{$t('copy')}}</el-dropdown-item></router-link>
+              <router-link v-if="!isMobileDevice" :to="'/page/edit/'+item_id+'/0?copy_page_id='+page_id"><el-dropdown-item>{{$t('copy')}}</el-dropdown-item></router-link>
               <el-dropdown-item :command="show_page_info">{{$t('detail')}}</el-dropdown-item>
-              <el-dropdown-item :command="ShowHistoryVersion">{{$t('history_version')}}</el-dropdown-item>
+              <el-dropdown-item v-if="!isMobileDevice" :command="ShowHistoryVersion">{{$t('history_version')}}</el-dropdown-item>
               <el-dropdown-item :command="delete_page">{{$t('delete')}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -35,22 +34,40 @@
     class="text-center"
     >
 
-    <p>{{$t('item_page_address')}} : <code >{{share_page_link}}</code>
-    </p>
-    <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText1" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
-        <p style="border-bottom: 1px solid #eee;"><img  id="qr-page-link" style="width:114px;height:114px;" :src="qr_page_link"> </p>
+    <el-tabs tab-position="right">
+      <el-tab-pane :label="$t('item_page_address')">
+        <p ><img  id="qr-page-link" class="qrcode-img" :src="qr_page_link"> </p>
+        <p>
+          <el-button type="text" class="copy-link-btn" v-clipboard:copyhttplist="copyText1" v-clipboard:success="onCopy"><span class="iconfont icon-fuzhi"></span> {{$t('copy_link')}}</el-button>
+          <code >{{share_page_link}}</code>
+        </p>
 
-      <p >{{$t('single_page_address')}} : <code id="share-single-link">{{share_single_link}}</code>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('single_page_address')">
+        <p><img  id="qr-single-link" class="qrcode-img" :src="qr_single_link"> </p>
+        <p>
+          <el-button type="text" class="copy-link-btn" v-clipboard:copyhttplist="copyText2" v-clipboard:success="onCopy"><span class="iconfont icon-fuzhi"></span> {{$t('copy_link')}}</el-button>
+          <code id="share-single-link">{{share_single_link}}</code>
+        </p>
+      </el-tab-pane>
+    </el-tabs>
+
+
+
+      <p class="page-diff-tips-box">
+        <el-popover
+          placement="right-start"
+          width="200"
+          trigger="hover"
+          >
+          <div  v-html="$t('project_share_and_page_share_diff_tip')"></div>
+
+          <el-button type="text" slot="reference">{{$t('page_diff_tips')}}</el-button>
+        </el-popover>
       </p>
-        <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText2" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
-        <p style="border-bottom: 1px solid #eee;"><img  id="qr-single-link" style="width:114px;height:114px;" :src="qr_single_link"> </p>
-     <p><a :href="homeUrl+'/help'" target="_blank">{{$t('page_diff_tips')}}</a></p><p>
-      </p>
-
-
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
-    </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
+      </span>
   </el-dialog>
 
     <!-- 历史版本 -->
@@ -60,11 +77,32 @@
 </template>
 
 
+<style lang="scss">
+@import '~@/components/common/base.scss';
+
+.el-dialog__header {
+  text-align: left;
+}
+//.word-btn:hover{
+//  content:"分享";
+//}
+/* Float Shadow */
+.hover-word-btn {
+  @include hover-word-btn;
+}
+
+</style>
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
-  .page-bar{
 
-  }
+
+.copy-link-btn{
+  margin-right: 20px;
+}
+.qrcode-img{
+    width:114px;height:114px;
+}
+
 
 </style>
 
@@ -127,7 +165,7 @@
             that.qr_single_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(that.share_single_link);
             that.dialogVisible = true;
             that.copyText1 = that.item_info.item_name+' - '+that.page_info.page_title+"\r\n"+ that.share_page_link;
-            thats.copyText2 = that.page_info.page_title+"\r\n"+ that.share_single_link;
+            that.copyText2 = that.page_info.page_title+"\r\n"+ that.share_single_link;
           }else{
             that.$alert(response.data.error_message);
           }

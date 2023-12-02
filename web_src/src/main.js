@@ -7,41 +7,25 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../static/icon/iconfont.css';
 import "../static/css/custom-element.css";
+//在min.js中引入插件
+import 'default-passive-events'; // 解决事件报错问题https://blog.csdn.net/tonetwo/article/details/129384680
 
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 import util from '@/js/util.js'
 import axios from '@/js/http'
-// import VueI18n from 'vue-i18n'
+
 import i18n from '@/lang'
-// import enLocale from 'element-ui/lib/locale/lang/en'
-// import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-// import myZhLocale from '../static/lang/zh-CN'
-// import myEnLocale from '../static/lang/en'
 import 'url-search-params-polyfill'
 import "babel-polyfill";
 import VueClipboard from 'vue-clipboard2';
-import * as echarts from 'echarts';
 
-
-Vue.prototype.$echarts = echarts;
 Vue.use(util);
 Vue.config.productionTip = false
 Vue.component('Header', Header);
 Vue.component('Footer', Footer);
 Vue.use(ElementUI)
-// Vue.use(VueI18n)
 Vue.use(VueClipboard)
-
-//多语言相关
-// var allZhLocale = Object.assign(zhLocale,myZhLocale);
-// var allEnLocale = Object.assign(enLocale,myEnLocale);
-// Vue.config.lang = DocConfig.lang ;
-// Vue.locale('zh-cn', allZhLocale)
-// Vue.locale('en', allEnLocale)
-
-
-
 
 // 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
 Vue.prototype.axios = axios;

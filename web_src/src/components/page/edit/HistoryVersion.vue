@@ -1,6 +1,6 @@
 <!-- 更多模板 -->
 <template>
-  <div class="hello">
+  <div>
 <!--    <Header> </Header>-->
 
     <el-container class="container-narrow">
@@ -32,6 +32,7 @@
   height: 450px;
   overflow-y: auto;
   @include scroll-bar-box;
+  background: $theme-grey-color;
 }
 
 </style>

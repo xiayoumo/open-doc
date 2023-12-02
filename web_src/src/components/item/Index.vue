@@ -21,11 +21,11 @@
           <el-row class="header-btn-group pull-right">
 <!--            <div >-->
   <!--            <el-button type="text"  @click="feedback">{{$t("feedback")}}</el-button>-->
-
+              <Lang></Lang>
               <router-link to="/show/index" >{{$t('show_index')}} </router-link>
               <a v-if="outsideBtnData.length>0" v-for="data in outsideBtnData" class="outside-web-btn" :href="data.url" target="_blank">{{data.name}}</a>
               <router-link class="home-top-menu-btn" to="/team/index" >{{$t('team_mamage')}} </router-link>
-              <router-link class="home-top-menu-btn" to="/admin/index" v-if="isAdmin">{{$t('background')}}</router-link>
+              <router-link class="home-top-menu-btn" to="/admin/index" v-if="isAdmin&&!isMobileDevice">{{$t('background')}}</router-link>
               &nbsp;&nbsp;&nbsp;
               <el-dropdown @command="dropdown_callback">
                 <span class="el-dropdown-link">
@@ -35,16 +35,16 @@
                   <el-dropdown-item class="head-dropdown-link-box">
                     <el-row>
                       <el-col :span="24">
-                        <p class="head-dropdown-user-msg"> {{nowUserInfo.username}}</p>
+                        <p class="head-dropdown-user-msg user-name-title"> {{nowUserInfo.username}} </p>
                         <p class="head-dropdown-user-msg" v-if="nowUserInfo.name>''"> 名称： {{nowUserInfo.name}}</p>
                       </el-col>
                     </el-row>
                   </el-dropdown-item>
-                  <el-dropdown-item class="head-dropdown-link-box">
-                    <router-link to="/user/setting">{{$t("personal_setting")}}</router-link>
+                  <el-dropdown-item :command="goSetting" class="head-dropdown-link-box">
+                    <span class="iconfont icon-bianji user-info-icon"></span> {{$t("personal_setting")}}
                   </el-dropdown-item>
                   <el-dropdown-item :command="logout" class="head-dropdown-link-box" divided>
-                    {{$t("logout")}}
+                    <span class="iconfont icon-tuichudenglu user-info-icon"></span> {{$t("logout")}}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -64,24 +64,39 @@
         <div class="container-thumbnails">
           <ul class="thumbnails" id="item-list" v-if="itemList">
 
-              <li class=" text-center"  v-for="item in itemList">
-                <router-link class="thumbnail item-thumbnail"  :to="'/item-show/' +  (item.item_domain ? item.item_domain:item.item_code )" title="">
-                  <span v-if="item.is_creator" class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" >
-                    <i class="el-icon-setting"></i>
-                  </span>
-                  <span class="item-top " @click.prevent="click_item_top(item.item_id,item.top)" :title="item.top ? $t('cancel_item_top'):$t('item_top')" >
-                    <i :class="item_top_class(item.top)"></i>
-                  </span>
-                  <p class="my-item">{{item.item_name}}</p>
-                  <span v-if="item.item_type==1" class="item-type-icon iconfont icon-MGL-R1"></span>
-                  <span v-if="item.item_type==2" class="item-type-single-icon iconfont icon-MGL-R1-copy-copy"></span>
-                </router-link>
-              </li>
+                <li slot="reference" class="itme-li-box"  v-for="item in itemList">
+                    <el-tooltip :manual="true" effect="dark" :content="$t('create_item_tip')" placement="bottom-start" v-model="isFirstTimeCreate">
+                       <div>
+                         <span v-if="item.item_use=='excel'" class="item-use-icon iconfont icon-excelwenjian"></span>
+                         <span v-if="item.item_use=='api'" class="item-use-icon iconfont icon-APIwendang"></span>
+                         <span v-if="item.item_use=='doc'" class="item-use-icon iconfont icon-word"></span>
+                         <router-link class="thumbnail item-thumbnail"  :to="'/item-show/' +  (item.item_domain ? item.item_domain:item.item_code )" title="">
+                          <span v-if="item.is_creator" class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" >
+                            <i class="el-icon-setting"></i>
+                          </span>
+                           <span class="item-top " @click.prevent="click_item_top(item.item_id,item.top)" :title="item.top ? $t('cancel_item_top'):$t('item_top')" >
+                            <i :class="item_top_class(item.top)"></i>
+                          </span>
 
-              <li class=" text-center"  >
-                <router-link class="thumbnail item-thumbnail"  to="/item/add" title="">
-                  <p class="my-item">{{$t('new_item')}}<i class="el-icon-plus"></i></p>
-                </router-link>
+                           <p class="my-item" v-if="item.item_name.length<=10">{{item.item_name}}</p>
+                           <p class="my-item" v-if="item.item_name.length>10">
+                             <el-tooltip class="item" effect="dark" :content="item.item_name" placement="bottom">
+                               <span>{{item.item_name}}</span>
+                             </el-tooltip>
+                           </p>
+                           <span v-if="item.item_type==1" class="item-type-icon iconfont icon-MGL-R1"></span>
+                           <span v-if="item.item_type==2" class="item-type-single-icon iconfont icon-MGL-R1-copy-copy"></span>
+                         </router-link>
+                       </div>
+                  </el-tooltip>
+                </li>
+
+              <li class="itme-li-box"  >
+                <el-tooltip :manual="true" effect="dark" :content="$t('never_create_item_tip')" placement="bottom-start" v-model="isNeverCreate">
+                  <router-link class="thumbnail item-thumbnail"  to="/item/add" title="">
+                    <p class="my-item">{{$t('new_item')}}<i class="el-icon-plus"></i></p>
+                  </router-link>
+                </el-tooltip>
               </li>
 
           </ul>
@@ -113,7 +128,8 @@
   border-bottom-color: $theme-third-color;
 }
 .el-dropdown-menu__item--divided:before {
-  background-color: $theme-third-color;
+  background-color: $theme-third-color !important;
+  height: 2px !important;
 }
 .el-popper[x-placement^=bottom] .popper__arrow::after {
   border-bottom-color: $theme-third-color;
@@ -121,11 +137,49 @@
 </style>
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+    .user-name-title{
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .user-info-icon{
+      font-size: 18px;
+      margin-right: 10px;
+      color: $theme-grey-color;
+    }
+    .itme-li-box{
+      text-align: center;
+    }
+   .itme-li-box span{
+     color: $theme-btn-other-color;
+     &:hover{
+       color: $theme-right-msg-color;
+     }
+   }
+  .my-item{
+    margin-top: 2rem;
+    @include text-auto-thumbnail;// 文字自动缩略
+    width: 100%;
+    color: $theme-btn-other-color;
+    font-weight: bold;
+    &:hover{
+      color: $theme-right-msg-color;
+    }
+  }
+  .item-use-icon{
+    font-size: 26px;
+    float: left;
+    position: relative;
+    top: -20%;
+    color: #151822;
+    opacity: .4;
+    right: -44%;
+    padding-top: 1rem;
+  }
   .item-type-icon{
     font-size: 38px;
     float: left;
     position: relative;
-    top: -98%;
+    top: -82%;
     color: #151822;
     opacity: .1;
     left: -4%;
@@ -134,7 +188,7 @@
     font-size: 38px;
     float: left;
     position: relative;
-    top: -20%;
+    top: -4%;
     color: #151822;
     opacity: .1;
     right: -84%;
@@ -187,6 +241,9 @@
     margin-bottom: 15px;
     background-color: $theme-third-color;
   }
+  .header-btn-group a{
+    margin-left: 1rem;
+  }
   .header-btn-group a,.header-btn-group .el-button,.header-btn-group .el-dropdown-link{
       color: $theme-grey-color;
   }
@@ -194,12 +251,12 @@
       color: $theme-right-msg-color;
   }
 
-  .head-dropdown-link-box,.head-dropdown-link-box a{
+  .head-dropdown-link-box{
      background-color: $theme-third-color;
      line-height: 28px;
      color: $theme-grey-color;
   }
-  .head-dropdown-link-box:hover,.head-dropdown-link-box a:hover{
+  .head-dropdown-link-box:hover{
     line-height: 28px;
     color: $theme-right-msg-color;
     background-color:$theme-third-color;
@@ -213,11 +270,7 @@
   .container-thumbnails{
     margin: 0 auto;
     max-width: 700px;
-    height: 88vh;
-  }
-
-  .my-item{
-    margin: 40px 5px;
+    height: 86vh;
   }
   .thumbnails{
     padding-top: 40px;
@@ -277,14 +330,17 @@
 <script>
 import Diff from "../page/Diff";
 import store from '@/store';
+import Lang from '@/components/common/Lang';
 
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
 }
 export default {
-  components: {Diff},
+  components: {Diff,Lang},
   data() {
     return {
+      isNeverCreate:false,
+      isFirstTimeCreate:false,
       isCustomWebTitle:false,
       logoPicUrl:'../../../static/logo/doc-log3.png',
       webTitleName:'',
@@ -293,6 +349,7 @@ export default {
       itemList:{},
       isAdmin:false,
       pageLoading:false,
+      isMobileDevice:false,
     };
   },
   created() {
@@ -329,6 +386,13 @@ export default {
                   var json = response.data.data ;
                   that.itemList = json ;
                   that.bind_item_even();
+                  // 设置第一次添加项目标记
+                  if(that.itemList.length==1&&that.itemList[0].last_update_time==0){
+                     that.isFirstTimeCreate = true;
+                  }
+                  if(that.itemList.length==0){
+                    that.isNeverCreate = true;
+                  }
                   that.pageLoading = false;
               }, 300);
             }else{
@@ -403,6 +467,9 @@ export default {
 
         });
     },
+    goSetting(){
+      this.$router.replace('/user/setting');
+    },
     logout(){
         var that = this ;
         var url = DocConfig.server+'/api/user/logout';
@@ -443,12 +510,16 @@ export default {
   },
   computed: {
     nowUserInfo(){
-      return store.getters.userInfo;
+      return typeof store.getters.userInfo ==='undefined'?{username:''}:store.getters.userInfo;
     },
   },
   mounted () {
     this.get_item_list();
     this.user_info();
+    //根据屏幕宽度进行响应(应对移动设备的访问)
+    if( this.isMobile() ||  window.screen.width< 1000){
+      this.isMobileDevice=true;
+    }
   },
   beforeDestroy(){
     this.$message.closeAll();

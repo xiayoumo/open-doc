@@ -96,7 +96,7 @@ class CatalogController extends BaseController {
         }
         
         if ($parent_cat_id &&  $parent_cat_id == $cat_id) {
-            $this->sendError(10101,"上级目录不能选择自身");
+            $this->sendError(10101,"上级文件夹不能选择自身");
             return;
         }
         
@@ -118,9 +118,14 @@ class CatalogController extends BaseController {
                 $this->sendError(10103);
                 return;
             }
-            //如果一个目录已经是别的目录的父目录，那么它将无法再转为level4目录
+            //如果一个文件夹已经是别的文件夹的父文件夹，那么它将无法再转为level4目录
             if (D("Catalog")->where(" parent_cat_id = '$cat_id' ")->find() && $data['level'] == 4 ) {
-                $this->sendError(10101,"该目录含有子目录，不允许转为底层目录。");
+                $this->sendError(10101,'文件夹：【'.$data['cat_name']."】含有子文件夹，不允许更新为第3层文件夹。");
+                return;
+            }
+            //如果一个文件夹已经是别的文件夹的父文件夹，那么它将无法再转为level4文件夹
+            if ($data['level'] == 5 ) {
+                $this->sendError(10101,'文件夹：【'.$data['cat_name']."】将不允许成为第4层文件夹，系统最多支持3层文件夹。");
                 return;
             }
             
@@ -141,7 +146,7 @@ class CatalogController extends BaseController {
         
     }
 
-    //删除目录
+    //删除文件夹
     public function delete(){
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
@@ -176,9 +181,9 @@ class CatalogController extends BaseController {
         }
     }
 
-    //编辑页面时，自动帮助用户选中目录
-    //选中的规则是：编辑页面则选中该页面目录，复制页面则选中目标页面目录;
-    //              如果是恢复历史页面则使用历史页面的目录，如果都没有则选中用户上次使用的目录
+    //编辑页面时，自动帮助用户选中文件夹
+    //选中的规则是：编辑页面则选中该页面文件夹，复制页面则选中目标页面文件夹;
+    //              如果是恢复历史页面则使用历史页面的文件夹，如果都没有则选中用户上次使用的文件夹
     public function getDefaultCat(){
         $login_user = $this->checkLogin();
         $page_id = I("page_id/d");
@@ -201,11 +206,9 @@ class CatalogController extends BaseController {
             $default_cat_id = $copy_page['cat_id'];
 
         }else{
-            //查找用户上一次设置的目录
+            //查找用户上一次设置的文件夹
             $last_page = D("Page")->where(" author_uid ='$login_user[uid]' and item_id = '$item_id' ")->order(" addtime desc ")->limit(1)->find();
             $default_cat_id = $last_page['cat_id'];
-
-
         }
 
         $item_id = $page['item_id'] ?$page['item_id'] :$item_id;
@@ -215,8 +218,14 @@ class CatalogController extends BaseController {
             $this->sendError(10101,L('no_permissions'));
             return;
         }
+        $default_cat_name = '根文件夹';
+        if($default_cat_id>0){
+            $catalog = M("Catalog")->where(" cat_id = '$default_cat_id' ")->find();
+            $default_cat_name = $catalog['cat_name'];
+        }
 
-        $this->sendResult(array("default_cat_id"=>$default_cat_id ));
+        $data = array("default_cat_id"=>$default_cat_id,"default_cat_name"=>$default_cat_name );
+        $this->sendResult($data);
     }
 
 

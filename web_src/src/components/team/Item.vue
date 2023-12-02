@@ -26,7 +26,7 @@
               width="210"
               :label="$t('operation')">
               <template slot-scope="scope">
-                <router-link :to="'/'+scope.row.item_id" target="_blank">{{$t('check_item')}}</router-link>
+                <router-link :to="'/item-show/'+scope.row.item_code" target="_blank">{{$t('check_item')}}</router-link>
 
               <el-button @click="getTeamItemMember(scope.row.item_id)" type="text" size="small">{{$t('member_authority')}}</el-button>
 

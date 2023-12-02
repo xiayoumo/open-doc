@@ -319,7 +319,7 @@ class ItemController extends BaseController {
         //是否有搜索词
         if ($keyword) {
             $keyword = \SQLite3::escapeString($keyword) ;
-            $pages = D("Page")->where("item_id = '$item_id' and is_del = 0  and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            $pages = D("Page")->where("item_id = '$item_id' and is_del = 0  and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime,s_number")->select();
             $menu['pages'] = $pages ? $pages : array();
         }else{
             $menu = D("Item")->getMemu($item_id) ;
@@ -356,10 +356,10 @@ class ItemController extends BaseController {
         }
 
         if (LANG_SET == 'en-us') {
-            $help_url = "https://www.showdoc.cc/help-en";
+            $help_url = "https://www.opendoc.cc/help-en";
         }
         else{
-            $help_url = "https://www.showdoc.cc/help";
+            $help_url = "https://www.opendoc.cc/help";
         }
 
 
@@ -369,6 +369,7 @@ class ItemController extends BaseController {
             "item_domain"=>$item['item_domain'] ,
             "is_archived"=>$item['is_archived'] ,
             "item_name"=>$item['item_name'] ,
+            "item_use"=>$item['item_use'] ,
             "default_page_id"=>(string)$default_page_id ,
             "default_cat_id2"=>$default_cat_id2 ,
             "default_cat_id3"=>$default_cat_id3 ,
@@ -411,6 +412,7 @@ class ItemController extends BaseController {
             "item_domain"=>$item['item_domain'] ,
             "is_archived"=>$item['is_archived'] ,
             "item_name"=>$item['item_name'] ,
+            "item_use"=>$item['item_use'] ,
             "current_page_id"=>$current_page_id ,
             "unread_count"=>$unread_count ,
             "item_type"=>2 ,
@@ -440,7 +442,7 @@ class ItemController extends BaseController {
                 $member_item_ids[] = $value['item_id'] ;
             }
         }
-        $items  = D("Item")->field("item_id,item_name,item_domain,item_type,last_update_time,item_description,is_del,uid,item_code")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
+        $items  = D("Item")->field("item_id,item_name,item_domain,item_type,last_update_time,item_description,is_del,uid,item_code,item_use")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
 
         
         foreach ($items as $key => $value) {
@@ -750,6 +752,7 @@ class ItemController extends BaseController {
         $password = I("password");
         $item_description = I("item_description");
         $item_type = I("item_type");
+        $item_use = I("item_use");
 
         if ($item_domain) {
             
@@ -774,6 +777,7 @@ class ItemController extends BaseController {
                 return;
             }
             $ret = D("Item")->copy($copy_item_id,$login_user['uid'],$item_name,$item_description,$password,$item_domain);
+
             if ($ret) {
                 $this->sendResult(array());             
             }else{
@@ -781,7 +785,7 @@ class ItemController extends BaseController {
             }
             return ;
         }
-        
+
         $insert = array(
             "uid" => $login_user['uid'] ,
             "username" => $login_user['username'] ,
@@ -790,16 +794,13 @@ class ItemController extends BaseController {
             "item_description" => $item_description ,
             "item_domain" => $item_domain ,
             "item_type" => $item_type ,
-            "addtime" =>time()
+            "addtime" =>time(),
+            "item_use" =>$item_use
             );
         $item_id = D("Item")->add($insert);
-        // 追加项目识别编码
-        $update_data = array(
-            "item_code" => substr(md5($item_id),-6)
-        );
-        D("Item")->where("item_id = '$item_id' ")->save($update_data);
-
         if ($item_id) {
+            // 追加项目识别编码
+            D("Item")->set_item_code($item_id);
             //如果是单页应用，则新建一个默认页
             if ($item_type == 2 ) {
                 $insert = array(
@@ -808,16 +809,20 @@ class ItemController extends BaseController {
                     "page_title" => $item_name ,
                     "item_id" => $item_id ,
                     "cat_id" => 0 ,
-                    "page_content" => '欢迎使用showdoc。点击右上方的编辑按钮进行编辑吧！' ,
-                    "addtime" =>time()
+                    "page_content" => 'Welcome to OpenDoc!' ,
+                    "addtime" =>time(),
+                    "page_use" =>$item_use,
                     );
-                $page_id = D("Page")->add($insert);
+                $pageModel = D("Page");
+                $page_id = $pageModel->add($insert);
+                if(!$page_id){
+                    $this->sendError(10101);
+                }
             }
             $this->sendResult(array());               
         }else{
             $this->sendError(10101);
         }
-        
     }
 
 

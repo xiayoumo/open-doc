@@ -30,7 +30,7 @@
   overflow: hidden;
   position: relative;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--theme-grey-color);
   font-family: "Meiryo UI", "Microsoft YaHei", "Malgun Gothic", "Segoe UI", "Trebuchet MS", Helvetica, "Monaco", monospace, Tahoma, STXihei, "华文细黑", STHeiti, "Helvetica Neue", "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, "宋体", Heiti, "黑体", sans-serif;
 }
 .editormd *, .editormd *:before, .editormd *:after {
@@ -69,7 +69,7 @@
 .editormd ::-webkit-scrollbar {
   height: 10px;
   width: 7px;
-  background: rgba(0, 0, 0, 0.1);
+  /*background: rgba(0, 0, 0, 0.1);*/
 }
 .editormd ::-webkit-scrollbar:hover {
   background: rgba(0, 0, 0, 0.2);
@@ -706,6 +706,7 @@
 }
 .editormd .CodeMirror-linenumbers {
   padding: 0 5px;
+  background: #ffffff;
 }
 .editormd .CodeMirror-selected {
   background: #70B7FF;
@@ -3850,14 +3851,16 @@
 }
 
 .editormd-preview-container, .editormd-html-preview {
+  border-radius: 10px;
   text-align: left;
   font-size: 14px;
   line-height: 1.6;
-  padding: 20px;
+  padding: 2rem;
   overflow: auto;
-  width: 100%;
+  /*width: 100%;*/
   background-color: #fff;
   min-height: 70vh;
+  margin-top: 10px;
 }
 .editormd-preview-container blockquote, .editormd-html-preview blockquote {
   color: #666;

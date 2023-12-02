@@ -2,7 +2,7 @@
 <template>
   <div class="hello">
     <Header> </Header>
-    <link href="static/diff/diffview.css" rel="stylesheet">
+    <link href="../../../static/diff/diffview.css" rel="stylesheet">
     <el-container class="container-narrow">
         <div class="textInput">
           <textarea id="baseText" v-html="content" style="display:none;">    </textarea>
@@ -19,7 +19,8 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import '~@/components/common/base.scss';
 
 .top {
   text-align: center;
@@ -48,10 +49,19 @@ label:hover {
   padding: 1em;
 }
 #diffoutput {
-    width: 835px;
-    margin: 0 auto;
-}
+  width: 80%;
+  margin: 0 auto;
 
+  min-width: 500px;
+
+}
+.el-container{
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  @include scroll-bar-box;
+  height: 80vh;
+  overflow-y: auto;
+}
 
 </style>
 
@@ -70,7 +80,7 @@ export default {
     };
   },
   components:{
-    
+
   },
   methods:{
     get_content(){
@@ -88,11 +98,11 @@ export default {
               that.$nextTick(()=>{
                 that.diffUsingJS(0);
               });
-            
+
             }else{
               that.$alert(response.data.error_message);
             }
-            
+
           })
           .catch(function (error) {
             console.log(error);
@@ -123,12 +133,12 @@ export default {
   },
   mounted () {
     $s([
-      `static/diff/difflib.js`,
-      `static/diff/diffview.js`,
+      `../../../static/diff/difflib.js`,
+      `../../../static/diff/diffview.js`,
       ],()=>{
 
       this.get_content();
-      
+
     })
 
 

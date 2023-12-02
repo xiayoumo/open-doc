@@ -1,24 +1,44 @@
 <template>
     <div class="common-header">
       <i v-if="showHeadMenu" @click="handleShowLeftMenu()" class="el-icon-menu head-menu-btn"></i>
-      <span v-if="headTitle!=''" class="coommon-header-title">{{ headTitle }}</span>
-      <router-link class="goback-to-index-btn" to="/item/index">{{$t('web_home')}}</router-link>
-<!--      <a v-if="showHeadCountMenu && !isNowCountDashboard" :href="'/item-count-show/'+ nowItemCode"  class="dashboard-count-btn"><span class="iconfont icon-24gf-chartPie"></span> {{$t('web_dashboard')}}</a>-->
-      <router-link v-if="showHeadCountMenu && !isNowCountDashboard" class="dashboard-count-btn" :to="'/item-count-show/'+ nowItemCode" append><span class="iconfont icon-24gf-chartPie"></span> {{$t('web_dashboard')}}</router-link>
-      <el-button v-if="isNowCountDashboard" class="goback-btn" type="text" @click="gobackUrl">{{$t('goback')}}</el-button>
+      <span v-if="headTitle!=''&&!isMobileDevice" class="coommon-header-title">{{ headTitle }}</span>
+      <div class="header-right-menu-box">
+          <Lang></Lang>
+          <el-button v-if="showHeadCountMenu && !isNowCountDashboard" type="text" class="hover-word-btn" @click="$router.replace('/item-count-show/'+ nowItemCode)">
+            <span class="iconfont icon-24gf-chartPie word-btn-default"></span><span class="word-btn-content">{{$t('web_dashboard')}}</span>
+          </el-button>
+<!--          <router-link v-if="showHeadCountMenu && !isNowCountDashboard" class="header-right-menu-btn" :to="'/item-count-show/'+ nowItemCode" append>-->
+<!--            <span v-if="!isMobileDevice" class="iconfont icon-24gf-chartPie"></span> {{$t('web_dashboard')}}-->
+<!--          </router-link>-->
+          <el-button v-if="isNowCountDashboard" type="text" class="hover-word-btn" @click="gobackUrl">
+            <span class="iconfont icon-fanhui1 word-btn-default"></span><span class="word-btn-content">{{$t('goback')}}</span>
+          </el-button>
+<!--          <el-button v-if="isNowCountDashboard" class="header-right-menu-btn" type="text" @click="gobackUrl">{{$t('goback')}}</el-button>-->
+<!--          <router-link class="header-right-menu-btn" to="/item/index">{{$t('web_home')}}</router-link>-->
+        <el-button type="text" class="hover-word-btn" @click="$router.replace('/item/index')">
+          <i class="el-icon-s-home word-btn-default"></i><span class="word-btn-content">{{$t('web_home')}}</span>
+        </el-button>
+      </div>
 
     </div>
 </template>
 
 <script>
-import store from '@/store'
+import store from '@/store';
+import Lang from '@/components/common/Lang'
 
 export default {
   name: 'Header',
+  components:{
+    Lang
+  },
   data () {
     return {
+      isMobileDevice:false,
       msg: '头部',
     }
+  },
+  created() {
   },
   methods: {
     handleShowLeftMenu(){
@@ -45,10 +65,13 @@ export default {
       return store.getters.isShowDashboard;
     }
 
-  }
-  // mounted() {
-  //   this.headTitle = store.getters.nowHeadTitle;
-  // },
+  },
+  mounted() {
+    //根据屏幕宽度进行响应(应对移动设备的访问)
+    if( this.isMobile() ||  window.screen.width< 1000){
+      this.isMobileDevice=true;
+    }
+  },
   // computed: {
   //   headTitle() {
   //     return localStorage.getItem('head_title')
@@ -66,34 +89,55 @@ export default {
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
 
+/* Float Shadow */
+.hover-word-btn {
+  margin-right: 20px;
+  margin-left: 20px;
+  .word-btn-default{
+    font-size: 16px;
+    color: $theme-grey-color;
+  }
+  @include hover-word-btn;
+}
+
 .goback-btn{
   color: $theme-grey-color;
-  float: right;
-  margin-right: 20px;
-  margin-top: 13px;
   &:hover,&:focus{
     color: $theme-right-msg-color;
   }
 }
+
 .dashboard-count-btn{
   color: $theme-grey-color;
-  float: right;
-  margin-right: 20px;
-  margin-top: 20px;
   &:hover,&:focus{
     color: $theme-right-msg-color;
   }
 }
 .head-menu-btn{
   font-size: 24px;
-  margin-right: 10px;
+  //margin-right: 10px;
   margin-top: 22px;
 }
-.goback-to-index-btn{
+.header-right-menu-box{
   color: $theme-grey-color;
   float: right;
   margin-right: 5%;
   margin-top: 22px;
+  &:hover,&:focus{
+    color: $theme-right-msg-color;
+  }
+}
+.header-right-menu-btn{
+  margin-right: 5px;
+  margin-left: 5px;
+  color: $theme-grey-color !important;
+  &:hover,&:focus{
+    border: none;
+    color: $theme-right-msg-color !important;
+  }
+}
+.goback-to-index-btn{
+  color: $theme-grey-color;
   &:hover,&:focus{
     color: $theme-right-msg-color;
   }
@@ -122,6 +166,10 @@ export default {
 <style lang="scss">
 @import '~@/components/common/base.scss';
 
+.edit-model-box-empty{
+  padding-top: 100px;
+  margin: 0 auto;
+}
 
 .el-input .el-input__inner{
   height: 30px;
@@ -218,8 +266,16 @@ a {
 .el-dropdown-link {
   color: $theme-color;
 }
-.el-dropdown-menu{
+.el-select-dropdown{
   background-color: $theme-third-color;
+  border: 1px solid $theme-black-grey-color;
+}
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+  background-color: $theme-third-color;
+  color: $theme-grey-color;
+}
+.el-dropdown-menu{
+  background-color: $theme-third-color !important;
   box-shadow: 8px 8px 20px 0 rgba(55,99,170,.1), -8px -8px 20px 0 #fff;
   .el-dropdown-menu__item{
       color: $theme-grey-color;
@@ -231,13 +287,16 @@ a {
         }
       }
   }
-
 }
-
+.el-popper[x-placement^=top] .popper__arrow,.el-popper[x-placement^=top] .popper__arrow::after{
+  border-top-color: $theme-third-color !important;
+}
 .el-popper[x-placement^=bottom] .popper__arrow,.el-popper[x-placement^=bottom] .popper__arrow::after{
-  border-bottom-color: $theme-third-color;
+  border-bottom-color: $theme-third-color !important;
 }
-
+.el-popper[x-placement^=right] .popper__arrow,.el-popper[x-placement^=right] .popper__arrow::after {
+  border-right-color: $theme-third-color !important;
+}
 .el-message-box{
   background: $theme-grey-color;
   width: 40vh;
@@ -264,8 +323,43 @@ a {
 }
 .el-autocomplete-suggestion li{
   color: $theme-grey-color;
+  &:hover{
+    color: $theme-right-msg-color;
+    background: $theme-words-color;
+  }
 }
 .el-table th.el-table__cell{
   background-color: $theme-color;
 }
+.el-aside{
+  padding-bottom: 100px;
+}
+.el-descriptions__body{
+  background: $theme-grey-color;
+}
+.el-popover{
+  background: $theme-third-color;
+  color: $theme-grey-color;
+  .el-button{
+    color: $theme-grey-color;
+  }
+}
+.el-divider {
+  background-color: $theme-fourth-color;
+}
+.el-divider__text {
+  background-color: $theme-third-color;
+  color: $theme-grey-color;
+}
+.el-descriptions__header .el-descriptions__title {
+  font-size: 18px;
+  font-weight: 700;
+}
+//.el-menu-item{
+//  @include text-auto-thumbnail;// 文字自动缩略
+//  width: 300px;
+//  color: $theme-color;
+//  font-weight: bold;
+//}
+
 </style>

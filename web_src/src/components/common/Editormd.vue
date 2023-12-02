@@ -1,154 +1,44 @@
 <template>
-  <el-row >
-    <el-col :span="showMarkdownNav&&pageType=='many'?16:24">
-      <div :id="id" class="main-editor" >
-        <link href="../../../static/editor.md/css/editormd.css" rel="stylesheet">
-        <textarea ref="editorMd" v-show="false" v-html="content" ></textarea>
-        <!-- 放大图片 -->
-        <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
-      </div>
-    </el-col>
-    <el-col v-if="showMarkdownNav" :span="8">
-      <el-card class="markdown-nav-box latest-activity-card">
-        <div class="latest-activity-card__badge">{{$t('quick_navigation')}}</div>
-        <el-timeline hide-timestamp class="markdown-nav-timelie">
-          <el-timeline-item
-            v-for="(activity, index) in markdownNavData"
-            :class="activity.showType!='root'?'timeline-item-sub-title':''"
-            :key="index">
-            <span :name="'nav-timelie-item-'+index" @click="scrollIntoViewByMarkdownNav(activity.headId,index)" >{{activity.content}}</span>
-          </el-timeline-item>
-        </el-timeline>
-      </el-card>
-    </el-col>
-  </el-row>
+  <div>
+    <el-row  :gutter="20">
+      <el-col :span="showMarkdownNav?18:24" >
+        <div v-if="type=='html'||type=='editor'" :id="id" class="main-editor">
+          <el-empty v-if="type=='html'&&content.trim().length==0" :description="$t('empty_data')" :image-size="300"  class="edit-model-box-empty"></el-empty>
+          <link href="../../../static/editor.md/css/editormd.css" rel="stylesheet">
+          <textarea ref="editorMd" v-show="false" v-html="content" ></textarea>
+          <!-- 放大图片 -->
+          <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
+        </div>
+      </el-col>
+      <el-col v-if="showMarkdownNav" :span="6">
+        <Quicknav ref="QuickNav" @doGoEdit="goEdit"></Quicknav>
+      </el-col>
+    </el-row>
+<!--    仅供渲染markdownToHtml-->
+    <div id="show-editormd-view">
+      <textarea style="display:none;" name="show-editormd-markdown-doc">###Hello world!</textarea>
+    </div>
+  </div>
+
 </template>
 
 <style lang="scss">
 @import '~@/components/common/base.scss';
 
-
-.timeline-item-sub-title{
-  padding-left: 20px;
-}
-.table-auto-overflow-x{
-  overflow-x: auto;
-}
-.scroll-into-view{
-  color:$theme-right-msg-color !important;
-}
-.markdown-nav-timelie{
-  margin-top: 2rem !important;
-  padding-left: 5px;
-  width: 100%;
-  max-width: 300px;
-  min-width: 200px;
-  min-height: 425px;
-  height: 48vh;
-  overflow-y: auto;
-  @include scroll-bar-box;
-}
-.markdown-nav-timelie .el-timeline-item {
-  padding-bottom: 5px;
-}
-.markdown-nav-timelie .el-timeline-item__wrapper {
-  //padding-left: 18px;
-}
-.el-timeline-item__wrapper .el-timeline-item__content{
-  cursor: pointer;
-  color: $theme-color;
-  font-weight: bold;
-  &:hover,&:focus,&:visited{
-    color:$theme-right-msg-color !important;
-  }
-}
-.el-timeline-item__node--normal {
-  //left: -2px;
-}
-.el-timeline-item__content .is-active{
-  color:$theme-right-msg-color !important;
-  font-weight: bold;
-}
-
-.markdown-nav-box{
-  margin-left: 0px;
-  top: 155px;
-  position: fixed;
-  left: 70%;
-  height: 60vh;
-  background-color: #fff;
-}
-.latest-activity-card{
-  overflow: visible !important;
-  //height: 236px;
-  background: #fff;
-  box-shadow: 8px 8px 20px 0 rgba(55,99,170,.1);
-  //position: relative;
-  background-size: 100vh;
-  background-repeat: no-repeat;
-  background-position: right -92px bottom -115px;
-  border: 2px solid #fff;
-  z-index: 0;
-  padding: 22px;
-  box-sizing: border-box;
-  transition: all .3s ease-in-out;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  //background-image: url('../../../static/images/nav-bg.png');
-  background-position: right -41px bottom -146px;
-}
-.doc-container .latest-activity-card:before {
-  content: "";
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  border-radius: 4px;
-  background: linear-gradient(96.75deg,#fafcff 2.24%,hsla(0,0%,100%,.06) 103.12%);
-}
-
-.latest-activity-card__badge:before {
-  content: "";
-  width: 14px;
-  height: 26px;
-  position: absolute;
-  background-size: auto 100%;
-  top: 0;
-  left: -8px;
-  background-image: url(../../../static/images/nav-head-badge-corner.svg);
-}
-.latest-activity-card__badge {
-  position: absolute;
-  right: -2px;
-  top: -6px;
-  height: 26px;
-  background: $theme-color;
-  border-radius: 0 6px 0 6px;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
-  color:$theme-grey-color;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 4px 10px;
-}
-
-.markdown-nav-box .el-divider{
-  margin-top: 10px;
-}
-.quick-navigation-title{
-  font-weight: bold;
-  font-size: 14px;
-  color: $theme-color;
-}
 .message-box{
   @include message-box;
+}
+.CodeMirror-lines{
+  min-height: 63vh !important;
+  margin-top: 1rem;
+  border-top: 1px dotted $theme-icon-color;
+  border-bottom: 1px dotted $theme-icon-color;
+  margin-bottom: .5rem;
 }
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'
+import Quicknav from '@/components/common/QuickNav'
 
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
@@ -156,10 +46,15 @@ if (typeof window !== 'undefined') {
 export default {
   computed: {
     showMarkdownNav() {
-      return this.markdownNavData.length>0 && this.type=='html' && !this.isMobileDevice;
+      return  this.type=='html' && !this.isMobileDevice;
     },
   },
   name: 'Editor',
+  watch: {
+    '$i18n.locale'(newValue) {//
+      this.initEditor();
+    }
+  },
   props: {
     pageType:{
       type: String,
@@ -187,8 +82,9 @@ export default {
       type: Object,
       default() {
         return {
+               // language:'en-US',// 'zh-CN','en-US'
                 path: '../../../static/editor.md/lib/',
-                height: '70vh',
+                height: '69vh',
                 emoji:true,
                 tocm:true,
                 taskList        : true,
@@ -259,25 +155,13 @@ export default {
 
   },
   components:{
-    BigImg
-  },
-  created() {
-
+    BigImg,
+    Quicknav
   },
   // markdown-nav
   data() {
     return {
-      isScrollByNav:false,//是否便捷目录点击的滚动
-      offsetTopByHtmlHead:false,// 是否由加粗实现的定位滚动（默认是h1等）
-      offsetTopDefault:209,
-      offsetTopArray:[],
-      markdownNavData: [{
-        content: '活动按期开始',
-        showType: 'root'
-      }, {
-        content: '通过审核',
-        showType: 'sub'
-      }],
+      markdownNavData: [],
       instance: null,
       showImg:false,
       imgSrc: '',
@@ -286,7 +170,7 @@ export default {
       colorByCode:'rgb(6,192,95)', //color #fff
       backgroundColorByCode:'#384548', //color #fff
       isMobileDevice:false,
-      doubleTitleData:{name:'',navId:'',headId:''},// 重复出现的标题名称
+      languageZhCn:{},
     };
   },
   mounted() {
@@ -302,10 +186,10 @@ export default {
             `${this.editorPath}/lib/prettify.min.js`,
             `${this.editorPath}/lib/underscore.min.js`,
             `${this.editorPath}/lib/sequence-diagram.min.js`,
-            `${this.editorPath}/lib/jquery.flowchart.min.js`,
+            `${this.editorPath}/lib/jquery.flowchart.min.js`
           ], () => {
 
-            $s(`${this.editorPath}/editormd.js`, () => {
+            $s([`${this.editorPath}/editormd.js`], () => {
               this.initEditor();
             });
 
@@ -318,193 +202,65 @@ export default {
 
   },
   methods: {
-    setContentTitleSelected(headId=''){
-      $('.scroll-into-view').removeClass('scroll-into-view');
-      $("#"+headId).addClass('scroll-into-view');
+    markdownDataToHtml(markdownData){// 获取文件之间的翻译
+      var newHtml = window.editormd.markdownToHTML("show-editormd-view", {
+        markdown: markdownData,
+        htmlDecode: "style,script,iframe",  // you can filter tags decode
+        tocm: true,    // Using [TOCM]
+        tocContainer: "#custom-toc-container", // 自定义 ToC 容器层
+        emoji: true,
+        taskList: true,
+        tex: true,  // 默认不解析
+        flowChart: true,  // 默认不解析
+        sequenceDiagram: true,  // 默认不解析
+      });
+      return $(newHtml).html();
     },
-    setNowMarkdownNav(navNowIndex){
-      $('.el-timeline-item__node').css('background-color','#E4E7ED');
-      let className = 'nav-timelie-item-' + navNowIndex;
-      $('.el-timeline-item__content span').removeClass('is-active');
-      let obj= document.querySelector("span[name='"+className+"']");
-      $(obj).addClass('is-active');
-      $(obj).parent().parent().prev().css('background-color','rgb(170, 0, 10)');
+    goEdit(data){
+      this.$emit("doGoEdit",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
     },
     toScrollBottom(){// 父页面滚动到底部调用
-      if(this.offsetTopArray.length>0 && !this.isScrollByNav) {// 当为按钮触发不进行快捷导航的设置监听
-        let nowIndex = this.markdownNavData.length - 1;
-        this.setNowMarkdownNav(nowIndex);
-        this.setContentTitleSelected(this.markdownNavData[nowIndex].headId);
-      }
+      this.$refs.QuickNav.toScrollBottom();
     },
     onScroll(currentScrollTop){// 父页面滚动调用
-      if(!this.isScrollByNav){// 当为按钮触发不进行快捷导航的设置监听
-        let that = this;
-        if(that.offsetTopArray.length>0){
-          let offsetTopArr = that.offsetTopArray;
-          // 定义当前点亮的导航下标
-          let addNum = that.offsetTopDefault + 200;
-          currentScrollTop = Math.ceil(currentScrollTop) + addNum;// 小数进一,当为点击快速导航滚动时，不需要加距离高度
-          for (let n = 0; n < offsetTopArr.length; n++) {
-            // 如果 scrollTop 大于等于第 n 个元素的 offsetTop 则说明 n-1 的内容已经完全不可见
-            // 那么此时导航索引就应该是 n 了
-            if (currentScrollTop >= offsetTopArr[n].offsetTop) {
-              if (n < (offsetTopArr.length - 1) && currentScrollTop < offsetTopArr[n + 1].offsetTop) {
-                that.setNowMarkdownNav(n);
-                that.setContentTitleSelected(offsetTopArr[n].headId);
-                break;
-              }
-            }
-          }
-        }
-      }
-    },
-    getOffsetTopArray(){// 获取当前全部标题的对于页面顶部的距离
-      // 所有锚点元素的 offsetTop
-      const offsetTopArr = []
-      let navContents = document.querySelectorAll("a.reference-link");
-      if(navContents.length == 0){
-        navContents = document.querySelectorAll("strong");
-        if(navContents.length > 0){
-          navContents.forEach((item,i) => {
-            let temp={
-              headId:item.id,
-              offsetTop:Math.floor($(item).offset().top),
-              name:item.innerText.replace(/<.*?>/g,""),
-            }
-            offsetTopArr.push(temp)
-          })
-        }
-      }else{
-        navContents.forEach((item,i) => {
-          let temp={
-            headId:item.parentNode.id,
-            offsetTop:Math.floor($(item).offset().top),
-            name:item.name.replace(/<.*?>/g,""),
-          }
-          offsetTopArr.push(temp)
-        })
-      }
-      return offsetTopArr;
-    },
-    scrollIntoViewByMarkdownNav(headId='',cIndex=0){
-      this.scrollIntoViewByClick(headId);
-      this.setNowMarkdownNav(cIndex);
-    },
-    scrollIntoViewBySelector(headId=''){
-      var that = this;
-      that.isScrollByNav = true;
-     // document.getElementById(headId).scrollIntoView({block:'center',behavior:'smooth'});
-      document.querySelector("#"+headId).scrollIntoView({block:'center',behavior:'smooth'});
-      setTimeout(function (){
-        that.$set(that, 'isScrollByNav', false)
-      }, 800)
-    },
-    scrollIntoViewByClick(headId=''){
-      this.setContentTitleSelected(headId);
-      this.scrollIntoViewBySelector(headId);
+      this.$refs.QuickNav.onScroll(currentScrollTop);
     },
     initEditor() {
       var that = this;
       this.$nextTick((editorMD = window.editormd) => {
         if (editorMD) {
-
-          if (this.type == 'editor'){
+          if (this.type == 'editor'){// 编辑
             this.instance = editorMD(this.id, this.editorConfig);
             //草稿
             //this.draft(); 鉴于草稿功能未完善。先停掉。
             //window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
-          } else {
+            // 设置多语言
+            this.setLanguage(editorMD,this.$i18n.locale);// locale zh/en
+          } else {// 查看
             this.instance = editorMD.markdownToHTML(this.id, this.editorConfig);
             //获取便捷目录
             // 获取便捷菜单内容
-            that.markdownNavData = [];
-            let maxHeadTag = '';
-            let nodeHeadType = {};
-            let headHtmlData = document.querySelectorAll(".reference-link");
-            if(headHtmlData.length == 0){ // strong 等
-              headHtmlData = document.querySelectorAll("strong");
-              if(headHtmlData.length>0){
-                  [].forEach.call(headHtmlData, function(e,i){
-                    let tempName = e.innerHTML.replace(/<.*?>/g,"");
-                    let headId = 'strong-'+i;
-                    $(e).attr('id',headId);
-                    let tempData = {
-                      headId:headId,
-                      content:tempName,
-                      showType:'root'
-                    };
-                    that.markdownNavData.unshift(tempData);
-                  });
-              }
-            }else{// h1 等标题
-              let nameDoubleCheck = [];
-              [].forEach.call(headHtmlData, function(e,i){
-                let tempName = e.name.replace(/<.*?>/g,"");
-                let headData = e.parentNode.id.split('-');
-                if(nameDoubleCheck.indexOf(tempName)!==-1){
-                  that.doubleTitleData.name = tempName;
-                  that.doubleTitleData.navId = i;
-                  that.doubleTitleData.headId = e.parentNode.id;
-                }
-                nodeHeadType[tempName] = headData[0];// 登记类型
-                if(maxHeadTag==''){
-                  maxHeadTag = headData[0];
-                }else{
-                  if(headData[0] < maxHeadTag){
-                    maxHeadTag = headData[0];
-                  }
-                }
-                nameDoubleCheck.push(tempName);// 重复标题登记检查
-              });
-              [].forEach.call(headHtmlData, function(e){
-                let tempName = e.name.replace(/<.*?>/g,"");
-                let tempData = {
-                  headId:e.parentNode.id,
-                  content:tempName,
-                  showType:'root'
-                };
-                if(nodeHeadType[tempName] > maxHeadTag){ // 当不为一级标题时，需要约进
-                  tempData.showType = 'sub';
-                }
-                that.markdownNavData.unshift(tempData);
-              });
-            }
-            that.markdownNavData.reverse()
+            this.$refs.QuickNav.setQuickNavLoading(true);
+            this.markdownNavData = that.$refs.QuickNav.getMarkdownNavData();
+            this.$refs.QuickNav.initScrollNav();
+            this.$refs.QuickNav.setQuickNavLoading(false);
           }
           this.deal_with_content();
-          //获取页面元素的高度
-          that.offsetTopArray = this.getOffsetTopArray()
 
-          //监听toc 或 tocm 菜单点击事件
-          $(".toc-menu-span-btn").click(function(){
-            let clickText = $(this).text();
-            that.markdownNavData.some((navData,n) =>{
-              if(navData.content== clickText){
-                that.scrollIntoViewByMarkdownNav(navData.headId,n);
-                return true;
-              }
-            });
-          });
-          // 提示是否重复
-          if(this.doubleTitleData.navId > ''){
-            let warningMsg = this.$t("double_title_tips")+'：'+this.doubleTitleData.name;
-            this.$alert(warningMsg, '温馨提示', {
-              confirmButtonText: '前往编辑',
-              customClass:'message-box',
-              callback: action => {
-                this.$emit("doGoEdit",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
-              }
-            });
-            //滚动到重复的地方
-            this.scrollIntoViewByMarkdownNav(this.doubleTitleData.headId,this.doubleTitleData.navId);
-          }else{
-            this.setNowMarkdownNav(0); // 默认显示第一个菜单
-          }
         }
       });
     },
-
+    setLanguage(editorMD,lang='zh'){ // zh/en
+        lang = lang=='en'?'en':'zh-cn';// zh-cn(默认)/zh-tw/en
+        var languageFilePath  = this.editorPath+"/languages/"+lang;
+        editorMD.loadScript(languageFilePath, function() {
+          editorMD.lang = editorMD.defaults.lang;
+          // 只重建涉及语言包的部分，如工具栏、弹出对话框等
+          // if(isRecreate){
+          //   editorMD.recreate();
+          // }
+        });
+    },
     //插入数据到编辑器中。插入到光标处
     insertValue(insertContent){
       this.instance.insertValue(this.html_decode(insertContent));
@@ -648,6 +404,8 @@ export default {
         $("#"+this.id+" a").each(function() {
           $(this).attr('target', '_blank');
         });
+
+
     },
     //转义
     html_decode(str){
@@ -665,9 +423,15 @@ export default {
   },
   beforeDestroy() {
     //清理所有定时器
-    for (var i = 1; i < 999; i++){
-      window.clearInterval(i);
-    };
+    let vm = this
+    if (vm.timer != null) {
+      window.clearInterval(vm.timer)
+      vm.timer = null
+    }
+
+    // for (var i = 1; i < 999; i++){
+    //   window.clearInterval(i);
+    // };
     // 必须移除监听器，不然当该vue组件被销毁了，监听器还在就会出错
     window.removeEventListener('scroll', this.onScroll)
     //window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))

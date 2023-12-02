@@ -3,9 +3,9 @@ return array(
     //'配置项'=>'配置值'
     'HOME_URL'=>'https://www.opendoc.cc',// C("HOME_URL")
     //使用sqlite数据库
-    'DB_TYPE'   => 'Sqlite', 
+    'DB_TYPE'   => 'Sqlite',
     'DB_NAME'   => '../Sqlite/opendoc.db.php',
-    //opendoc不再支持mysql http://www.showdoc.cc/help?page_id=31990
+    //opendoc不再支持mysql
     'DB_HOST'   => 'localhost',
     'DB_USER'   => 'opendoc',
     'DB_PWD'    => 'opendoc123456',
@@ -15,7 +15,7 @@ return array(
     'DB_DEBUG'  =>  TRUE, // 数据库调试模式 开启后可以记录SQL日志
     'URL_HTML_SUFFIX' => '',//url伪静态后缀
     'URL_MODEL' => 3 ,//URL兼容模式
-    'URL_ROUTER_ON'   => true, 
+    'URL_ROUTER_ON'   => true,
     'URL_ROUTE_RULES'=>array(
         ':id\d'               => 'Home/Item/show?item_id=:1',
         ':domain\s$'               => 'Home/Item/show?item_domain=:1',//item的个性域名
@@ -29,15 +29,15 @@ return array(
     'HTML_CACHE_ON' => false,//禁止静态缓存
     //上传文件到七牛的配置
     'UPLOAD_SITEIMG_QINIU' => array(
-                    'maxSize' => 5 * 1024 * 1024,//文件大小
-                    'rootPath' => './',
-                    'saveName' => array ('uniqid', ''),
-                    'driver' => 'Qiniu',
-                    'driverConfig' => array (
-                            'secrectKey' => '', 
-                            'accessKey' => '',
-                            'domain' => '',
-                            'bucket' => '', 
-                        )
-                    ),
+        'maxSize' => 5 * 1024 * 1024,//文件大小
+        'rootPath' => './',
+        'saveName' => array ('uniqid', ''),
+        'driver' => 'Qiniu',
+        'driverConfig' => array (
+            'secrectKey' => '',
+            'accessKey' => '',
+            'domain' => '',
+            'bucket' => '',
+        )
+    ),
 );

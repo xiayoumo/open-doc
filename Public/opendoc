@@ -39,7 +39,7 @@ if [ "$action" == "update" ] ;then
         sudo -s mkdir -p /opendoc_data/html                                                                                                       
         sudo -s chmod  -R 777 /opendoc_data/html                                                                                                  
         sudo -s docker stop opendoc && sudo -s docker rm opendoc                                                                                  
-        sudo -s docker run -d --name opendoc --env OPENDOC_SCRIPT_VERSION=${OPENDOC_SCRIPT_VERSION}  --user=root --privileged=true -p 5000:5000 -v /
+        sudo -s docker run -d --name opendoc --env OPENDOC_SCRIPT_VERSION=${OPENDOC_SCRIPT_VERSION}  --user=root --privileged=true -p 5000:80 -v /
 opendoc_data/html:/var/www/html/ xiayoumo/open-doc                                                                                                  
                                                                                                                                                   
         seconds_left=10                                                                                                                           
@@ -147,7 +147,7 @@ if  [ ! -d "/opendoc_data" ]; then
 fi                                                                                                                                                
 sudo -s mkdir /opendoc_data/html                                                                                                                  
 sudo -s chmod  -R 777 /opendoc_data                                                                                                               
-sudo -s docker run -d --name opendoc --env OPENDOC_SCRIPT_VERSION=${OPENDOC_SCRIPT_VERSION}   --user=root --privileged=true -p 5000:5000 -v /opendoc
+sudo -s docker run -d --name opendoc --env OPENDOC_SCRIPT_VERSION=${OPENDOC_SCRIPT_VERSION}   --user=root --privileged=true -p 5000:80 -v /opendoc
 _data/html:/var/www/html/ xiayoumo/open-doc                                                                                                         
                                                                                                                                                   
 seconds_left=15                                                                                                                                   

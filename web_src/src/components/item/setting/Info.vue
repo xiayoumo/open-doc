@@ -6,7 +6,7 @@
       </el-form-item>
 
       <el-form-item :label="$t('item_description')+':'" >
-        <el-input type="text" auto-complete="off" v-model="infoForm.item_description" placeholder="" ></el-input>
+        <el-input type="text" auto-complete="off" v-model="infoForm.item_description" :placeholder="$t('optional')" ></el-input>
       </el-form-item>
 
       <el-form-item :label="$t('visit_password')+':'">
@@ -26,38 +26,21 @@
 
 export default {
   name: 'Login',
+  props:{
+    infoForm:{}
+  },
   components : {
 
   },
   data () {
     return {
-      infoForm:{
-
-      }
+      // infoForm:{
+      //
+      // }
     }
 
   },
   methods: {
-
-      get_item_info(){
-        var that = this ;
-        var url = DocConfig.server+'/api/item/detail';
-        var params = new URLSearchParams();
-        params.append('item_id',  that.$route.params.item_id);
-        that.axios.post(url, params)
-          .then(function (response) {
-            if (response.data.error_code === 0 ) {
-              var Info = response.data.data
-              that.infoForm =  Info;
-            }else{
-              that.$alert(response.data.error_message);
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
       FormSubmit() {
           var that = this ;
           var url = DocConfig.server+'/api/item/update';
@@ -85,7 +68,7 @@ export default {
   },
 
   mounted(){
-    this.get_item_info();
+    //this.get_item_info();
   }
 }
 </script>
@@ -104,9 +87,8 @@ export default {
 }
 
 .infoForm{
-  width:350px;
-  margin-left: 2%;
-  margin-top: 5%;
+  min-width:350px;
+  padding: 4rem;
 }
 
 .goback-btn{

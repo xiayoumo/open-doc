@@ -11,14 +11,14 @@ return array(
     'close'=>'关闭',
 
     //Catalog
-    'new_or_edit_catalog' => '新建/编辑目录',
-    'catalog_name' => '目录名',
+    'new_or_edit_catalog' => '新建/编辑文件夹',
+    'catalog_name' => '文件夹名',
     's_number' => '序号',
     's_number_explain' => '可选：顺序数字',
-    'last_catalog' => '上级目录',
+    'last_catalog' => '上级文件夹',
     'save' => '保存',
-    'delete_catalog' => '删除目录',
-    'catalog_list' => '目录列表',
+    'delete_catalog' => '删除文件夹',
+    'catalog_list' => '文件夹列表',
     'click_to_edit' => '点击可编辑',
 
 
@@ -96,7 +96,7 @@ return array(
     'about_opendoc'=>'关于OpenDoc',
     'my_item'=>'我的项目',
     'new_page'=>'新建页面',
-    'new_catalog'=>'新建目录',
+    'new_catalog'=>'新建文件夹',
     'share_address_to_your_friends'=>'分享该接口地址给你的好友',
     'share'=>'分享',
     'copy_interface_to_new'=>'复制该页面到新页面',
@@ -130,8 +130,8 @@ return array(
     
     //page
     'input_page_title'=>'请输入页面标题',
-    'level_2_directory'=>'二级目录',
-    'level_3_directory'=>'三级目录',
+    'level_2_directory'=>'二级文件夹',
+    'level_3_directory'=>'三级文件夹',
     's_number_explain'=>'可选：顺序数字',
     'history_version'=>'历史版本',
     'save'=>'保存',
@@ -212,7 +212,7 @@ return array(
     'logout_succeeded'=>'退出成功！',
 
     //error_message
-    "no_delete_empty_catalog"=>'为了安全，不允许直接删除非空目录。请先删除或转移该目录下的所有页面',
+    "no_delete_empty_catalog"=>'为了安全，不允许直接删除非空文件夹。请先删除或转移该文件夹下的所有文档',
     
     "default_title" =>'默认页面',
 

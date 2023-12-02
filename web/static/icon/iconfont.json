@@ -6,6 +6,97 @@
   "description": "交易管理",
   "glyphs": [
     {
+      "icon_id": "1376055",
+      "name": "退出登录",
+      "font_class": "tuichudenglu",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "4320335",
+      "name": "登录",
+      "font_class": "denglu",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "18174855",
+      "name": "文件,excel",
+      "font_class": "excel",
+      "unicode": "ea45",
+      "unicode_decimal": 59973
+    },
+    {
+      "icon_id": "18174874",
+      "name": "文件,word",
+      "font_class": "word1",
+      "unicode": "ea47",
+      "unicode_decimal": 59975
+    },
+    {
+      "icon_id": "8765263",
+      "name": "word",
+      "font_class": "word",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "1013751",
+      "name": "Excel文件",
+      "font_class": "excelwenjian",
+      "unicode": "e745",
+      "unicode_decimal": 59205
+    },
+    {
+      "icon_id": "1364596",
+      "name": "API文档",
+      "font_class": "APIwendang",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "1725613",
+      "name": "返回",
+      "font_class": "fanhui1",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "7939956",
+      "name": "分享",
+      "font_class": "arrow-",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "18210563",
+      "name": "中英切换-切换英文",
+      "font_class": "zhongyingqiehuan-qiehuanyingwen",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "18210564",
+      "name": "中英切换-切换中文",
+      "font_class": "zhongyingqiehuan-qiehuanzhongwen",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "1012125",
+      "name": "用户组",
+      "font_class": "duoren",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "7596855",
+      "name": "24gf-portraitMalePlus",
+      "font_class": "24gf-portraitMalePlus",
+      "unicode": "eb2a",
+      "unicode_decimal": 60202
+    },
+    {
       "icon_id": "2273752",
       "name": "选中",
       "font_class": "xuanzhong",

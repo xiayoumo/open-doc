@@ -1,7 +1,12 @@
 <template>
   <div class="login-footer">
-    <span class="footer-pic"> <img src="../../../static/logo/doc-log3.png" style="width:100px;height:36px;margin-bottom:-10px;" alt=""></span>
+
+    <span class="footer-pic">
+      <img src="../../../static/logo/doc-log3.png" style="width:100px;height:36px;margin-bottom:-10px;" alt="">
+      <a href="https://beian.miit.gov.cn/#/Integrated/index" class="beian-btn" target="_blank">备案号：粤ICP备2023092563号-2</a>
+    </span>
 <!--    <a href="https://www.opendoc.com.cn/" class="other-web-a" target="_blank"> 友情推荐：ShowDoc</a>-->
+
     <div class="footer-copyright"><span>Copyright © 2019-2023 Open Doc. All Rights Reserved.</span> </div>
   </div>
 </template>
@@ -20,6 +25,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+.beian-btn{
+  color: $theme-words-color;
+  font-size: 16px;
+}
 .other-web-a{
   color: $theme-grey-color;
   margin-top: 8px;

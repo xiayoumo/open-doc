@@ -4,7 +4,8 @@
 
 <script>
 import "../../../static/js/echarts-theme-open-doc.js";
-import * as echarts from 'echarts';
+import echarts from "@/js/echarts";
+// import * as echarts from 'echarts';
 import debounce from "lodash/debounce";
 import { addListener, removeListener} from "resize-detector";
 

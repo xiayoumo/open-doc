@@ -78,6 +78,17 @@ class BaseController extends Controller {
 		}
 		return false;
 	}
+    /**
+     * 返回json结果(无外层包裹)
+     */
+    protected function sendJsonResult($array){
+        if ($this->is_local_debug > 0 ) {
+            header('Access-Control-Allow-Origin: *');//允许跨域请求
+            header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
+            header('Access-Control-Allow-Credentials : true');//允许跨域请求
+        }
+        echo is_string($array)?$array:json_encode($array);
+    }
 
 	/**
 	 * 返回json结果

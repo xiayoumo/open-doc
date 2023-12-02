@@ -11,7 +11,8 @@ const messages = {
 }
 
 const i18n = new VueI18n({
-  locale: 'zh',
+  // 初始语言找本地储存的lang，默认为浏览器语言
+  locale:  localStorage.lang  || 'zh',
   fallbackLocale: 'zh-CN',
   messages,
 })

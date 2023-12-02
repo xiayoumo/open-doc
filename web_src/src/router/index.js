@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Index from '@/components/Index'
 import Index from '@/components/Index'
 import UserLogin from '@/components/user/Login'
 import UserSetting from '@/components/user/Setting'
@@ -39,120 +38,119 @@ export default new Router({
     {
       path: '/',
       name: 'defaultIndex',
-      // component: Index
-      component: ItemIndex
+      component: (resolve) => require(['@/components/Index'],resolve)
     },
-    { path: '/404', name: 'NotFound', component: NotFoundComponent },
+    { path: '/404', name: 'NotFound', component: (resolve) => require(['@/components/common/404'],resolve) },
     { path: '*', redirect: '/404' },
     {
       path: '/show/index',
       name: 'Index',
-      component: Index
+      component: (resolve) => require(['@/components/Index'],resolve)
     },
     {
       path: '/user/login',
       name: 'UserLogin',
-      component: UserLogin
+      component: (resolve) => require(['@/components/user/Login'],resolve)
     },
     {
       path: '/user/setting',
       name: 'UserSetting',
-      component: UserSetting
+      component: (resolve) => require(['@/components/user/Setting'],resolve)
     },
     {
       path: '/user/register',
       name: 'UserRegister',
-      component: UserRegister
+      component: (resolve) => require(['@/components/user/Register'],resolve)
     },
     {
       path: '/user/resetPassword',
       name: 'UserResetPassword',
-      component: UserResetPassword
+      component: (resolve) => require(['@/components/user/ResetPassword'],resolve)
     },
     {
       path: '/user/ResetPasswordByUrl',
       name: 'ResetPasswordByUrl',
-      component: ResetPasswordByUrl
+      component: (resolve) => require(['@/components/user/ResetPasswordByUrl'],resolve)
     },
     {
       path: '/item/index',
       name: 'ItemIndex',
-      component: ItemIndex
+      component: (resolve) => require(['@/components/item/Index'],resolve)
     },
     {
       path: '/item/add',
       name: 'ItemAdd',
-      component: ItemAdd
+      component: (resolve) => require(['@/components/item/Add'],resolve)
     },
     {
       path: '/item/password/:item_id',
       name: 'ItemPassword',
-      component: ItemPassword
+      component: (resolve) => require(['@/components/item/Password'],resolve)
     },
     {
       path: '/item-show/:item_id',
       name: 'ItemShow',
-      component: ItemShow
+      component: (resolve) => require(['@/components/item/show/Index'],resolve)
     },
     {
       path: '/item-count-show/:item_id',
       name: 'ItemShow',
-      component: ItemShow
+      component: (resolve) => require(['@/components/item/show/Index'],resolve)
     },
     {
       path: '/item/export/:item_id',
       name: 'ItemExport',
-      component: ItemExport
+      component: (resolve) => require(['@/components/item/export/Index'],resolve)
     },
     {
       path: '/item/setting/:item_id',
       name: 'ItemSetting',
-      component: ItemSetting
+      component: (resolve) => require(['@/components/item/setting/Index'],resolve)
     },
     {
       path: '/page/:page_id',
       name: 'PageIndex',
-      component: PageIndex
+      component: (resolve) => require(['@/components/page/Index'],resolve)
     },
     {
       path: '/page/edit/:item_id/:page_id',
       name: 'PageEdit',
-      component: PageEdit
+      component: (resolve) => require(['@/components/page/edit/Index'],resolve)
     },
     {
       path: '/page/diff/:page_id/:page_history_id',
       name: 'PageDiff',
-      component: PageDiff
+      component: (resolve) => require(['@/components/page/Diff'],resolve)
     },
     {
       path: '/catalog/:item_id',
       name: 'Catalog',
-      component: Catalog
+      component: (resolve) => require(['@/components/catalog/Index'],resolve)
     },
     {
       path: '/notice/index',
       name: 'Notice',
-      component: Notice
+      component: (resolve) => require(['@/components/notice/Index'],resolve)
     },
     {
       path: '/admin/index',
       name: 'Admin',
-      component: Admin
+      component: (resolve) => require(['@/components/admin/Index'],resolve)
     },
     {
       path: '/team/index',
       name: 'Team',
-      component: Team
+      component: (resolve) => require(['@/components/Team/Index'],resolve)
     },
     {
       path: '/team/member/:team_id',
       name: 'TeamMember',
-      component: TeamMember
+      component: (resolve) => require(['@/components/Team/Member'],resolve)
     },
     {
       path: '/team/item/:team_id',
       name: 'TeamItem',
-      component: TeamItem
+      component: (resolve) => require(['@/components/Team/Item'],resolve)
     },
   ]
 })

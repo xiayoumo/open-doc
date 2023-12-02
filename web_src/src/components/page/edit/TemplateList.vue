@@ -1,6 +1,6 @@
 <!-- 更多模板 -->
 <template>
-  <div class="hello">
+  <div>
     <Header> </Header>
 
     <el-container class="container-narrow">
@@ -45,7 +45,7 @@ export default {
     };
   },
   components:{
-    
+
   },
   methods:{
     get_content(){
@@ -65,12 +65,12 @@ export default {
                 that.dialogTableVisible = false;
                 that.$alert(that.$t('no_templ_text'));
               }
-              
+
             }else{
               that.dialogTableVisible = false;
               that.$alert(response.data.error_message);
             }
-            
+
           })
           .catch(function (error) {
             console.log(error);
@@ -95,11 +95,11 @@ export default {
           .then(function (response) {
             if (response.data.error_code === 0 ) {
                 that.get_content();
-              
+
             }else{
               that.$alert(response.data.error_message);
             }
-            
+
           })
           .catch(function (error) {
             console.log(error);
@@ -108,7 +108,7 @@ export default {
 
   },
   mounted () {
-    
+
 
   }
 }

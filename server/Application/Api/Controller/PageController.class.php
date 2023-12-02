@@ -116,6 +116,7 @@ class PageController extends BaseController {
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id = I("item_id/d")? I("item_id/d") : 0;
         $s_number = I("s_number/d")? I("s_number/d") : 99;
+        $page_use = I("page_use");// api/doc/excel
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
@@ -129,6 +130,10 @@ class PageController extends BaseController {
         if ($is_urlencode) {
             $page_content = urldecode($page_content);
         }
+        if(empty($page_use)){// 文档默认为项目类型
+            $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+            $page_use = $item_array['item_use'];
+        }
         $data['page_title'] = $page_title ;
         $data['page_content'] = $page_content ;
         $data['page_comments'] = $page_comments ;
@@ -138,6 +143,7 @@ class PageController extends BaseController {
         $data['addtime'] = time();
         $data['author_uid'] = $login_user['uid'] ;
         $data['author_username'] = $login_user['username'];
+        $data['page_use'] = $page_use;
 
         if ($page_id > 0 ) {
             
@@ -162,24 +168,28 @@ class PageController extends BaseController {
              D("PageHistory")->add($insert_history);
 
             $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
+            if($ret){
+                //统计该page_id有多少历史版本了
+                $Count = D("PageHistory")->where(" page_id = '$page_id' ")->Count();
+                if ($Count > 20 ) {
+                    //每个单页面只保留最多20个历史版本
+                    $ret = D("PageHistory")->where(" page_id = '$page_id' ")->limit("20")->order("page_history_id desc")->select();
+                    D("PageHistory")->where(" page_id = '$page_id' and page_history_id < ".$ret[19]['page_history_id'] )->delete();
+                }
 
-            //统计该page_id有多少历史版本了
-            $Count = D("PageHistory")->where(" page_id = '$page_id' ")->Count();
-            if ($Count > 20 ) {
-               //每个单页面只保留最多20个历史版本
-               $ret = D("PageHistory")->where(" page_id = '$page_id' ")->limit("20")->order("page_history_id desc")->select();
-               D("PageHistory")->where(" page_id = '$page_id' and page_history_id < ".$ret[19]['page_history_id'] )->delete();
-            }
+                //如果是单页项目，则将页面标题设置为项目名
+                $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+                if ($item_array['item_type'] == 2 ) {
+                    D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time(),"item_name"=>$page_title));
+                }else{
+                    D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+                }
 
-            //如果是单页项目，则将页面标题设置为项目名
-            $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
-            if ($item_array['item_type'] == 2 ) {
-                D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time(),"item_name"=>$page_title));
+                $return = D("Page")->where(" page_id = '$page_id' ")->find();
             }else{
-                D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+                $this->sendError(10103,"页面保存失败，请调整内容后保存");
+                return;
             }
-
-            $return = D("Page")->where(" page_id = '$page_id' ")->find();
         }else{
             
             $page_id = D("Page")->add($data);
@@ -195,6 +205,55 @@ class PageController extends BaseController {
         }
         $this->sendResult($return);
         
+    }
+
+    //更新（树形目录）
+    public function updateMsgById(){
+        $login_user = $this->checkLogin();
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        $page_title = I("page_title") ?I("page_title") : L("default_title");
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $s_number = I("s_number/d")? I("s_number/d") : 99;
+        $item_id = I("item_id/d")? I("item_id/d") : 0;
+        $page_use = I("page_use");// api/doc
+
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return;
+        }
+
+
+        $data['page_title'] = $page_title ;
+        $data['s_number'] = $s_number ;
+        $data['cat_id'] = $cat_id ;
+
+
+        //在保存前先把当前页面的版本存档
+        $page = D("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+            $this->sendError(10103);
+            return;
+        }
+        if(empty($page_use)){// 文档默认为项目类型
+            if($page){// 当页面存在时
+                $page_use = $page['page_use'];
+            }else{// 当页面为新添加时
+                $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+                $page_use = $item_array['item_use'];
+            }
+        }
+        $data['page_use'] = $page_use ;
+
+        $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
+        D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+        $return = D("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$return) {
+            $return['error_code'] = 10103 ;
+            $return['error_message'] = 'request  fail' ;
+        }
+        $this->sendResult($return);
+
     }
 
 
@@ -295,7 +354,25 @@ class PageController extends BaseController {
               echo json_encode(array("url"=>$url,"success"=>1));
             }
         }
-
     }
 
+    //获取excel表格内容
+//    public function getExcelTableByGridKey(){
+//        $page_id = I("gridKey");
+//        $page = D("Page")->where(" page_id = '$page_id' ")->find();
+//        if (!$page  || $page['is_del'] == 1) {
+//            sleep(1);
+//            $this->sendError(10101);
+//            return false;
+//        }
+//        $login_user = $this->checkLogin(false);
+//        if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
+//            $this->sendError(10103);
+//            return;
+//        }
+//
+//        $data = json_decode($page['page_content']);
+////        var_dump($data);die;
+//        $this->sendJsonResult($data->data);
+//    }
 }

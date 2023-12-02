@@ -3,10 +3,12 @@
 
     <div class="block">
       <div class="row header  ">
-        <div class="right pull-right">
-          <ul class="inline pull-right">
-          <li ><router-link :to="link">{{link_text}}</router-link></li>
-                </ul>
+          <div class="right pull-right">
+            <Lang></Lang>
+            <ul class="inline pull-right">
+              <li v-if="isLogin"><router-link to="/item/index">{{$t("my_item")}}</router-link></li>
+              <li v-if="!isLogin"><router-link to="/user/login">{{$t("index_login_or_register")}}</router-link></li>
+            </ul>
           </div>
         </div>
       <div
@@ -17,7 +19,6 @@
         <el-row class="index-card-box-head">
           <el-col :span="24">
             <el-card class="head-box-card">
-<!--              <div class="card-text-item">-->
                 <div class="head-figure"></div>
                 <div class='head-modal'>
                     <p>
@@ -25,11 +26,11 @@
                     </p>
                   <p><span class="common-card-content card-content-1"  ><div class="typing">{{$t('section_description1')}}</div></span></p>
                     <p>
-                      <a class="el-button go-show-btn" :href="homeUrl+'/item-show/cb7b18'" target="_blank">{{$t("demo")}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <a class="el-button go-show-btn" :href="homeUrl+'/item-show/5e4c22'" target="_blank" >{{$t("help")}}&nbsp;</a>
+                      <a class="el-button go-show-btn" :href="homeUrl+'/item-show/0f44e64de57c'" target="_blank">{{$t("demo")}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <a class="el-button go-show-btn" :href="homeUrl+'/item-show/c79376d8d524'" target="_blank" >{{$t("help")}}&nbsp;</a>
                     </p>
                 </div>
-<!--              </div>-->
+
             </el-card>
           </el-col>
         </el-row>
@@ -52,7 +53,7 @@
           </el-col>
         </el-row>
         <el-row class="index-card-box-footer">
-          <el-col class="index-card-box-col" v-for="(srcSecondUrl,ssIndex) in srcSecondList" :key="'ss-'+ssIndex" :xs="24" :sm="24" :md="12" :lg="12" :xl="8">
+          <el-col class="index-card-box-col" v-for="(srcSecondUrl,ssIndex) in srcSecondList" :key="'ss-'+ssIndex" :xs="24" :sm="24" :md="12" :lg="12" :xl="6">
             <el-card :class="(showBox2[ssIndex+1]?'show-card':'no-show-card')+' box-card suit'" >
               <div class="figure" :style="getFigureClass(ssIndex+1,90)"></div>
               <div class='modal'>
@@ -77,8 +78,13 @@
 </template>
 
 <script>
+import Lang from '@/components/common/Lang';
+
 export default {
   name: 'Index',
+  components:{
+    Lang
+  },
   created() {
 
   },
@@ -95,11 +101,10 @@ export default {
       showBox2:{
         1:false,
         2:false,
-        3:false
+        3:false,
+        4:false,
       },
       height: '',
-      link:'',
-      link_text:'',
       srcList:[
         '../../static/images/api.png',
         '../../static/images/shujuzidian.png',
@@ -107,6 +112,7 @@ export default {
         '../../static/images/tuanduixiezuo.png',
       ],
       srcSecondList:[
+        '../../static/images/gongxiangwendang.png',
         '../../static/images/chanpingwendan.png',
         '../../static/images/bangongriji.png',
         '../../static/images/gongzuozongjie.png',
@@ -114,6 +120,7 @@ export default {
       timeIndex:1,
       timer:'',
       timer2:'',
+      isLogin:false
     }
   },
   methods:{
@@ -159,12 +166,10 @@ export default {
     var that = this ;
     that.pageLoading = true;
     this.getHeight();
-    that.link = '/user/login';
-    that.link_text = that.$t("index_login_or_register");
+
     this.get_user_info(function(response){
       if (response.data.error_code === 0 ) {
-        that.link = '/item/index';
-        that.link_text = that.$t("my_item");
+        that.isLogin = true;
       }
     });
     this.startShow(that);
@@ -176,9 +181,36 @@ export default {
 }
 </script>
 
+
+<style lang="scss">
+@import '~@/components/common/base.scss';
+
+.el-dropdown-menu{
+  background-color: $theme-third-color !important;
+  box-shadow: 8px 8px 20px 0 rgba(55,99,170,.1), -8px -8px 20px 0 #fff;
+  .el-dropdown-menu__item{
+    color: $theme-grey-color;
+    &:hover,&:focus{
+      color: $theme-right-msg-color;
+      background-color: $theme-words-color;
+      a{
+        background-color: $theme-words-color;
+      }
+    }
+  }
+}
+.el-popper[x-placement^=top] .popper__arrow,.el-popper[x-placement^=top] .popper__arrow::after{
+  border-top-color: $theme-third-color !important;
+}
+.el-popper[x-placement^=bottom] .popper__arrow,.el-popper[x-placement^=bottom] .popper__arrow::after{
+  border-bottom-color: $theme-third-color !important;
+}
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+
+
   /* 逐字打印的打字特效 */
   .typing{
     animation: typewriter 30s steps(1000) forwards;
@@ -333,6 +365,9 @@ export default {
   .card-title-11,.card-content-11{
     color: #1bbc9b;
   }
+  .card-title-12,.card-content-12{
+    color: #409EFF;
+  }
   .index-card-box-head{
     margin-top: 20px;
     padding: 20px 6vh;
@@ -343,7 +378,7 @@ export default {
   }
   .index-card-box-footer{
     margin-top: 10px;
-    padding: 20px 0px 20px 8vh;
+    padding: 20px 0px 20px 5vh;
   }
   .el-carousel__item {
     text-align: center;

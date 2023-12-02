@@ -25,20 +25,18 @@
               </el-form-item>
 
                <el-form-item label="" >
-                <el-button type="primary" style="width:100%;" @click="onSubmit" >{{$t("register")}}</el-button>
+                <el-button type="primary" style="width:100%;" @click="onSubmit" :title="$t('register')"><span class="iconfont icon-denglu register-btn"></span></el-button>
               </el-form-item>
 
-              <el-form-item label="" >
-                  <router-link to="/user/login">{{$t("login")}}</router-link>
-                  &nbsp;&nbsp;&nbsp;
-
+              <el-form-item label="" class="text-center" >
+                <el-button type="text" @click="$router.replace('/user/login')"><span class="iconfont icon-mt login-pic-background"></span> {{$t("login")}}</el-button>
               </el-form-item>
             </el-form>
           </el-card>
     </el-container>
 
     <Footer> </Footer>
-    
+
   </div>
 </template>
 
@@ -81,7 +79,7 @@ export default {
                 that.change_v_code_img() ;
                 that.$alert(response.data.error_message);
               }
-              
+
             });
       },
       change_v_code_img(){
@@ -101,8 +99,22 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
+@import '~@/components/common/base.scss';
 
+.register-btn{
+  font-size: 28px;
+}
+.login-pic-background{
+  font-size: 22px;
+  position: relative;
+  color: #151822;
+  opacity: .8;
+  top: 2px;
+  &:hover{
+   color: $theme-right-msg-color;
+ }
+}
 .center-card a {
   font-size: 12px;
 }

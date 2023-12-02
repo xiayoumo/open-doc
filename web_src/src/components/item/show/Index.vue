@@ -2,8 +2,8 @@
   <div class="hello">
     <Header > </Header>
 
-    <!-- 展示常规项目 -->
-    <ShowRegularItem :item_info="item_info" :search_item="search_item" v-if="item_info && item_info.item_type == 1 ">
+    <!-- 展示多文档项目 -->
+    <ShowRegularItem  v-if="item_info && item_info.item_type == 1" @setNowPageId="set_now_page_id" :item_info="item_info" :get_item_menu="get_item_menu" :search_item="search_item">
 
     </ShowRegularItem>
 
@@ -24,6 +24,9 @@
   export default {
     data() {
         return {
+          now_page_id:0,
+          page_id:0,
+          item_id:0,
           item_info:'' ,
         }
       },
@@ -32,6 +35,9 @@
         ShowSinglePageItem
     },
     methods:{
+        set_now_page_id(page_id=0){
+          this.now_page_id = page_id;
+        },
         //获取菜单
         get_item_menu(keyword){
             if (!keyword) {
@@ -39,8 +45,8 @@
             };
             var that = this ;
             var loading = that.$loading();
-            var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0;
-            var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0  ;
+            var item_id = this.item_id;
+            var page_id = this.now_page_id;
             var url = DocConfig.server+'/api/item/info';
 
             var params = new URLSearchParams();
@@ -106,6 +112,8 @@
         }
     },
     mounted () {
+      this.item_id = this.$route.params.item_id ? this.$route.params.item_id : 0;
+      this.now_page_id = this.page_id = this.$route.query.page_id ? this.$route.query.page_id : 0  ;
       this.get_item_menu();
     },
     beforeDestroy(){
@@ -118,6 +126,9 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style scoped lang="scss">
+@import '~@/components/common/base.scss';
+.hello{
+  background: $theme-grey-color;
+}
 </style>

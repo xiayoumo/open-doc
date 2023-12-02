@@ -7,7 +7,7 @@ return navigator.userAgent.match(/iPhone|iPad|iPod|Android|android|BlackBerry|IE
 //判断是否是在线OpenDoc
 function is_showdoc_online(){
 	var host = window.location.host;
-	if(host.indexOf("docker-sky.cn") > -1 || host.indexOf("open-doc.docker-sky.cn") > -1){
+	if(host.indexOf("docker-sky.cn") > -1 || host.indexOf("open-doc.docker-sky.cn") > -1|| host.indexOf("opendoc.cc") > -1){
 		return true;
 	}else{
 		return false;

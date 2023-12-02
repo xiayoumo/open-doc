@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4172742 */
-  src: url('iconfont.woff2?t=1696257048675') format('woff2'),
-       url('iconfont.woff?t=1696257048675') format('woff'),
-       url('iconfont.ttf?t=1696257048675') format('truetype');
+  src: url('iconfont.woff2?t=1701177908835') format('woff2'),
+       url('iconfont.woff?t=1701177908835') format('woff'),
+       url('iconfont.ttf?t=1701177908835') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,58 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tuichudenglu:before {
+  content: "\e621";
+}
+
+.icon-denglu:before {
+  content: "\e653";
+}
+
+.icon-excel:before {
+  content: "\ea45";
+}
+
+.icon-word1:before {
+  content: "\ea47";
+}
+
+.icon-word:before {
+  content: "\e640";
+}
+
+.icon-excelwenjian:before {
+  content: "\e745";
+}
+
+.icon-APIwendang:before {
+  content: "\e668";
+}
+
+.icon-fanhui1:before {
+  content: "\e616";
+}
+
+.icon-arrow-:before {
+  content: "\e626";
+}
+
+.icon-zhongyingqiehuan-qiehuanyingwen:before {
+  content: "\e663";
+}
+
+.icon-zhongyingqiehuan-qiehuanzhongwen:before {
+  content: "\e664";
+}
+
+.icon-duoren:before {
+  content: "\e61b";
+}
+
+.icon-24gf-portraitMalePlus:before {
+  content: "\eb2a";
 }
 
 .icon-xuanzhong:before {

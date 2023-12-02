@@ -1,6 +1,8 @@
 <template>
   <div >
-    <el-menu  @select="select_menu"
+
+    <el-menu
+      @select="select_menu"
       background-color="#fafafa"
       text-color=""
       active-text-color="#008cff"
@@ -18,26 +20,21 @@
           </el-input>
         </el-col>
         <el-col :span="7">
-          <div class="new-bar" v-if="item_info.ItemPermn && item_info.is_archived < 1 ">
-            <el-tooltip class="item" effect="dark" :content="$t('new_page')" placement="top-start">
-              <i class="el-icon-plus add-new-page-btn" @click="new_page"></i>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" :content="$t('new_catalog')" placement="top-start">
-<!--                <i class="el-icon-folder" @click="mamage_catalog"></i>-->
-              <span class="iconfont icon-xinjianwenjianjia add-new-page-btn" @click="mamage_catalog"></span>
-              <!--              <img src="static/images/folder.png" @click="mamage_catalog" class="icon-folder add-new-page-btn">-->
-            </el-tooltip>
-          </div>
+          <el-button v-if="item_info.ItemPermn && item_info.is_archived < 1" type="primary" class="edit-model-btn" @click="setLeftMenuEdit()">{{$t('editModel')}}</el-button>
         </el-col>
       </el-row>
-
+      <el-row v-if="item_info.menu.catalogs.length==0&item_info.menu.pages.length==0">
+        <el-col class="empty-menu-tip">
+          {{$t('empty_show_menu_tip')}}
+        </el-col>
+      </el-row>
       <!-- 一级页面 -->
         <el-menu-item  v-if="menu.pages.length " v-for="(page ,index) in menu.pages" :index="page.page_id" :key="page.page_id" >
-          <i class="el-icon-document" style="margin-left:10px;"></i>{{page.page_title}}
+          <i class="el-icon-document" ></i> {{page.page_title}}
         </el-menu-item>
 
         <!-- 目录开始 -->
-      <el-submenu  v-if="menu.catalogs.length" v-for="(catalog2 ,catalog_index) in menu.catalogs" :index="catalog2.cat_id" :key="catalog2.cat_id">
+        <el-submenu  v-if="menu.catalogs.length" v-for="(catalog2 ,catalog_index) in menu.catalogs" :index="catalog2.cat_id" :key="catalog2.cat_id">
         <!-- 二级目录名 -->
         <template slot="title"><span class="iconfont icon-24gl-folderOpen" ></span> {{catalog2.cat_name}}</template>
 
@@ -77,18 +74,22 @@
     item_info:'',
     search_item:''
   },
-    data() {
-      return {
-        defaultActiveIndex:'',
-        keyword:'',
-        openeds:[],
-        menu:''
-      }
-    },
+  data() {
+    return {
+      isEditMenu:false,
+      defaultActiveIndex:'',
+      keyword:'',
+      openeds:[],
+      menu:''
+    }
+  },
   components:{
     Editormd
   },
   methods:{
+    setLeftMenuEdit(){
+      this.$emit("setEditLeftMenu",true); //increment: 随便自定义的事件名称   第二个参数是传值的数据
+    },
     //选中菜单的回调
     select_menu(index, indexPath){
       this.change_url(index);
@@ -150,12 +151,29 @@
 .el-menu-item, .el-submenu__title {
   height: 40px;
   line-height: 40px;
+  @include text-auto-thumbnail;// 文字自动缩略
+}
+
+.show-menu-title{
+  @include text-auto-thumbnail;// 文字自动缩略
+  width: 120px;
+  color: $theme-color;
+  font-weight: bold;
 }
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
-
+  .empty-menu-tip{
+    padding: 10px 20px;
+    color: $theme-words-color;
+    font-size: 16px;
+  }
+  .edit-model-btn{
+    padding: 8px 5px;
+    margin-top: 17px;
+    font-size: 13px;
+  }
   .search-keyword-input{
     border-radius: 0px;
     margin: 15px 10px 10px 10px;
@@ -168,7 +186,9 @@
   .el-aside {
     color: $theme-light-black-color;
     position:fixed;
-    //height: calc(100% - 20px);
+    background: $theme-grey-color;
+    max-width: 300px;
+    width: 100% !important;
   }
   .el-aside::-webkit-scrollbar-thumb{
     /*滚动条里面小方块*/

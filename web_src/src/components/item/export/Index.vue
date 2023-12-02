@@ -56,7 +56,7 @@ export default {
   },
   computed: {
 
-    //新建/编辑页面时供用户选择的归属目录列表
+    //新建/编辑页面时供用户选择的归属文件夹列表
     computed_catalogs:function(){
         var Info = this.catalogs.slice(0);
         var cat_array = [] ;

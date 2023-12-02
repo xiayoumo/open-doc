@@ -3,7 +3,7 @@ namespace Home\Model;
 use Home\Model\BaseModel;
 /**
  * 
- * @author star7th      
+ * @author xiayoumo      
  */
 class UserTokenModel extends BaseModel {
 

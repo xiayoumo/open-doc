@@ -3,7 +3,7 @@ namespace Api\Model;
 use Api\Model\BaseModel;
 /**
  * 
- * @author star7th      
+ * @author xiayoumo      
  */
 class ItemTokenModel extends BaseModel {
 

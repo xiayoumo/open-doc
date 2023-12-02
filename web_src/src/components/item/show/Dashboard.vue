@@ -88,7 +88,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="address"
-                    label="归属目录">
+                    label="归属文件夹">
                   </el-table-column>
                 </el-table>
               </div>
@@ -147,7 +147,6 @@
 </template>
 
 <script>
-import * as echarts from 'echarts';
 //引入Echart的包
 import Echarts from "@/components/common/Echarts";
 import echartsSettingHelper from "@/js/echarts-setting-helper";
@@ -419,6 +418,7 @@ export default {
     min-height: 60px;
     border-radius: 10px;
     background:$theme-grey-color;
+    width: 100%;
   }
   .page-dashboard-row{
     margin-bottom: 40px;

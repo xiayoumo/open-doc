@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="hello open-api-box">
     <el-form  status-icon  label-width="100px" class="infoForm" >
       <el-form-item label="api_key：" >
         <el-input type="text" auto-complete="off" :readonly="true" v-model="api_key" placeholder="" ></el-input>
@@ -31,8 +31,6 @@
 </template>
 
 <script>
-
-
 export default {
   name: 'Login',
   components : {
@@ -98,7 +96,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-
+.open-api-box{
+  padding: 20px;
+}
+.open-api-box p{
+  text-align: center;
+}
 .center-card a {
   font-size: 12px;
 }
@@ -110,9 +113,10 @@ export default {
 }
 
 .infoForm{
-  width:350px;
-  margin-left: 2%;
-  margin-top: 5%;
+  padding: 4rem;
+  min-width:350px;
+  /*margin-left: 2%;*/
+  /*margin-top: 5%;*/
 }
 
 .goback-btn{

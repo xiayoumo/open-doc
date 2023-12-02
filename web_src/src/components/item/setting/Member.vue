@@ -1,69 +1,72 @@
 <template>
   <div class="hello">
-    <el-button  type="text" class="add-member" @click="dialogFormVisible = true">{{$t('add_member')}}</el-button>
-    <el-button  type="text" class="add-member" @click="dialogFormTeamVisible = true">{{$t('add_team')}}</el-button>
-
-    <!-- 单个成员列表 -->
-     <el-table align="left"
-          v-if="members.length>0"
-          :data="members"
-           height="200"
-          style="width: 100%">
-          <el-table-column
-            prop="username"
-            :label="$t('member_username')"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            :label="$t('name')"
+    <el-tabs tab-position="top" class="member-table-box">
+      <el-tab-pane :label="$t('member_manage')">
+          <el-button class="add-member" @click="dialogFormVisible = true"><span class="iconfont icon-24gf-portraitMalePlus"></span> {{$t('add_member')}}</el-button>
+          <!-- 单个成员列表 -->
+          <el-table align="left"
+                    v-if="members.length>0"
+                    :data="members"
+                    class="member-table">
+            <el-table-column
+              prop="username"
+              :label="$t('member_username')"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              :label="$t('name')"
             >
-          </el-table-column>
-          <el-table-column
-            prop="addtime"
-            :label="$t('add_time')"
-            width="160">
-          </el-table-column>
-          <el-table-column
-            prop="member_group"
-            :label="$t('authority')">
-          </el-table-column>
-          <el-table-column
-            prop=""
-            :label="$t('operation')">
-            <template slot-scope="scope">
-              <el-button @click="delete_member(scope.row.item_member_id)" type="text" size="small">{{$t('delete')}}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-
-     <!-- 团队列表 -->
-     <el-table align="left"
-          v-if="teamItems.length>0"
-          :data="teamItems"
-           height="200"
-          style="width: 100%">
-          <el-table-column
-            prop="team_name"
-            :label="'团队名'"
-           >
-          </el-table-column>
-          <el-table-column
-            prop="addtime"
-            :label="$t('add_time')"
+            </el-table-column>
+            <el-table-column
+              prop="addtime"
+              :label="$t('add_time')"
+              width="160">
+            </el-table-column>
+            <el-table-column
+              prop="member_group"
+              :label="$t('authority')">
+            </el-table-column>
+            <el-table-column
+              prop=""
+              :label="$t('operation')">
+              <template slot-scope="scope">
+                <el-button @click="delete_member(scope.row.item_member_id)" type="text" size="small">{{$t('delete')}}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-empty v-if="members.length==0" :description="$t('empty_data')" :image-size="250"  class="edit-model-box-empty"></el-empty>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('team_mamage')">
+          <el-button class="add-member" @click="dialogFormTeamVisible = true"><span class="iconfont icon-duoren"></span> {{$t('add_team')}}</el-button>
+          <!-- 团队列表 -->
+          <el-table align="left"
+                    v-if="teamItems.length>0"
+                    :data="teamItems"
+                    class="member-table">
+            <el-table-column
+              prop="team_name"
+              :label="'团队名'"
             >
-          </el-table-column>
+            </el-table-column>
+            <el-table-column
+              prop="addtime"
+              :label="$t('add_time')"
+            >
+            </el-table-column>
 
-          <el-table-column
-            prop=""
-            :label="$t('operation')">
-            <template slot-scope="scope">
-              <el-button @click="getTeamItemMember(scope.row.team_id)" type="text" size="small">{{$t('member_authority')}}</el-button>
-              <el-button @click="deleteTeam(scope.row.id)" type="text" size="small">{{$t('delete')}}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              prop=""
+              :label="$t('operation')">
+              <template slot-scope="scope">
+                <el-button @click="getTeamItemMember(scope.row.team_id)" type="text" size="small">{{$t('member_authority')}}</el-button>
+                <el-button @click="deleteTeam(scope.row.id)" type="text" size="small">{{$t('delete')}}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-empty v-if="teamItems.length==0" :description="$t('empty_data')" :image-size="250"  class="edit-model-box-empty"></el-empty>
+      </el-tab-pane>
+    </el-tabs>
 
       <!-- 添加单个成员弹窗 -->
       <el-dialog custom-class="add-member-dialog" :visible.sync="dialogFormVisible" :modal="false" >
@@ -89,15 +92,15 @@
 
       <!-- 添加团队弹窗 -->
       <el-dialog :visible.sync="dialogFormTeamVisible" :modal="false" top="10vh">
-      <el-form >
-          <el-form-item label="选择团队" >
-            <el-select  class="" v-model="MyForm2.team_id">
-              <el-option  v-for="team in teams " :key="team.team_name" :label="team.team_name" :value="team.id"></el-option>
-            </el-select>
+        <el-form >
+            <el-form-item label="选择团队" >
+              <el-select  class="" v-model="MyForm2.team_id">
+                <el-option  v-for="team in teams " :key="team.team_name" :label="team.team_name" :value="team.id"></el-option>
+              </el-select>
 
-          </el-form-item>
-          <router-link to="/team/index" target="_blank">{{$t('go_to_new_an_team')}}</router-link>
-      </el-form>
+            </el-form-item>
+            <router-link to="/team/index" target="_blank">{{$t('go_to_new_an_team')}}</router-link>
+        </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormTeamVisible = false">{{$t('cancel')}}</el-button>
           <el-button type="primary" @click="addTeam" >{{$t('confirm')}}</el-button>
@@ -149,7 +152,6 @@
           <el-button @click="dialogFormTeamMemberVisible = false">{{$t('close')}}</el-button>
         </div>
       </el-dialog>
-
 
   </div>
 </template>
@@ -409,12 +411,22 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+
+.member-table{
+  height: 400px;
+  width: 100%;
+  background: $theme-grey-color;
+}
+.member-table-box{
+  padding: 4rem;
+}
 .hello{
   text-align: left;
 }
 
 .add-member{
-  margin-left: 10px;
+  float: right;
+  margin-bottom: 10px;
 }
 
 .tips{

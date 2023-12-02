@@ -14,5 +14,5 @@ const store = new Vuex.Store({
 export default store
 
 // 引入示例 import store from '@/store';
-// 调用示例 store.getters.nowHeadTitle;
+// 调用示例 store.getters.nowHeadTitle; store.getters.userInfo
 // 设置示例 store.dispatch('SetNowHeadTitle', '内容');

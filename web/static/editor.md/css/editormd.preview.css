@@ -3111,14 +3111,15 @@
 }
 
 .editormd-preview-container, .editormd-html-preview {
+  border-radius: 10px;
   text-align: left;
   font-size: 14px;
   line-height: 1.6;
   padding: 20px;
   overflow: auto;
-  width: 100%;
+  /*width: 100%;*/
   background-color: #fff;
-
+  margin-top: 10px;
 }
 .editormd-preview-container blockquote, .editormd-html-preview blockquote {
   color: #666;

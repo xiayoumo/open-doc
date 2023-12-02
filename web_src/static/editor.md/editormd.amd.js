@@ -299,7 +299,7 @@
         lang : {
             name        : "zh-cn",
             description : "开源在线Markdown编辑器<br/>Open source online Markdown editor.",
-            tocTitle    : "目录",
+            tocTitle    : "文件夹",
             toolbar     : {
                 undo             : "撤销（Ctrl+Z）",
                 redo             : "重做（Ctrl+Y）",

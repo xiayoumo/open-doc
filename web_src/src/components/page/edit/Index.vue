@@ -1,74 +1,90 @@
 <template>
-  <div class="hello edit-page-box" @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
-    <Header> </Header>
-
+  <div class="edit-page-box" @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
+    <Header v-if="!is_children"> </Header>
     <el-container
       v-loading="pageLoading"
       element-loading-body="true"
+      :class="containerNarrowClass"
       element-loading-background="rgba(0, 0, 0, 0.2)"
-      class="container-narrow" >
-      <el-row class="masthead" id="edit-page-container">
-        <el-form :inline="true"   class="demo-form-inline" size="small">
-          <el-form-item :label="$t('title')+' : '">
-            <el-input  placeholder="" v-model="title"></el-input>
-          </el-form-item>
-
-          <el-form-item :label="$t('catalog')+' : '" >
-            <el-select  :placeholder="$t('optional')" class="cat" v-model="cat_id">
-              <el-option v-if="belong_to_catalogs" v-for="cat in belong_to_catalogs " :key="cat.cat_name" :label="cat.cat_name" :value="cat.cat_id"></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item :label="$t('s_number')+' : '">
-            <el-input  :placeholder="$t('optional')" class="num" v-model="s_number"></el-input>
-          </el-form-item>
-          <el-form-item label="" >
-            <el-button type="text" @click="ShowHistoryVersion">{{$t('history_version')}}</el-button>
-          </el-form-item>
-
-          <el-form-item class="pull-right">
-              <el-dropdown  @command="dropdown_callback" split-button type="primary" size="medium" trigger="click" @click="save">
-                {{$t('save')}}
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="save_to_template">{{$t('save_to_templ')}}</el-dropdown-item>
-                  <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
-                </el-dropdown-menu>
-              </el-dropdown>
-            <el-button type="" class="goback-full-btn" size="medium" @click="goback">{{$t('goback')}}</el-button>
-          </el-form-item>
-        </el-form>
-
-        <el-row :gutter="25" class="fun-btn-group">
-          <el-col :xs="12" :sm="5" :md="3" :lg="3" :xl="3">
-            <el-button type="" size="medium" @click="insert_api_template">{{$t('insert_apidoc_template')}}</el-button>
-          </el-col>
-          <el-col :xs="12" :sm="5" :md="4" :lg="3" :xl="3">
-            <el-button type="" size="medium" @click="insert_database_template">{{$t('insert_database_doc_template')}}</el-button>
-          </el-col>
-          <el-col :xs="12" :sm="4" :md="4" :lg="4" :xl="2">
-            <el-button type="" size="medium" @click.native="ShowTemplateList">{{$t('more_templ')}}</el-button>
-          </el-col>
-          <el-col :xs="12" :sm="1" :md="4" :lg="4" :xl="2">
-            <el-button type="" size="medium" @click="ShowRunApi">{{$t('http_test_api')}}</el-button>
-          </el-col>
-          <el-col :xs="24" :sm="9" :md="9" :lg="8" :xl="4">
-            <el-dropdown split-button type="" style="margin-left:100px;" size="medium" trigger="hover" >
-              {{$t('json_tools')}}
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="ShowJsonToTable">{{$t('json_to_table')}}</el-dropdown-item>
-                <el-dropdown-item @click.native="ShowJsonBeautify">{{$t('beautify_json')}}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </el-col>
-
-
-
+      >
+        <el-row class="masthead" id="edit-page-container">
+<!--          <div :class="isFullPage?'page-edit-div':'page-edit-full-div'">-->
+            <el-form>
+              <el-descriptions :title="title" :column="1" :colon="false" size="mini">
+                <template slot="extra">
+                  <el-dropdown  @command="dropdown_callback" split-button type="primary" size="medium" trigger="click" @click="save">
+                    <i v-if="pageSaveLoading" class="el-icon-loading"></i> {{$t('save')}}
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item :command="save_to_template">{{$t('save_to_templ')}}</el-dropdown-item>
+                      <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                  <el-button v-if="!is_children" type="" class="goback-full-btn" size="medium" @click="goback">{{$t('goback')}}</el-button>
+                </template>
+                <el-descriptions-item :label="$t('catalog')" labelClassName="user-statistic-name">
+                  <el-row class="edit-tool-box">
+                    <el-col :span="8" ><span class="user-statistic-value">{{ nowCatName }}</span></el-col>
+                    <el-col :span="8" v-if="page_use=='doc'||page_use=='api'">
+                      <el-row :gutter="10" >
+                        <el-col :span="24">
+                          <el-dropdown split-button type="primary" size="medium"  @click="ShowTemplateList">
+                            <i class="el-icon-s-grid"></i> {{$t('more_templ')}}
+                            <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item>
+                                <span @click="insert_job_plan_template">{{$t('insert_job_plan_template')}}</span>
+                              </el-dropdown-item>
+                              <el-dropdown-item>
+                                <span @click="insert_database_template">{{$t('insert_database_doc_template')}}</span>
+                              </el-dropdown-item>
+                              <el-dropdown-item>
+                                <span @click="insert_api_template">{{$t('insert_apidoc_template')}}</span>
+                              </el-dropdown-item>
+                              <el-dropdown-item v-if="page_use=='api'">
+                                <span @click="insert_flow_chart_template">{{$t('insert_flow_chart_template')}}</span>
+                              </el-dropdown-item>
+                              <el-dropdown-item v-if="page_use=='api'">
+                                <span @click="insert_sequence_diagram_template">{{$t('insert_sequence_diagram_template')}}</span>
+                              </el-dropdown-item>
+                            </el-dropdown-menu>
+                          </el-dropdown>
+                          <el-dropdown split-button type="primary" size="medium" trigger="hover" >
+                            <i class="el-icon-tickets"></i> {{$t('doc_tools')}}
+                            <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item @click.native="ShowJsonTool">{{$t('json_tools')}}</el-dropdown-item>
+                              <el-dropdown-item @click.native="ShowRunApi">{{$t('http_test_api')}}</el-dropdown-item>
+                            </el-dropdown-menu>
+                          </el-dropdown>
+                        </el-col>
+                      </el-row>
+                    </el-col>
+                    <el-col :span="page_use=='excel'?16:8">
+                        <el-select
+                          class="editor-select-box"
+                          ref="editorTypeSelectChange"
+                          @change="(e) => editorTypeChange(e)"
+                          v-model="editorType" placeholder="请选择" popper-class="editor-type-select">
+                          <el-option :label="$t('word_editor')" value="tinymce">
+                            <span class="select-left-tip" >{{ $t("word_editor") }}</span>
+                            <span class="select-right-tip">{{ $t("word_editor_tip") }}</span>
+                          </el-option>
+                          <el-option :label="$t('markdowm_editor')" value="editormd">
+                            <span class="select-left-tip" >{{ $t("markdowm_editor") }}</span>
+                            <span class="select-right-tip">{{ $t("markdowm_editor_tip") }}</span>
+                          </el-option>
+                          <el-option :label="$t('excel_editor')" value="luckysheet">
+                            <span class="select-left-tip" >{{ $t("excel_editor") }}</span>
+                            <span class="select-right-tip">{{ $t("excel_editor_tip") }}</span>
+                          </el-option>
+                        </el-select>
+                    </el-col>
+                  </el-row>
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-form>
+            <Editormd v-if="page_use=='api'&&content"  :key="page_id" :content="content" @finishLoad="editormdFinishLoad" ref="Editormd"  type="editor" ></Editormd>
+            <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" ref="Tinymce"  type="editor" ></Tinymce>
+            <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="title" :sheetPageId="page_id" :sheetContent="content" ref="Luckysheet"  type="editor" ></Luckysheet>
         </el-row>
-
-      <Editormd :content="content" @finishLoad="editormdFinishLoad" v-if="content" ref="Editormd"  type="editor" ></Editormd>
-
-
-      </el-row>
 
         <!-- 更多模板 -->
         <TemplateList :callback="insertValue" ref="TemplateList"></TemplateList>
@@ -77,98 +93,75 @@
         <HistoryVersion :callback="insertValue" :is_show_recover_btn="true"  ref="HistoryVersion"></HistoryVersion>
 
         <!-- Json转表格 组件 -->
-        <JsonToTable   :callback="insertValue" ref="JsonToTable" ></JsonToTable>
+        <JsonTool   :callback="insertValue" ref="JsonTool" ></JsonTool>
 
-        <!-- Json格式化 -->
-        <JsonBeautify :callback="insertValue" ref="JsonBeautify"></JsonBeautify>
-
-      </el-container>
-    <Footer> </Footer>
-    <div class=""></div>
+    </el-container>
 <!-- 模板存放的地方 -->
-<div id="api-doc-templ"  ref="api_doc_templ" style="display:none">
-
-**简要描述：**
-
-- 用户注册接口
-
-**请求URL：**
-- ` http://xx.com/api/user/register `
-
-**请求方式：**
-- POST
-
-**参数：**
-
-|参数名|必选|类型|说明|
-|:----    |:---|:----- |-----   |
-|username |是  |string |用户名   |
-|password |是  |string | 密码    |
-|name     |否  |string | 昵称    |
-
- **返回示例**
-
-```
-  {
-    "error_code": 0,
-    "data": {
-      "uid": "1",
-      "username": "12154545",
-      "name": "吴系挂",
-      "groupid": 2 ,
-      "reg_time": "1436864169",
-      "last_login_time": "0",
-    }
-  }
-```
-
- **返回参数说明**
-
-|参数名|类型|说明|
-|:-----  |:-----|-----                           |
-|groupid |int   |用户组id，1：超级管理员；2：普通用户  |
-
- **备注**
-
-- 更多返回错误代码请看首页的错误代码描述
-
-
-</div>
-<div id="database-doc-templ" ref="database_doc_templ" style="display:none">
-
--  用户表，储存用户信息
-
-|字段|类型|空|默认|注释|
-|:----    |:-------    |:--- |-- -|------      |
-|uid    |int(10)     |否 |  |             |
-|username |varchar(20) |否 |    |   用户名  |
-|password |varchar(50) |否   |    |   密码    |
-|name     |varchar(15) |是   |    |    昵称     |
-|reg_time |int(11)     |否   | 0  |   注册时间  |
-
-- 备注：无
-
-
-</div>
-
+    <SystemTemplate ref="SystemTemplate"></SystemTemplate>
   </div>
 </template>
 
+<style lang="scss">
+@import '~@/components/common/base.scss';
+
+.user-statistic-name{
+  color: #999;
+  font-size: 16px;
+}
+.user-statistic-value{
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.editor-type-select .el-select-dropdown__list {
+  min-width: 30vh;
+}
+.select-left-tip{
+  float: left;
+}
+.select-right-tip{
+  float: right; color: #8492a6; font-size: 13px
+}
+</style>
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
 
+.edit-tool-box{
+  width: 100%;
+}
+.editor-select-box{
+  float: right;
+}
+.page-edit-div{
+  width: 60%;
+  margin: 0 auto;
+}
+.page-edit-full-div{
+  width: 100%;
+}
 .edit-page-box{
-  height: 100vh;
+  //height: 100vh;
   overflow-y: auto;
+  background: $theme-grey-color;
   @include scroll-bar-box;
 }
   .container-narrow{
     margin: 0 auto;
-    padding: 30px 5% 0px 5%;
-    //max-width: 90%;
-    //@include scroll-bar-box;
+    width: 60%;
+    padding-top: 30px;
   }
-
+  .container-narrow-excel{
+    margin: 0 auto;
+    width: 90%;
+    padding-top: 30px;
+  }
+  .container-narrow-excel-children{
+    //margin: 0 auto;
+    margin-left: 350px;
+    width: 80%;
+    padding-top: 30px;
+  }
   .masthead{
     width: 100%;
     margin-top: 40px;
@@ -191,15 +184,47 @@
 
 <script>
 import Editormd from '@/components/common/Editormd'
-import JsonToTable from '@/components/common/JsonToTable'
-import JsonBeautify from '@/components/common/JsonBeautify'
+import Tinymce from '@/components/common/Tinymce'
+import Luckysheet from '@/components/common/Luckysheet'
+import JsonTool from '@/components/common/JsonTool'
 import TemplateList from '@/components/page/edit/TemplateList'
+import SystemTemplate from '@/components/page/edit/SystemTemplate'
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
-import pageHelper from '@/js/page-helper.js'
+import pageHelper from '@/js/page-helper'
+import store from '@/store'
 
 export default {
+  props: {
+    now_page_id: {type: String, default: '0'},
+    is_children: {type: Boolean, default: false}
+  },
+  components:{
+    Tinymce,
+    Editormd,
+    Luckysheet,
+    JsonTool,
+    TemplateList,
+    SystemTemplate,
+    HistoryVersion
+  },
+  watch: {
+    //   监听属性对象，newValue为新的值，也就是改变后的值
+    "page_use"(newValue, oldValue) {
+      this.getContainerNarrowClass(newValue);
+    },
+  },
   data () {
     return {
+      containerNarrowClass:'my-box',
+      pageSaveLoading:false,
+      editorTypeByPageTypeArray:{
+        doc:'tinymce',
+        api:'editormd',
+        excel:'luckysheet',
+      },
+      editorType:'tinymce', // tinymce/editormd
+      runApiUrl: DocConfig.runApiUrl,
+      isFullPage:true,
       currentDate: new Date(),
       itemList:{},
       content:"",
@@ -207,56 +232,45 @@ export default {
       item_id:0,
       cat_id:'',
       s_number:'',
-      page_id:'',
-      copy_page_id:'',
-      catalogs:[],
+      page_id:0,
+      copy_page_id:0,
+      // catalogs:[],
       pageLoading:false,
       isEditormdFinishLoad:false,
+      nowCatName:'',
+      page_use:'',
     };
   },
-  computed: {
-
-    //新建/编辑页面时供用户选择的归属目录列表
-    belong_to_catalogs:function(){
-        var Info = this.catalogs.slice(0);
-        var cat_array = [] ;
-        for (var i = 0; i < Info.length; i++) {
-          cat_array.push(Info[i]);
-          var sub = Info[i]['sub'] ;
-          if (sub.length > 0 ) {
-            for (var j = 0; j < sub.length; j++) {
-              cat_array.push( {
-                "cat_id":sub[j]['cat_id'] ,
-                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
-              });
-
-              var sub_sub = sub[j]['sub'] ;
-              if (sub_sub.length > 0 ) {
-                for (var k = 0; k < sub_sub.length; k++) {
-                  cat_array.push( {
-                    "cat_id":sub_sub[k]['cat_id'] ,
-                    "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']+' / ' + sub_sub[k]['cat_name']
-                  });
-                };
-              };
-
-            };
-          };
-        };
-        var no_cat = {"cat_id":'' ,"cat_name":this.$t("none")} ;
-        cat_array.unshift(no_cat);
-        return cat_array;
-
-    }
-  },
-  components:{
-    Editormd,
-    JsonToTable,
-    JsonBeautify,
-    TemplateList,
-    HistoryVersion
-  },
   methods:{
+    getContainerNarrowClass(page_use='doc'){
+      let classString = this.isFullPage?'page-edit-full-div':'page-edit-div';
+      let classStringAfter = 'container-narrow';
+      if(page_use=='excel'){
+        classStringAfter = this.is_children?'container-narrow-excel-children':'container-narrow-excel';
+      }
+      this.containerNarrowClass = classString +' '+ classStringAfter;
+    },
+    editorTypeChange(editorType){
+      let nowEditorType = this.$refs.editorTypeSelectChange.value;
+      let editorName = this.getEditorNameByEditorType(editorType);
+      let targetPageUse = this.getPageUseByEditorType(editorType);
+      let otherTip = this.getTipByPageUse(targetPageUse);
+      let tipMsg = this.$t("switch_editor")+' 【'+editorName+'】 '+ otherTip +', '+this.$t("is_continue");
+      this.$confirm(tipMsg, '', {
+        confirmButtonText: this.$t("confirm"),
+        cancelButtonText: this.$t("cancel"),
+        type: 'warning'
+      }).then(() => {
+        let content = this.getNewContentByPageUse(targetPageUse,this.page_use);
+        let isReloadPage = this.is_children?false:true;
+        this.savePage(this.cat_id,this.item_id,this.page_id,content,this.title,this.s_number,targetPageUse,isReloadPage);
+      }).catch((e) => {
+        if(e=='cancel'){
+          this.editorType = nowEditorType;
+        }
+        console.log(e)
+      });
+    },
     editormdFinishLoad(data){// 当子组件加载完成后插入数据
       this.isEditormdFinishLoad = true;
       if(this.content>''){
@@ -264,85 +278,130 @@ export default {
       }
     },
     //获取页面内容
-    get_page_content(page_id){
-        if (!page_id) {
-          var page_id = this.page_id ;
-        };
+    async get_page_content(targetPageId,isByCopy=false){
         var that = this ;
+        if (!targetPageId) {
+          var targetPageId = isByCopy?that.copy_page_id:that.page_id;
+        }
+        that.$forceUpdate();// 必须强制更新
         that.pageLoading = true;
-        var url = DocConfig.server+'/api/page/info';
-        var params = new URLSearchParams();
-        params.append('page_id', page_id );
-        that.axios.post(url, params)
-          .then(function (response) {
-            if (response.data.error_code === 0 ) {
-              //that.$message.success("加载成功");
-              that.content = response.data.data.page_content ;
-              if(that.isEditormdFinishLoad){ // 当子页面提前加载完成了
-                  that._setContentToEditormd();
-              }
-              that.title = response.data.data.page_title ;
-              that.item_id = response.data.data.item_id ;
-              that.s_number = response.data.data.s_number ;
+        let response = await pageHelper.getPage(targetPageId);// 同步获取
+        if (response.error_code === 0) {
+          that.page_use = response.data.page_use;
+          that.editorType = that.getEditorTypeByPageUse(that.page_use);
+          if (that.page_use == 'doc') {
+            that.isFullPage = false;
+          }
+          that.content = response.data.page_content;
+          if (that.editorType == 'editormd' && that.isEditormdFinishLoad) { // 当子页面提前加载完成了
+            that._setContentToEditormd();
+          }
+          let titleTip = isByCopy ? '-copy' : '';
+          that.title = response.data.page_title + titleTip;
+          that.item_id = response.data.item_id;
+          that.s_number = response.data.s_number;
+        } else {
+          that.$alert(response.error_message);
+        }
+        that.pageLoading = false;
 
-            }else{
-              that.$alert(response.data.error_message);
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        // .catch(function (error) {
+        //   that.pageLoading = false;
+        //   console.log(error);
+        // });
+    },
+    getContentByPageUse(nowPageUse='doc'){
+      let content;
+      if(nowPageUse=='api'){
+        content = this.$refs.Editormd.getMarkdown();
+      }
+      if(nowPageUse=='doc'){
+        content = this.$refs.Tinymce.getTinymceContent();
+      }
+      if(nowPageUse=='excel'){
+        content = this.$refs.Luckysheet.getLuckysheetContent();
+      }
+      return content;
+    },
+    getTipByPageUse(targetPageUse){
+      let tip = '';
+      if(targetPageUse=='api'&&this.page_use=='doc'){
+        tip = this.$t("clean_editor");
+      }
+      if(targetPageUse=='excel' && this.page_use!='excel'){
+        tip = this.$t("clean_editor");
+      }
+      if(this.page_use=='excel' && targetPageUse!='excel'){
+        tip = this.$t("clean_editor");
+      }
+      return tip;
+    },
+    getNewContentByPageUse(targetPageUse='doc',nowPageUse='doc'){// doc/api/excel
+      let content = this.getContentByPageUse(nowPageUse);
+      if(targetPageUse=='doc' && nowPageUse=='api'){// markdown 转 html
+        content = this.$refs.Editormd.markdownDataToHtml(content);
+        if(content.length==0){
+          content = ' ';
+        }
+      }
+      if(targetPageUse=='api' && nowPageUse=='doc'){
+        content = ' ';
+      }
+      if(targetPageUse=='excel' && nowPageUse!='excel'){
+        content = ' ';
+      }
+      if(nowPageUse=='excel' && targetPageUse!='excel'){
+        content = ' ';
+      }
+      return content;
+    },
+    getEditorNameByEditorType(editorType='tinymce'){
+      let editName = this.$t("markdowm_editor");
+      if(editorType=='tinymce'){
+        editName = this.$t("word_editor");
+      }
+      if(editorType=='luckysheet'){
+        editName = this.$t("excel_editor");
+      }
+      return editName;
+    },
+    getEditorTypeByPageUse(pageUse='doc'){
+      let editorTypeByPageTypeObject = this.editorTypeByPageTypeArray;
+      return editorTypeByPageTypeObject[pageUse];
+    },
+    getPageUseByEditorType(editorType='tinymce'){
+      let editorTypeByPageTypeObject = this.editorTypeByPageTypeArray;
+      // 实现键值互换
+      let pageTypeByEditorTypeObject = {};
+      for (let key in editorTypeByPageTypeObject) {
+        pageTypeByEditorTypeObject[editorTypeByPageTypeObject[key]] = key;
+      }
+      return pageTypeByEditorTypeObject[editorType];
     },
     _setContentToEditormd(){
       this.insertValue(this.content ,1) ;
       //如果长度大于3000,则关闭预览
       if (this.content.length > 3000) {
-        this.editor_unwatch();
+        this.editor_unwatch();//关闭预览
       }else{
-        this.editor_watch();
+        this.editor_watch();// 开启
       }
-      this.pageLoading = false;
-    },
-
-    //获取所有目录
-    get_catalog(item_id){
-      var that = this ;
-      var url = DocConfig.server+'/api/catalog/catListGroup';
-      var params = new URLSearchParams();
-      params.append('item_id',  item_id);
-      that.axios.post(url, params)
-        .then(function (response) {
-          if (response.data.error_code === 0 ) {
-            var Info = response.data.data ;
-
-            that.catalogs =  Info;
-            that.get_default_cat();
-          }else{
-            that.$alert(response.data.error_message);
-          }
-
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
     //获取默认该选中的目录
     get_default_cat(){
       var that = this ;
       var url = DocConfig.server+'/api/catalog/getDefaultCat';
       var params = new URLSearchParams();
-      params.append('page_id',  this.page_id);
-      params.append('item_id',  that.$route.params.item_id);
-      params.append('copy_page_id',  this.copy_page_id);
-
+      params.append('page_id',  that.page_id);
+      params.append('item_id',  that.item_id);
+      params.append('copy_page_id',  that.copy_page_id);
       that.axios.post(url, params)
         .then(function (response) {
           if (response.data.error_code === 0 ) {
             //that.$message.success("加载成功");
             var json = response.data.data ;
             that.cat_id = json.default_cat_id ;
-
+            that.nowCatName = json.default_cat_name;
           }else{
             that.$alert(response.data.error_message);
           }
@@ -352,27 +411,40 @@ export default {
     //插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
     insertValue(value,is_cover){
       if (value) {
-            let childRef = this.$refs.Editormd;//获取子组件
-            if (is_cover) {
-              // 清空
-              childRef.clear();
-            }
+          let refsKey = this.page_use=='doc'?'Tinymce':'Editormd';
+          let childRef = this.$refs[refsKey];//获取子组件
+          if (is_cover) {
+            // 清空
             childRef?childRef.clear():'';
-
-            childRef.insertValue(value); //调用子组件的方法
-
+          }
+          childRef.insertValue(value); //调用子组件的方法
       }
 
     },
 
     //插入api模板
     insert_api_template(){
-      this.insertValue(this.$refs.api_doc_templ.innerHTML ) ;
+      let apiContent = this.$refs.SystemTemplate.getApiDocTempl(this.page_use);
+      this.insertValue(apiContent) ;
     },
 
     //插入数据字典模板
     insert_database_template(){
-      this.insertValue(this.$refs.database_doc_templ.innerHTML ) ;
+      let databaseDocContent = this.$refs.SystemTemplate.getDatabaseDocTempl(this.page_use);
+      this.insertValue(databaseDocContent ) ;
+    },
+    //任务计划模板
+    insert_job_plan_template(){
+      let jobPlanContent = this.$refs.SystemTemplate.getJobPlanTempl(this.page_use);
+      this.insertValue(jobPlanContent) ;
+    },
+    //流程图模板
+    insert_flow_chart_template(){
+      this.insertValue(this.$refs.SystemTemplate.getFlowChartTempl() ) ;
+    },
+    //流程图模板
+    insert_sequence_diagram_template(){
+      this.insertValue(this.$refs.SystemTemplate.getSequenceDiagramTempl() ) ;
     },
     //关闭预览
     editor_unwatch(){
@@ -384,26 +456,21 @@ export default {
         this.$alert("检测到本页面内容比较多，OpenDoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
          sessionStorage.setItem("page_id_unwatch_"+this.page_id,1)
       }
-
     },
     //
     editor_watch(){
-      let childRef = this.$refs.Editormd ;//获取子组件
-      childRef.editor_watch();
+        let childRef = this.$refs.Editormd ;//获取子组件
+        childRef.editor_watch();
     },
     //json转参数表格
-    ShowJsonToTable(){
-        let childRef = this.$refs.JsonToTable ;//获取子组件
+    ShowJsonTool(){
+        let childRef = this.$refs.JsonTool ;//获取子组件
         childRef.dialogFormVisible = true ;
-    },
-    //json格式化
-    ShowJsonBeautify(){
-        let childRef = this.$refs.JsonBeautify ;//获取子组件
-        childRef.dialogFormVisible = true ;
+        childRef.outputTabelType = this.page_use=='doc'?'html':'markdown' ;
     },
 
     ShowRunApi(){
-      window.open(DocConfig.homeUrl);
+        window.open(this.runApiUrl);
     },
     //更多模板、模板列表
     ShowTemplateList(){
@@ -416,53 +483,50 @@ export default {
         let childRef = this.$refs.HistoryVersion ;//获取子组件
         childRef.show() ;
     },
-
     save(){
+      let content = this.getContentByPageUse(this.page_use);
+      this.savePage(this.cat_id,this.item_id,this.page_id,content,this.title,this.s_number,this.page_use,false);
+    },
+    async savePage(cat_id=0,item_id=0,page_id=0,page_content='',page_title='',s_number=99,page_use='api',isReloadPage=false){
       var that = this ;
-      var loading = that.$loading();
-      let childRef = this.$refs.Editormd ;
-      var content = childRef.getMarkdown() ;
-      var cat_id = this.cat_id ;
-      var item_id = that.$route.params.item_id ;
-      var page_id = that.$route.params.page_id ;
-      var url = DocConfig.server+'/api/page/save';
-      var params = new URLSearchParams();
-      params.append('page_id',  page_id);
-      params.append('item_id',  item_id);
-      params.append('s_number',  that.s_number);
-      params.append('page_title',  that.title);
-      params.append('page_content',  encodeURIComponent(content));
-      params.append('is_urlencode',  1);
-      params.append('cat_id',  cat_id);
-      that.axios.post(url, params)
-        .then(function (response) {
-          loading.close();
-          if (response.data.error_code === 0 ) {
-            that.$message({
-              showClose: true,
-              duration:500,
-              offset:300,
-              message: that.$t("save_success"),
-              type: 'success'
-            });
-            localStorage.removeItem("page_content");
+      that.pageSaveLoading = true;
+      let response = await pageHelper.savePage(cat_id,item_id,page_id,page_content,page_title,s_number,page_use);
+      if (response.error_code === 0 ) {
+        that.page_id = response.data.page_id;
+        localStorage.removeItem("page_content");
+        if(isReloadPage){
+          that.$confirm(that.$t("save_success")+', 将重置页面信息.', '', {
+            confirmButtonText: that.$t("confirm"),
+            showCancelButton: false,
+            type: 'success'
+          }).then(() => {
             if (page_id <= 0 ) {
-              that.$router.push({path:'/page/edit/'+item_id+'/'+response.data.data.page_id}) ;
+              that.$router.push({path:'/page/edit/'+item_id+'/'+response.data.page_id}) ;
+            }else{
+              window.location.reload();
             };
-          }else{
-            that.$alert(response.data.error_message);
-          }
-
-        });
-        //设置一个最长关闭时间
-        setTimeout(() => {
-          loading.close();
-        }, 20000);
+          }).catch(() => {});
+        }else{
+          that.get_page_content(that.page_id);
+          that.$message.success({
+            message: that.$t("save_success"),
+            duration:500,
+            type: 'success'
+          });
+        }
+      }else{
+        that.$alert(response.error_message);
+      }
+      that.pageSaveLoading = false;
+      //设置一个最长关闭时间
+      setTimeout(() => {
+        that.pageSaveLoading = false;
+      })
     },
     goback(){
       localStorage.removeItem("page_content");
-      var url = '/item-show/'+this.$route.params.item_id;
-      this.$router.push({path:url,query:{page_id:this.$route.params.page_id}}) ;
+      var url = '/item-show/'+this.item_id;
+      this.$router.push({path:url,query:{page_id:this.page_id}}) ;
     },
     dropdown_callback(data){
       if (data) {
@@ -472,8 +536,13 @@ export default {
     //另存为模板
     save_to_template(){
       var that = this ;
-      let childRef = this.$refs.Editormd ;
-      var content = childRef.getMarkdown() ;
+      var content;
+      if(that.page_use=='api'){
+        let childRef = this.$refs.Editormd ;
+        content = childRef.getMarkdown() ;
+      }else{
+        content = that.content;
+      }
        this.$prompt(that.$t("save_templ_title"), ' ', {
        }).then(function(data){
           var url = DocConfig.server+'/api/template/save';
@@ -551,30 +620,32 @@ export default {
       }
     }
   },
-  // updated(){
-  //   // 在接收到新消息的时候触发方法将滚动条定位到底部
-  //   pageHelper.scrollPageById('edit-page-box','top',this);
-  // },
-  mounted () {
-    var that = this ;
-    this.page_id = this.$route.params.page_id ;
+  created() {
+    this.page_id = this.now_page_id==0 ? this.$route.params.page_id:this.now_page_id;
+    this.item_id = this.$route.params.item_id ? this.$route.params.item_id:0;
     this.copy_page_id = this.$route.query.copy_page_id ? this.$route.query.copy_page_id : '' ;
-
     if (this.copy_page_id > 0 ) {
-      this.get_page_content(this.copy_page_id);
+      this.get_page_content(this.copy_page_id,true);
+    }else {
+      if (this.page_id > 0 ) {
+        this.get_page_content(this.page_id);
+      }else{
+        this.content = this.$t("welcome_use_showdoc") ;
+      }
     }
-    else if (this.page_id > 0 ) {
-      this.get_page_content(this.page_id);
-    }else{
-      this.item_id = this.$route.params.item_id ;
-      this.content = this.$t("welcome_use_showdoc") ;
-    }
-    this.get_catalog(this.$route.params.item_id);
+  },
+  mounted () {
+    this.$forceUpdate();// 必须强制更新
+    var that = this ;
+
+    that.get_default_cat();
 
     /** 监听粘贴上传图片 **/
-    document.addEventListener('paste', this.upload_paste_img);
+    document.addEventListener('paste', that.upload_paste_img);
 
-
+    // 设置题头
+    let headTitle = localStorage.getItem('head_title');
+    store.dispatch('SetNowHeadTitle', headTitle);
   },
 
   beforeDestroy(){

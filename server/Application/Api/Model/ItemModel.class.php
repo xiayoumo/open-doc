@@ -5,8 +5,8 @@ use Api\Model\BaseModel;
 class ItemModel extends BaseModel {
 
     public function export($item_id){
-        $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
-        $page_field = "page_title ,cat_id,page_content,s_number,page_comments";
+        $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ,item_use ")->find();
+        $page_field = "page_title ,cat_id,page_content,s_number,page_comments,page_use";
         $catalog_field = "cat_id,cat_name ,parent_cat_id,level,s_number";
         $item['pages'] = $this->getContent($item_id , $page_field , $catalog_field ); 
         $item['members'] = D("ItemMember")->where("item_id = '$item_id' ")->field(" member_group_id ,uid,username ")->select();
@@ -38,10 +38,16 @@ class ItemModel extends BaseModel {
                 "item_description"=>$item_description ? $item_description :$item['item_description'],
                 "password"=>$item_password ? $item_password :$item['password'],
                 "uid"=>$userInfo['uid'],
+                "item_use"=>$item['item_use'],
                 "username"=>$userInfo['username'],
                 "addtime"=>time(),
                 );
+
             $item_id = D("Item")->add($item_data);
+            if(is_numeric($item_id)){
+                // 追加项目识别编码
+                D("Item")->set_item_code($item_id);
+            }
         }
         if ($item['pages']) {
             //父页面们（一级目录）
@@ -54,6 +60,7 @@ class ItemModel extends BaseModel {
                         "page_content" =>$value['page_content'],
                         "s_number" =>$value['s_number'],
                         "page_comments" =>$value['page_comments'],
+                        "page_use" =>$value['page_use'],
                         "item_id" => $item_id,
                         "cat_id" => 0 ,
                         "addtime" =>time(),
@@ -84,6 +91,7 @@ class ItemModel extends BaseModel {
                                 "page_content" =>$value2['page_content'],
                                 "s_number" =>$value2['s_number'],
                                 "page_comments" =>$value2['page_comments'],
+                                "page_use" =>$value2['page_use'],
                                 "item_id" => $item_id,
                                 "cat_id" => $cat_id ,
                                 "addtime" =>time(),
@@ -115,6 +123,7 @@ class ItemModel extends BaseModel {
                                             "page_content" =>$value4['page_content'],
                                             "s_number" =>$value4['s_number'],
                                             "page_comments" =>$value4['page_comments'],
+                                            "page_use" =>$value4['page_use'],
                                             "item_id" => $item_id,
                                             "cat_id" => $cat_id2 ,
                                             "addtime" =>time(),
@@ -147,6 +156,7 @@ class ItemModel extends BaseModel {
                                                         "page_content" =>$value6['page_content'],
                                                         "s_number" =>$value6['s_number'],
                                                         "page_comments" =>$value6['page_comments'],
+                                                        "page_use" =>$value6['page_use'],
                                                         "item_id" => $item_id,
                                                         "cat_id" => $cat_id3 ,
                                                         "addtime" =>time(),
@@ -189,7 +199,7 @@ class ItemModel extends BaseModel {
 
     //获取菜单结构
     public function getMemu($item_id){
-            $page_field = "page_id,author_uid,cat_id,page_title,addtime";
+            $page_field = "page_id,author_uid,cat_id,page_title,addtime,s_number";
             $catalog_field = '*';
             $data = $this->getContent($item_id , $page_field , $catalog_field) ;
             return $data ;
@@ -300,6 +310,13 @@ class ItemModel extends BaseModel {
     //软删除项目
     public function soft_delete_item($item_id){
         return $this->where("item_id = '$item_id' ")->save(array("is_del"=>1 ,"last_update_time"=>time()));
+    }
+    // 追加项目识别编码
+    public function set_item_code($item_id){
+        $update_data = array(
+            "item_code" => substr(md5($item_id),-6)
+        );
+        return D("Item")->where("item_id = '$item_id' ")->save($update_data);
     }
 
 }

@@ -2,7 +2,7 @@
   <div class="hello">
     <Header> </Header>
 
-    <el-container>
+    <el-container class="login-box">
           <el-card class="center-card">
             <el-form  status-icon  label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
               <h2>{{$t("login")}}</h2>
@@ -21,13 +21,11 @@
               </el-form-item>
 
                <el-form-item label="" >
-                <el-button type="primary" style="width:100%;" @click="onSubmit" >{{$t("login")}}</el-button>
+                 <el-button type="primary" style="width:100%;" @click="onSubmit" :title="$t('login')" ><span class="iconfont icon-denglu login-btn"></span></el-button>
               </el-form-item>
 
               <el-form-item label="" >
-                  <router-link to="/user/register">{{$t("register_new_account")}}</router-link>
-                  &nbsp;&nbsp;&nbsp;
-
+                <el-button type="text" @click="$router.replace('/user/register')" ><span class="iconfont icon-a-2rt53k6cjnn49zfu-kewj4lq2 register-pic-background"></span> {{$t("register_new_account")}}</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -139,7 +137,21 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
-
+.login-btn{
+  font-size: 28px;
+}
+.register-pic-background{
+  font-size: 20px;
+  position: relative;
+  color: #151822;
+  opacity: .4;
+  &:hover{
+    color: $theme-right-msg-color;
+  }
+}
+.login-box{
+  padding-top: 4rem;
+}
 .center-card a {
   font-size: 12px;
 }

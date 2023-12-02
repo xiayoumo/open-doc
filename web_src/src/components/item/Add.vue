@@ -4,53 +4,107 @@
 
     <el-container>
           <el-card class="center-card">
-            <el-form  status-icon  label-width="0px" class="demo-ruleForm">
+            <el-form :rules="rules" ref="ruleForm" :model="itemForm"  status-icon  label-width="0px" class="demo-ruleForm">
               <h2></h2>
-              <el-form-item label="" >
-                  <el-radio v-model="item_type" label="1">{{$t('item_type1')}}</el-radio>
-                  <el-radio v-model="item_type" label="2">{{$t('item_type2')}}</el-radio>
-              &nbsp;&nbsp;&nbsp;&nbsp;<a :href="homeUrl" target="_blank"><i class="el-icon-question"></i></a>
+              <el-form-item prop="item_use">
+                <el-select  v-model="itemForm.item_use" :placeholder="$t('item_use')" @change="itemUseSelect">
+                  <el-option key="doc" :label="$t('item_use1')" value="doc">
+                    <span> {{ $t('item_use1') }}</span>
+                    <span  class="iconfont icon-word1 select-right-icon"></span>
+                  </el-option>
+                  <el-option key="api" :label="$t('item_use2')" value="api">
+                    <span> {{ $t('item_use2') }}</span>
+                    <span  class="iconfont icon-APIwendang select-right-icon"></span>
+                  </el-option>
+                  <el-option key="excel" :label="$t('item_use3')" value="excel">
+                    <span> {{ $t('item_use3') }}</span>
+                    <span  class="iconfont icon-excel select-right-icon"></span>
+                  </el-option>
+                </el-select>
+                <el-popover
+                  placement="bottom"
+                  width="auto"
+                  v-model="itemUseVisible"
+                  trigger="manual">
+                  <el-divider content-position="left">{{$t('item_use1')}}</el-divider>
+                  <p>{{ $t('item_use_doc_info') }}</p>
+                  <el-divider content-position="left">{{$t('item_use2')}}</el-divider>
+                  <p>{{ $t('item_use_api_info') }}</p>
+                  <el-divider content-position="left">{{$t('item_use3')}}</el-divider>
+                  <p>{{ $t('item_use_excel_info') }}</p>
+                  <div style="text-align: right; margin: 0">
+                    <el-button type="primary" size="mini" @click="itemUseVisible = false">{{ $t('confirm') }}</el-button>
+                  </div>
+                  <i slot="reference" class="el-icon-question question-btn" @click="itemUseVisible = true"></i>
+                </el-popover>
               </el-form-item>
 
+              <transition name="el-zoom-in-center">
+                  <el-form-item v-show="itemForm.item_use" prop="item_type">
+                    <el-radio v-model="itemForm.item_type" label="1">{{$t('item_type1')}}</el-radio>
+                    <el-radio v-model="itemForm.item_type" label="2">{{$t('item_type2')}}</el-radio>
+                    <el-popover
+                      placement="bottom"
+                      width="200"
+                      v-model="itemTypeVisible"
+                      trigger="click">
+                      <el-divider content-position="left">{{$t('item_type1')}}</el-divider>
+                      <p>{{ $t('item_type_regular_info') }}</p>
+                      <el-divider content-position="left">{{$t('item_type2')}}</el-divider>
+                      <p>{{ $t('item_type_single_info') }}</p>
+                      <div style="text-align: right; margin: 0">
+                        <el-button type="primary" size="mini" @click="itemTypeVisible = false">{{ $t('confirm') }}</el-button>
+                      </div>
+                      <i slot="reference" class="el-icon-question question-btn"></i>
+                    </el-popover>
+                  </el-form-item>
+              </transition>
 
-              <el-form-item label="" >
-                <el-input type="text" auto-complete="off" :placeholder="$t('item_name')" v-model="item_name"></el-input>
-              </el-form-item>
+              <transition name="el-zoom-in-center">
+                <div  v-show="itemForm.item_type">
+                  <el-form-item label=" " prop="item_name">
+                    <el-input type="text" class="request-input" auto-complete="off" :placeholder="$t('item_name')" v-model="itemForm.item_name"></el-input>
+                  </el-form-item>
 
-              <el-form-item label="" >
-                <el-input type="text" auto-complete="off" :placeholder="$t('item_description')" v-model="item_description"></el-input>
-              </el-form-item>
+                  <el-form-item label="　" prop="item_description">
+                    <el-input type="text" class="request-input" auto-complete="off" :placeholder="$t('item_description')" v-model="itemForm.item_description"></el-input>
+                  </el-form-item>
 
 
-              <el-form-item label="" >
-                <el-input type="text" auto-complete="off" v-model="password"  :placeholder="$t('visit_password_placeholder')"></el-input>
-              </el-form-item>
+                  <el-form-item label="　"  prop="password">
+                    <el-input type="text" class="request-input" auto-complete="off" v-model="itemForm.password"  :placeholder="$t('visit_password_placeholder')"></el-input>
+                  </el-form-item>
+                </div>
+              </transition>
 
-              <el-form-item label="" class="text-left">
-                 <el-checkbox v-model="show_copy">{{$t('copy_exists_item')}}</el-checkbox>
-                 <el-select v-model="copy_item_id" :placeholder="$t('please_choose')" v-if="show_copy" @change="choose_copy_item">
-                    <el-option
-                      v-for="item in itemList"
-                      :key="item.item_id"
-                      :label="item.item_name"
-                      :value="item.item_id">
-                    </el-option>
-                  </el-select>
+              <transition name="el-zoom-in-top">
+                <div  v-show="itemForm.item_name.length>=3">
+                    <el-form-item v-if="copyItemList.length>0" label="" class="text-left" prop="copy_item_id">
+                       <el-checkbox v-model="show_copy">{{$t('copy_exists_item')}}</el-checkbox>
+                       <el-select v-model="itemForm.copy_item_id" :placeholder="$t('please_choose')" v-if="show_copy" @change="choose_copy_item">
+                          <el-option
+                            v-for="item in copyItemList"
+                            :key="item.item_id"
+                            :label="item.item_name"
+                            :value="item.item_id">
+                            <span> {{ item.item_name }}</span>
+                            <span v-if="item.item_use=='api'"  class="iconfont icon-APIwendang select-right-icon"></span>
+                            <span v-if="item.item_use=='excel'"  class="iconfont icon-excel select-right-icon"></span>
+                            <span v-if="item.item_use=='doc'" class="iconfont icon-word1 select-right-icon"></span>
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
 
-              </el-form-item>
+                    <el-form-item  v-if="itemList.length>0&&itemForm.item_use=='api'"  label=""  style="text-align: left;margin-bottom:5px;margin-left:15px;margin-top:-25px;">
+                        <el-button type="text" @click="auto_doc">{{ $t('auto_produce_doc') }}</el-button>
+                        &nbsp;&nbsp;&nbsp;
+                    </el-form-item>
 
-              <el-form-item label="" style="text-align: left;margin-bottom:5px;margin-left:15px;margin-top:-25px;">
-                  <el-button type="text" @click="auto_doc">我要自动生成文档</el-button>
-                  &nbsp;&nbsp;&nbsp;
-              </el-form-item>
-
-               <el-form-item label="" >
-                <el-button type="primary" class="add-new-object-btn" style="width:100%;" @click="onSubmit" >{{$t('submit')}}</el-button>
-              </el-form-item>
-
-              <el-form-item label=""  >
-                  <router-link class="goback-btn" to="/item/index">{{$t('goback')}}</router-link>
-              </el-form-item>
+                     <el-form-item label="" >
+                      <el-button type="primary" class="add-new-object-btn" style="width:100%;" @click="onSubmit" >{{$t('submit')}}</el-button>
+                    </el-form-item>
+                </div>
+              </transition>
             </el-form>
           </el-card>
     </el-container>
@@ -65,27 +119,49 @@ import store from '@/store'
 export default {
   name: 'Login',
   components : {
-
   },
   created() {
     store.dispatch('SetNowHeadTitle','');
   },
   data () {
     return {
+      itemUseVisible:false,
+      itemTypeVisible:false,
       homeUrl:DocConfig.homeUrl,
-      item_type: '1',
-      item_name: '',
-      item_description:'',
-      item_domain: '',
-      password: '',
       show_copy:false,
-      itemList:{},
-      copy_item_id:"",
+      itemList:[],
+      copyItemList:[],
+      itemForm:{
+        item_type:'',// 1/2/3
+        item_name:'',
+        item_domain: '',
+        item_description:'',
+        password:'',
+        copy_item_id:'',
+        item_use:'',// api/doc/excel
+      },
+      rules: {
+        item_name: [
+          { required: true, message: '请输入项目名称', trigger: 'blur' },
+          { min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
+        ]
+      }
 
     }
 
   },
   methods: {
+    itemUseSelect(itemUse){
+      this.copyItemList = [];
+      this.itemList.map(item=>{
+        if(item.item_use==itemUse){
+          this.copyItemList.push(item);
+        }
+      });
+      // 清空已选中的内容
+      this.show_copy = false;
+      this.itemForm.copy_item_id = '';
+    },
     get_item_list(){
         var that = this ;
         var url = DocConfig.server+'/api/item/myList';
@@ -98,6 +174,9 @@ export default {
               //that.$message.success("加载成功");
               var json = response.data.data ;
               that.itemList = json ;
+              if(that.itemList.length==0){
+                that.itemUseVisible = true;
+              }
             }else{
               that.$alert(response.data.error_message);
             }
@@ -107,37 +186,46 @@ export default {
     choose_copy_item(item_id){
       for (var i = 0; i < this.itemList.length; i++) {
         if (item_id == this.itemList[i].item_id) {
-            this.item_name = this.itemList[i].item_name+'--copy';
-            this.item_description = this.itemList[i].item_description;
+            this.itemForm.item_name = this.itemList[i].item_name+'--copy';
+            this.itemForm.item_description = this.itemList[i].item_description;
         };
       };
     },
     onSubmit() {
-        var that = this ;
-        var url = DocConfig.server+'/api/item/add';
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          var that = this ;
+          var url = DocConfig.server+'/api/item/add';
 
-        var params = new URLSearchParams();
-        params.append('item_type', this.item_type);
-        params.append('item_name', this.item_name);
-        params.append('password', this.password);
-        params.append('item_domain', this.item_domain);
-        params.append('copy_item_id', this.copy_item_id);
-        params.append('item_description', this.item_description);
+          var params = new URLSearchParams();
+          params.append('item_type', this.itemForm.item_type);
+          params.append('item_name', this.itemForm.item_name);
+          params.append('password', this.itemForm.password);
+          params.append('item_domain', this.itemForm.item_domain);
+          params.append('copy_item_id', this.itemForm.copy_item_id);
+          params.append('item_description', this.itemForm.item_description);
+          params.append('item_use', this.itemForm.item_use);
 
-        that.axios.post(url, params)
-          .then(function (response) {
-            if (response.data.error_code === 0 ) {
-              that.$router.push({path:'/item/index'});
-            }else{
-              that.$alert(response.data.error_message);
-            }
+          that.axios.post(url, params)
+            .then(function (response) {
+              if (response.data.error_code === 0 ) {
+                that.$router.push({path:'/item/index'});
+              }else{
+                that.$alert(response.data.error_message);
+              }
 
-          });
+            });
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
     auto_doc(){
-      var msg = '<p>如果你想自动化生成API文档，则可参考<a target="_bank" href="'+this.homeUrl+'">API文档</a></p>';
-      msg += '<p>如果你想自动化生成数据字典，则可参考<a target="_bank" href="'+this.homeUrl+'">数据字典</a></p>';
-      msg += '<p>如果你更自由地生成自己所需要的格式，则可参考<a target="_bank" href="'+this.homeUrl+'">开放API</a></p>';
+      var msg = '<p>'+this.$t('open_api_tips1')+'</p>';
+      msg += '<p>'+this.$t('open_api_tips2')+'</p>';
+      msg += '<p>'+this.$t('open_api_tips3')+'</p>';
+      msg += '<p>'+this.$t('open_api_tips4')+'</p>';
       this.$alert(msg, {
           dangerouslyUseHTMLString: true
         });
@@ -160,7 +248,16 @@ export default {
 <style scoped  lang="scss">
 @import '~@/components/common/base.scss';
 
-
+.select-right-icon{
+  float: right;
+  font-size: 18px;
+}
+.request-input{
+  width: 95%;
+}
+.question-btn{
+  cursor: pointer;
+}
 .goback-btn{
   @include no-btn;
 }
@@ -174,8 +271,9 @@ export default {
 
 .center-card{
   background: $theme-grey-color;
-  text-align: center;
+  text-align: left;
   width: 42vh;
+  min-height: 48vh;
   overflow-x: auto;
   @include scroll-bar-box;
 }

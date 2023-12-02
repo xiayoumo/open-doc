@@ -4,60 +4,53 @@
 
 
     <el-container>
-      <el-header>
-      <div class="header_title">OpenDoc</div>
-      <div v-if="!isMobileDevice" class="user-msg-box">
-        当前账号：<span class="user-msg-name">{{ nowUsername }}</span>
-      </div>
-      <router-link class="goback" to="/item/index">{{$t('goback')}}</router-link>
-    </el-header>
-      <el-container>
-        <el-aside :width="isMobileDevice?'120px':'151px'">
+        <el-header>
+          <div class="header_title">OpenDoc</div>
+          <Lang class="admin-lang-box"></Lang>
+          <div v-if="!isMobileDevice" class="user-msg-box">
+            当前账号：<span class="user-msg-name">{{ nowUsername }}</span>
+          </div>
+          <router-link class="goback" to="/item/index">{{$t('goback')}}</router-link>
+        </el-header>
+        <el-container>
+              <el-aside :width="isMobileDevice?'120px':'151px'">
+                  <el-menu
+                    default-active="1"
+                    class="el-menu-vertical-demo"
+                    text-color="#fff"
+                    @select="select_menu"
+                    active-text-color="#ffd04b">
 
-        <el-menu
-          default-active="1"
-          class="el-menu-vertical-demo"
-          text-color="#fff"
-          @select="select_menu"
-          active-text-color="#ffd04b">
-
-          <el-menu-item index="1">
-            <i class="el-icon-info"></i>
-            <span slot="title">{{$t('user_manage')}}</span>
-          </el-menu-item>
-          <el-menu-item index="2">
-            <i class="el-icon-tickets"></i>
-            <span slot="title">{{$t('item_manage')}}</span>
-          </el-menu-item>
-          <el-menu-item index="3">
-            <i class="el-icon-tickets"></i>
-            <span slot="title">{{$t('web_setting')}}</span>
-          </el-menu-item>
-        </el-menu>
-        <div v-if="isMobileDevice" class="user-msg-box-mobile">
-          <p>当前账号：</p>
-          <p class="user-msg-name">{{ nowUsername }}</p>
-        </div>
-      </el-aside>
-        <span> </span>
-        <el-container
-          v-loading="pageLoading"
-          element-loading-background="transparent"
-        >
-
-                <el-main :class="isMobileDevice?'content-box-mobile':'content-box'">
-                  <el-collapse-transition>
-                  <User v-if="open_menu_index == 1 " @closeLoading="closeLoading"> </User>
-                  <Item v-if="open_menu_index == 2 " @closeLoading="closeLoading"> </Item>
-                  <Setting v-if="open_menu_index == 3 " @closeLoading="closeLoading"> </Setting>
-                  </el-collapse-transition>
-                </el-main>
-
-          <el-footer>
-            <!-- something -->
-        </el-footer>
+                    <el-menu-item index="1">
+                      <i class="el-icon-info"></i>
+                      <span slot="title">{{$t('user_manage')}}</span>
+                    </el-menu-item>
+                    <el-menu-item index="2">
+                      <i class="el-icon-tickets"></i>
+                      <span slot="title">{{$t('item_manage')}}</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                      <i class="el-icon-tickets"></i>
+                      <span slot="title">{{$t('web_setting')}}</span>
+                    </el-menu-item>
+                  </el-menu>
+                  <div v-if="isMobileDevice" class="user-msg-box-mobile">
+                    <p>当前账号：</p>
+                    <p class="user-msg-name">{{ nowUsername }}</p>
+                  </div>
+              </el-aside>
+              <span> </span>
+              <el-container v-loading="pageLoading" element-loading-background="transparent">
+                    <el-main :class="isMobileDevice?'content-box-mobile':'content-box'">
+                      <el-collapse-transition>
+                      <User v-if="open_menu_index == 1 " @closeLoading="closeLoading"> </User>
+                      <Item v-if="open_menu_index == 2 " @closeLoading="closeLoading"> </Item>
+                      <Setting v-if="open_menu_index == 3 " @closeLoading="closeLoading"> </Setting>
+                      </el-collapse-transition>
+                    </el-main>
+              </el-container>
+              <el-footer></el-footer>
         </el-container>
-      </el-container>
     </el-container>
     </div>
   </div>
@@ -123,7 +116,9 @@
 
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
-
+  .admin-lang-box{
+    float: right;
+  }
   .user-msg-box-mobile{
     color: $theme-btn-other-color;
     line-height: 14px;
@@ -229,6 +224,7 @@ import Item from '@/components/admin/item/Index'
 import User from '@/components/admin/user/Index'
 import Setting from '@/components/admin/setting/Index'
 import store from '@/store';
+import Lang from '@/components/common/Lang';
 
 export default {
   data() {
@@ -248,6 +244,7 @@ export default {
     Item,
     User,
     Setting,
+    Lang
   },
   methods:{
     closeLoading(){

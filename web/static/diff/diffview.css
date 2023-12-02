@@ -27,29 +27,38 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Chas Emerick.
 */
+/* 全局变量样式 */
+:root {
+  --theme-color: rgb(21, 24, 34); /* 调用方式 color: var(--theme-color)*/
+  --theme-right-msg-color: rgb(170, 0, 10); /* 调用方式 color: var(--theme-right-msg-color)*/
+  --theme-grey-color: rgb(245, 245, 245); /* 调用方式 color: var(--theme-grey-color)*/
+}
 table.diff {
 	border-collapse:collapse;
-	border:1px solid darkgray;
-	white-space:pre-wrap
+	border:1px solid #eeeeee;
+	white-space:pre-wrap;
 }
-table.diff tbody { 
-	font-family:Courier, monospace
+table.diff tbody {
+	font-family:Courier, monospace;
 }
 table.diff tbody th {
-	font-family:verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
-	background:#EED;
-	font-size:11px;
-	font-weight:normal;
-	border:1px solid #BBC;
-	color:#886;
-	padding:.3em .5em .1em 2em;
-	text-align:right;
-	vertical-align:top
+  font-family: verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+  background:var(--theme-grey-color);
+  font-size: 11px;
+  font-weight: normal;
+  border: 1px solid #eeeeee;
+  color: #886;
+  padding: .3em .5em .1em 2em;
+  text-align: right;
+  vertical-align: top;
 }
 table.diff thead {
 	border-bottom:1px solid #BBC;
-	background:#EFEFEF;
-	font-family:Verdana
+	background:var(--theme-color);
+	font-family:Verdana;
+  color:var(--theme-grey-color);
+  height: 40px;
+  line-height: 40px;
 }
 table.diff thead th.texttitle {
 	text-align:left
@@ -63,10 +72,10 @@ table.diff .empty {
 	background-color:#DDD;
 }
 table.diff .replace {
-	background-color:#FD8
+	background-color:#E6A23C
 }
 table.diff .delete {
-	background-color:#E99;
+	background-color:#F56C6C;
 }
 table.diff .skip {
 	background-color:#EFEFEF;
@@ -74,10 +83,17 @@ table.diff .skip {
 	border-right:1px solid #BBC;
 }
 table.diff .insert {
-	background-color:#9E9
+	background-color:#67C23A
 }
 table.diff th.author {
-	text-align:right;
-	border-top:1px solid #BBC;
-	background:#EFEFEF
+  text-align: right;
+  border-top: 1px solid #BBC;
+  background: var(--theme-color);
+  color: var(--theme-grey-color);
+  line-height: 30px;
+}
+table.diff th.author a{
+  color: var(--theme-grey-color);
+  font-weight: bold;
+  font-size: 14px;
 }

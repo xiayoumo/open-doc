@@ -1,5 +1,5 @@
 <template>
-  <el-main class="hello single-main-box"  @scroll.native="get_scroll" >
+  <el-main class="hello single-main-box"  @scroll.native="get_scroll" id="doc-container" >
 <!--    <Header> </Header>-->
       <!-- 默认页面仪表盘 -->
       <el-container v-if="isShowDashboard" class="right-side" id="right-side">
@@ -7,20 +7,21 @@
       </el-container>
       <!--      单页面展示内容-->
       <div v-if="!isShowDashboard" id="header"></div>
-    <div v-if="!isShowDashboard"
-           v-loading="pageLoading"
-           element-loading-background="rgba(0, 0, 0, 0.2)"
-           :class="(isMobileDevice?'container-mobile':'container')+' doc-container'"
-           id="doc-container">
+    <div
+      @scroll="get_scroll"
+      v-if="!isShowDashboard"
+      v-loading="pageLoading"
+      element-loading-background="rgba(0, 0, 0, 0.2)"
+      :class="(isMobileDevice?'container-mobile':'container')+' doc-container'"
+      >
 
          <div class="doc-title-box">
-            <span id="doc-title-span" class="dn"></span>
-            <h2 id="doc-title">{{page_title}}</h2>
+            <h2 v-if="page_use!='excel'" id="doc-title">{{page_title}}</h2>
 
             <div class="tool-bar pull-right">
 
                 <el-button type="text"   @click="share_item">{{$t('share')}}</el-button>
-                <el-button type="text" @click="edit_page"  v-if="item_info.ItemPermn && item_info.is_archived < 1" >{{$t('edit')}}</el-button>
+                <el-button type="text" @click="edit_page"  v-if="item_info.ItemPermn && item_info.is_archived < 1 && !isMobileDevice" >{{$t('edit')}}</el-button>
                   &nbsp;&nbsp;&nbsp;
                 <el-dropdown>
                   <span class="el-dropdown-link">
@@ -28,7 +29,7 @@
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <router-link :to="'/item/export/'+item_info.item_id"  v-if="item_info.ItemPermn"><el-dropdown-item>{{$t('export')}}</el-dropdown-item></router-link>
-                    <router-link :to="'/item/setting/'+item_info.item_id"  v-if="item_info.ItemCreator"><el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item></router-link>
+                    <router-link :to="'/item/setting/'+item_info.item_id"  v-if="item_info.ItemCreator && !isMobileDevice"><el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item></router-link>
                     <router-link to="/item/index"><el-dropdown-item >{{$t('goback')}}</el-dropdown-item></router-link>
                   </el-dropdown-menu>
                   </el-dropdown-menu>
@@ -39,7 +40,10 @@
         <div id="doc-body" >
 
           <div id="page_md_content" >
-            <Editormd :content="content" pageType="single" :scrollBoxClass="scrollBoxClass" v-if="content"  ref="child" @doGoEdit="do_go_edit" type="html"></Editormd>
+            <Editormd v-if="page_use=='api'&&content" :key="page_id" :content="content" pageType="single" :scrollBoxClass="scrollBoxClass"  ref="child" @doGoEdit="do_go_edit" type="html"></Editormd>
+            <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" pageType="single" :scrollBoxClass="scrollBoxClass" ref="child" @doGoEdit="do_go_edit" type="html" ></Tinymce>
+            <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="page_title"  :sheetContent="content"  pageType="single" :scrollBoxClass="scrollBoxClass" ref="child"  @savePage="save_page" type="html"></Luckysheet>
+            <el-empty v-if="content==''" :description="$t('empty_data')" :image-size="250"  class="edit-model-box-empty"></el-empty>
           </div>
         </div>
 
@@ -52,9 +56,12 @@
         class="text-center"
         >
 
-        <p>{{$t('item_address')}} :  <code >{{share_item_link}}</code></p>
-        <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
-            <p style="border-bottom: 1px solid #eee;"><img   id="" style="width:114px;height:114px;" :src="qr_item_link"> </p>
+        <p><img id="" class="qrcode-img" :src="qr_item_link"> </p>
+        <p>
+          <el-button type="text" class="copy-link-btn" v-clipboard:copyhttplist="copyText" v-clipboard:success="onCopy"><span class="iconfont icon-fuzhi"></span> {{$t('copy_link')}}</el-button>
+          <code >{{share_item_link}}</code>
+        </p>
+
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
         </span>
@@ -67,6 +74,12 @@
 
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+  .copy-link-btn{
+    margin-right: 20px;
+  }
+  .qrcode-img{
+    width:114px;height:114px;
+  }
   .right-side{
     //margin-left:300px;
     background: $theme-grey-color;
@@ -82,34 +95,38 @@
     @include scroll-bar-box;
   }
   #page_md_content{
-      padding: 10px 10px 90px 10px;
+      //padding: 10px 10px 90px 10px;
       overflow: hidden;
       font-size: 11pt;
       line-height: 1.7;
       color: $theme-light-black-color;
+      //padding-bottom: 90px;
   }
   .container{
-    margin-left: 15%;
+    width: 90%;
+    margin: 0 auto;
+    //margin-left: 15%;
   }
   .container-mobile{
     margin-left: auto;
     margin-right: auto;
+    width: 100% !important;
   }
   .doc-container {
       position: static;
-      -webkit-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
-      -moz-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
-      -ms-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
-      -o-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
-      box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
-      background-color: #fff;
-      border-bottom: 1px solid $theme-input-color;
-      width: 52%;
+      //-webkit-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
+      //-moz-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
+      //-ms-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
+      //-o-box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
+      //box-shadow: 0px 1px 6px $theme-btn-other-hover-color;
+      //background-color: #fff;
+      //border-bottom: 1px solid $theme-input-color;
+      //width: 52%;
       min-height: 500px;
-      padding: 20px;
-      margin-bottom: 80px;
+      //padding: 20px;
+      margin-bottom: 60px;
       border-radius: 10px;
-      margin-top: 60px;
+      //margin-top: 60px;
   }
 
   #header{
@@ -119,7 +136,8 @@
   #doc-body{
     width: 90%;
     margin: 0 auto;
-    background-color: #fff;
+    //margin-top: 25px;
+    //background-color: #fff;
   }
 
   .doc-title-box{
@@ -162,9 +180,12 @@
 
 <script>
 import Editormd from '@/components/common/Editormd'
+import Tinymce from '@/components/common/Tinymce'
+import Luckysheet from '@/components/common/Luckysheet'
 import BackToTop from '@/components/common/BackToTop'
 import ShowDashboard from '@/components/item/show/Dashboard'
 import store from '@/store'
+import pageHelper from '@/js/page-helper'
 
 export default {
   props:{
@@ -176,6 +197,7 @@ export default {
       content:"",
       page_title:'',
       page_id:'',
+      page_use:'',
       dialogVisible:false,
       share_item_link:'',
       qr_item_link:'',
@@ -184,54 +206,66 @@ export default {
       pageLoading:false,
       goEdit:false,//前往编辑
       scrollBoxClass:'.single-main-box',
+      page_info:{},
     };
   },
   created() {
   },
   components:{
     Editormd,
+    Tinymce,
+    Luckysheet,
     BackToTop,
     ShowDashboard
   },
   methods:{
+    async save_page(page_content=''){
+      var that = this ;
+      that.pageLoading = true;
+      let res = await pageHelper.savePage(this.page_info.cat_id,this.page_info.item_id,this.page_id,page_content,this.page_title,this.page_info.s_number,this.page_info.page_use)
+      if(res.error_code==0){
+        that.get_page_content(this.page_id);
+      }
+      that.pageLoading = false;
+    },
     do_go_edit(){
       this.goEdit = true;
     },
     get_scroll(){
-      const ele = document.querySelector(this.scrollBoxClass);
-      let isBottom = ele.scrollTop+ele.clientHeight-ele.scrollHeight;
-      if(isBottom < 0){
-        this.$refs.child.onScroll(ele.scrollTop);
-      }else{
-        this.$refs.child.toScrollBottom();
+      if(!this.isMobileDevice&&this.page_use!='excel'){
+        const ele = document.querySelector(this.scrollBoxClass);
+        let isBottom = ele.scrollTop+ele.clientHeight-ele.scrollHeight;
+        if(isBottom < 0){
+          this.$refs.child.onScroll(ele.scrollTop);
+        }else{
+          this.$refs.child.toScrollBottom();
+        }
       }
     },
-    get_page_content(page_id){
+    async get_page_content(page_id){
         var that = this ;
-        that.pageLoading = true;
-        var url = DocConfig.server+'/api/page/info';
         if (! page_id) {
           page_id = that.page_id;
         };
-        var params = new URLSearchParams();
-        params.append('page_id',  page_id);
-        that.axios.post(url, params)
-          .then(function (response) {
-            if (response.data.error_code === 0 ) {
-              //that.$message.success("加载成功");
-              setTimeout(function() {
-                that.page_title = response.data.data.page_title ;
-                that.content = response.data.data.page_content ;
-                that.pageLoading = false;
-              }, 300);
-            }else{
-              that.$alert(response.data.error_message);
-            }
 
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        that.pageLoading = true;
+        let response = await pageHelper.getPage(page_id);
+        that.pageLoading = false;
+        if (response.error_code === 0 ) {
+          that.page_info = response.data;
+          setTimeout(function() {
+            that.page_title = response.data.page_title ;
+            that.page_use = response.data.page_use ;
+            that.content = response.data.page_content ;
+            that.pageLoading = false;
+          }, 300);
+        }else{
+          that.$alert(response.error_message);
+        }
+          // .catch(function (error) {
+          //   that.pageLoading = false;
+          //   console.log(error);
+          // });
     },
 
     edit_page(){
@@ -249,8 +283,8 @@ export default {
       var doc_container = document.getElementById('doc-container') ;
       doc_container.style.width = '100%';
       doc_container.style.padding = '5px';
-      var header = document.getElementById('header') ;
-      header.style.height = '10px';
+      // var header = document.getElementById('header') ;
+      // header.style.height = '10px';
     },
     onCopy(){
       this.$message({message:this.$t("copy_success")});
@@ -267,6 +301,7 @@ export default {
   mounted () {
     this.menu = this.item_info.menu ;
     this.page_id = this.menu.pages.page_id ;
+    this.page_use = this.menu.pages.page_use ;
     this.get_page_content();
 
     //根据屏幕宽度进行响应(应对移动设备的访问)

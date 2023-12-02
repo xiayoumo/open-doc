@@ -84,7 +84,7 @@ export default {
         cat_id:0,
         parent_cat_id:'',
         cat_name:'',
-        s_number:''
+        s_number:99
       },
       catalogs:[],
       catalogs_level_2:[],
@@ -93,7 +93,7 @@ export default {
 
   },
   computed: {
-    //表格形式展示目录数据
+    //表格形式展示文件夹数据
     catalogs_table:function(){
         var Info = this.catalogs.slice(0);
         var cat_array = [] ;
@@ -125,7 +125,7 @@ export default {
         };
         return cat_array;
     },
-    //新建/编辑目录时供用户选择的上级目录列表
+    //新建/编辑文件夹时供用户选择的上级文件夹列表
     parent_catalogs:function(){
         var Info = this.catalogs.slice(0);
         var cat_array = [] ;
@@ -180,11 +180,14 @@ export default {
           var url = DocConfig.server+'/api/catalog/save';
 
           var params = new URLSearchParams();
+          let cat_id =  this.MyForm.cat_id?this.MyForm.cat_id:0
+          let parent_cat_id =  this.MyForm.parent_cat_id?this.MyForm.parent_cat_id:'';
+          let s_number =  this.MyForm.s_number?this.MyForm.s_number:99;
           params.append('item_id',  that.$route.params.item_id);
-          params.append('cat_id', this.MyForm.cat_id);
-          params.append('parent_cat_id', this.MyForm.parent_cat_id);
+          params.append('cat_id', cat_id);
+          params.append('parent_cat_id', parent_cat_id);
           params.append('cat_name', this.MyForm.cat_name);
-          params.append('s_number', this.MyForm.s_number);
+          params.append('s_number', s_number);
 
           that.axios.post(url, params)
             .then(function (response) {

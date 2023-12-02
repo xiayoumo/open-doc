@@ -8,32 +8,17 @@
             <el-button type="text" @click="goback" class="goback-btn " >{{$t('goback')}}</el-button>
             <el-tabs  value="first" tab-position="left">
               <el-tab-pane :label="$t('base_info')" name="first">
-
-                <Info> </Info>
-
-            </el-tab-pane>
-
-
-            <el-tab-pane :label="$t('member_manage')" name="second">
-
-                <Member> </Member>
-
-            </el-tab-pane>
-
-            <el-tab-pane :label="$t('advance_setting')" name="third">
-
-                <Advanced> </Advanced>
-
-            </el-tab-pane>
-
-            <el-tab-pane :label="$t('open_api')" name="four">
-
-                  <OpenApi> </OpenApi>
-
-                </el-form>
-
-            </el-tab-pane>
-
+                  <Info :infoForm="infoForm"> </Info>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('member_manage')" name="second">
+                  <Member> </Member>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('advance_setting')" name="third">
+                  <Advanced> </Advanced>
+              </el-tab-pane>
+              <el-tab-pane v-if="infoForm.item_use=='api'" :label="$t('open_api')" name="four">
+                    <OpenApi> </OpenApi>
+              </el-tab-pane>
             </el-tabs>
           </template>
           </el-card>
@@ -60,9 +45,8 @@ export default {
   },
   data () {
     return {
-      userInfo:{
-
-      }
+      userInfo:{},
+      infoForm:{},
     }
 
   },
@@ -94,7 +78,7 @@ export default {
   },
 
   mounted(){
-
+    this.get_item_info()
   },
   beforeCreate() {
     /*给body添加类，设置背景色*/
@@ -113,7 +97,7 @@ export default {
 
 
 .center-card .el-card__body,.center-card .el-tabs__content{
-  //width: 80vh;
+  height: 70vh;
   overflow-x: auto;
 }
 
@@ -129,15 +113,14 @@ export default {
 
 .center-card{
   text-align: center;
-  max-width: 600px;
-  width: 100%;
+  min-width: 600px;
+  width: 50%;
   min-height: 500px;
   max-height: 700px;
   background: $theme-grey-color;
   overflow-x: auto;
   @include scroll-bar-box;
 }
-
 .infoForm{
   max-width: 350px;
   width: 100%;

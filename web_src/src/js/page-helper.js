@@ -1,6 +1,8 @@
 /**
- * Echarts Setting Tools
+ * page helper Tools
  */
+import httpHelper from '@/js/http-tool-helper'
+
 export default {
   //消息窗口滚动到消息最新处
   scrollPageById(idName='right-side',scrollType='top',that){
@@ -15,5 +17,26 @@ export default {
       },"200");
     })
 
+  },
+  async savePage(cat_id=0,item_id=0,page_id=0,page_content='',page_title='',s_number=99,page_use='api'){
+    let url = '/api/page/save';
+    let params = {
+      page_id:page_id,
+      item_id:item_id,
+      s_number:s_number,
+      page_title:page_title,
+      page_content:encodeURIComponent(page_content),
+      is_urlencode:1,
+      cat_id:cat_id,
+      page_use:page_use
+    };
+    let res = await httpHelper.execPost(url, params);
+    return res;
+  },
+  async getPage(page_id=0){
+    let url = '/api/page/info';
+    let params = {page_id:page_id};
+    let res = await httpHelper.execPost(url, params);
+    return res;
   },
 };

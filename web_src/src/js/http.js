@@ -24,7 +24,7 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        if (response.config.data && response.config.data.indexOf("redirect_login=false") > -1 ) {
+        if (response.config.data && JSON.stringify(response.config.data) != "{}" && response.config.data.indexOf("redirect_login=false") > -1 ) {
             //不跳转到登录
         }
         else if (response.data.error_code === 10102 ) {
