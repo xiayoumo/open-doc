@@ -2,6 +2,9 @@
 
 OpenDoc源于开源项目[showDoc](https://www.showdoc.com.cn/ "showDoc")早期开源版本,升级了前端手脚架版本，用户交互体验重构，以及新增服务功能（支持word编辑器，快速导航，共享excel,可视化文档以及文件夹管理等），是一个更适合 企业团队(或个人）的在线文档（包括api文档）管理工具。
 
+### 示例官网 
+[OpenDoc](https://www.opendoc.cc/show/index "OpenDoc")
+
 ### 它可以用来做什么
 
 ##### 共享文档 [（ 查看示例 ）](https://www.opendoc.cc/item-show/35?page_id=3962 "（ 查看示例 ）")
