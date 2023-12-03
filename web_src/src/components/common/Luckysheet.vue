@@ -133,44 +133,43 @@ export default {
         this.nowUserName = userInfoObject.username;
       }
     }
-
-    // var that = this;
-    //加载依赖""
-    $s([
-      `${this.jqueryMinPath}`
-    ],()=>{
-      $s([
-        `${this.editorPath}/plugins/js/plugin.js`,// 内已包含jq已去除
-        `${this.editorPath}/luckysheet.umd.js`,
-        // `${this.editorPath}/expendPlugins/chart/chartmix.umd.min.js`
-      ], () => {
-        this.init();
-        window.exportLuckysheetExcel = this.exportExcel;// 定义自定义导出方法（供自定义工具栏导出按钮使用）
-        window.excelUpload = this.importExcel;// 定义自定义导入
-        window.saveExcel = this.saveExcel;// 定义自定义保存
-
-      });
-    });
+    if (typeof window.luckysheet !== 'undefined') {
+      this.init();
+    }else{
+        //加载依赖""
+        $s([
+          `${this.jqueryMinPath}`
+        ],()=>{
+          $s([
+            `${this.editorPath}/plugins/js/plugin.js`,// 内已包含jq已去除
+            `${this.editorPath}/luckysheet.umd.js`,
+            // `${this.editorPath}/expendPlugins/chart/chartmix.umd.min.js`
+          ], () => {
+            this.init();
+          });
+        });
+    }
   },
   methods: {
     async init() {
-      this.$forceUpdate();// 解决页面来回切换后的顶部出现断层问题
+      var that = this;
+      that.$forceUpdate();// 解决页面来回切换后的顶部出现断层问题
       var luckysheet = window.luckysheet
-      let dataConfig = this.getConfig();
+      let dataConfig = that.getConfig();
       // var loadUrl = DocConfig.server+'/api/page/getExcelTableByGridKey';
       // dataConfig.loadUrl = loadUrl;
       // dataConfig.gridKey = this.sheetPageId;
       // // dataConfig.editMode = true;
       // dataConfig.allowUpdate = true;
       // dataConfig.updateUrl=`ws://`+DocConfig.server+`/luckysheet/api/updateUrl`;
-      dataConfig.lang = this.$i18n.locale;
-      if (this.type == 'html') {
+      dataConfig.lang = that.$i18n.locale;
+      if (that.type == 'html') {
         dataConfig.showstatisticBar = false; //  最下方字数统计工具栏
         dataConfig.showsheetbar = true;// 最下方sheet表工具栏
         dataConfig.showtoolbar = false;
         dataConfig.showtoolbarConfig = {saveExcel: dataConfig.allowEdit, exportExcel: !dataConfig.allowEdit, screenshot: true};
         let userInfoIcon = '<i class="' + (dataConfig.allowEdit ? 'el-icon-share' : 'el-icon-view') + ' user-info-icon" aria-hidden="true"></i>';
-        let userInfoName = dataConfig.allowEdit ? this.$t('share_excel') : this.$t('non_share_excel');
+        let userInfoName = dataConfig.allowEdit ? that.$t('share_excel') : that.$t('non_share_excel');
         dataConfig.userInfo = userInfoIcon + ' ' + userInfoName;
         dataConfig.myFolderUrl = '';
         dataConfig.showinfobar = true;
@@ -178,13 +177,17 @@ export default {
         dataConfig.allowEdit = true;
         dataConfig.showtoolbar = true;
         dataConfig.showinfobar = false;
-        dataConfig.title = this.sheetTitle;
+        dataConfig.title = that.sheetTitle;
         dataConfig.chart = true;
         dataConfig.plugins = ['chart'];// 参考文档 https://blog.csdn.net/qq_34645412/article/details/127209040
         dataConfig.showtoolbarConfig = {importExcel: false, exportExcel: false, saveExcel: false};
       }
+      that.luckysheetLoading = false;
       await luckysheet.create(dataConfig);
-      this.luckysheetLoading = false;
+      window.exportLuckysheetExcel = that.exportExcel;// 定义自定义导出方法（供自定义工具栏导出按钮使用）
+      window.excelUpload = that.importExcel;// 定义自定义导入
+      window.saveExcel = that.saveExcel;// 定义自定义保存
+
     },
     getConfig(){
       let dataConfig = false;
@@ -343,7 +346,7 @@ export default {
 
   },
   beforeDestroy() {
-    window.luckysheet.destroy();// 必须销毁
+     //window.luckysheet.destroy();// 销毁会提示错误
   }
 }
 </script>
@@ -409,8 +412,8 @@ export default {
 .luckysheet-cs-fillhandle {
   background-color: $theme-fourth-color !important;
 }
-.luckysheet-input-box {
-  border: 2px $theme-fourth-color solid !important;
+#luckysheet-input-box {
+  border: 2px $theme-fourth-color solid;
 }
 .user-info-icon{
   font-size:16px;

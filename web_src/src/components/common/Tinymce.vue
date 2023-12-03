@@ -6,7 +6,7 @@
         <TinymceEditor v-if="type=='editor'" :id="editViewId" v-model="tinymceHtml" :init="init"></TinymceEditor>
       </div>
 <!--      查看页面-->
-      <div :id="htmlViewId" v-if="type=='html'&&tinymceHtml.trim().length>0" class="tinymce-html-preview" v-html="tinymceHtml"></div>
+      <div :id="htmlViewId" v-if="type=='html'&&tinymceHtml.trim().length>0" :class="isMobileDevice?'tinymce-html-preview-mobile':'tinymce-html-preview'" v-html="tinymceHtml"></div>
       <el-empty v-if="type=='html'&&tinymceHtml.trim().length==0"  :description="$t('empty_data')" :image-size="300"  class="tinymce-html-preview edit-model-box-empty"></el-empty>
     </el-col>
     <el-col v-if="showMarkdownNav" :span="6">
@@ -220,7 +220,6 @@ export default {
             tpHrNumberArray.push(num);
           }
         }
-        // console.log($(this).text()+' '+$(this).attr('class')+' '+ num +' '+(typeof num === "number"));
       });
       let tpHrMaxThreeArray =  tpHrNumberArray.sort((a,b)=>{return a-b}).slice(0,3);
       tpHrArray.each(function() {
@@ -231,7 +230,6 @@ export default {
             if (tpHrMaxThreeArray.includes(num)) {// 当为前三小的标题时
               if ($(this).children().find("a.reference-link").length == 0) {
                 let idString = 'h'+ num + '-' + md5(headTitle);
-                //console.log(headTitle+' '+idString)
                 $(this).attr('id', idString);
                 $(this).prepend('<a name="' + headTitle + '" class="reference-link"></a>');
               }
@@ -265,44 +263,49 @@ export default {
         language = 'en';
         language_url = '';
       }
-
-      // this.$nextTick(() => {
-
-          tinymce.init({}) // 特别注意这个空对象的存在，如果这个初始化空对象不存在依旧会报错
-          this.tinymceHtml = this.tinymceContent;
-          if(this.type=='editor'){ // 编辑
-              this.init.language_url = language_url;
-              this.init.language = language;
-              tinymce.init(this.init);
-              tinymce.util.I18n.setCode(language);// https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.util.i18n/#setCode
-          }else{ // 查看
-              // 初始化展示
-              this.tinymceHtmlViewConfig.language_url = language_url;
-              this.tinymceHtmlViewConfig.language = language;
-              tinymce.init(this.tinymceHtmlViewConfig);
-              //加载依赖""
-              $s([`${this.jqueryMinPath}`],()=>{
-                  if(this.showMarkdownNav){
-                    this.$refs.QuickNav.setQuickNavLoading(true);
-                    // 初始化快速导航需要的标题格式（与Editormd编辑器保持一致）
-                    // tpImportword 导入
-                    this.initQuickNavByTpImportword('#'+this.htmlViewId);
-                    // 页面添加模式
-                    this.initQuickNavByInput('#'+this.htmlViewId);
-                    // 获取便捷菜单内容
-                    this.markdownNavData = this.$refs.QuickNav.getMarkdownNavData();
-                    this.$refs.QuickNav.initScrollNav();
-                    this.quickNavLoading = false;
-                    this.$refs.QuickNav.setQuickNavLoading(false);
-                  }
-              });
+      if (typeof tinymce === 'undefined') { // 防止重复加载jq
+        tinymce.init({}) // 特别注意这个空对象的存在，如果这个初始化空对象不存在依旧会报错
+      }
+      this.tinymceHtml = this.tinymceContent;
+      if(this.type=='editor'){ // 编辑
+          this.init.language_url = language_url;
+          this.init.language = language;
+          tinymce.init(this.init);
+          tinymce.util.I18n.setCode(language);// https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.util.i18n/#setCode
+      }else{ // 查看
+          // 初始化展示
+          this.tinymceHtmlViewConfig.language_url = language_url;
+          this.tinymceHtmlViewConfig.language = language;
+          tinymce.init(this.tinymceHtmlViewConfig);
+          //加载依赖""
+        if(this.showMarkdownNav) {
+          if (typeof window.$ !== 'undefined') { // 防止重复加载jq
+            this.initShowHtmlQuickNav();
+          } else {
+            $s([`${this.jqueryMinPath}`],()=>{
+                this.initShowHtmlQuickNav();
+            });
           }
-      // });
+        }
+      }
       //界面自适应手机
       if( this.isMobile() ||  window.screen.width< 1000) {
         //$("#" + this.id).removeClass("editormd-html-preview").addClass("editormd-html-preview-mobile");
         this.isMobileDevice = true;
       }
+    },
+    initShowHtmlQuickNav(){
+      this.$refs.QuickNav.setQuickNavLoading(true);
+      // 初始化快速导航需要的标题格式（与Editormd编辑器保持一致）
+      // tpImportword 导入
+      this.initQuickNavByTpImportword('#'+this.htmlViewId);
+      // 页面添加模式
+      this.initQuickNavByInput('#'+this.htmlViewId);
+      // 获取便捷菜单内容
+      this.markdownNavData = this.$refs.QuickNav.getMarkdownNavData();
+      this.$refs.QuickNav.initScrollNav();
+      this.quickNavLoading = false;
+      this.$refs.QuickNav.setQuickNavLoading(false);
     },
     goEdit(data){
       this.$emit("doGoEdit",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
@@ -315,7 +318,7 @@ export default {
     }
   },
   beforeDestroy () {
-    tinymce.remove()
+    tinymce.remove();
   }
 }
 </script>
@@ -364,5 +367,19 @@ export default {
   border-radius: 10px;
   margin-top: 10px;
 }
+
+.tinymce-html-preview-mobile {
+  padding: 5px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: auto;
+  //width: 100%;
+  background-color: #fff;
+  min-height: 70vh;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
 
 </style>

@@ -310,7 +310,7 @@ export default {
 
 .nav-box{
   position: fixed;
-  top: 190px;
+  top: 11rem;
   width: 20%;
 }
 .markdown-nav-box{

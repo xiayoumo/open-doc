@@ -12,10 +12,17 @@
         <div id="doc-body" >
 
           <div id="page_md_content" >
-            <Editormd v-if="page_use=='api'&&content" :key="page_id" :content="content" :scrollBoxClass="scrollBoxClass" ref="child"  type="html"></Editormd>
-            <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" :scrollBoxClass="scrollBoxClass" ref="child" type="html" ></Tinymce>
-            <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="page_title"  :sheetContent="content" :scrollBoxClass="scrollBoxClass" ref="child" type="html"></Luckysheet>
-            <el-empty v-if="content==''" :description="$t('empty_data')" :image-size="250"  class="edit-model-box-empty"></el-empty>
+            <viewPage
+              ref="viewPage"
+              :pageLoading="pageLoading"
+              :page_title="page_title"
+              pageType="many"
+              :page_use="page_info.page_use"
+              :content="content"
+              :page_id="page_id"
+              :scrollBoxClass="scrollBoxClass"
+              @savePage="save_page">
+            </viewPage>
           </div>
         </div>
 
@@ -29,8 +36,12 @@
 
 <style scoped  lang="scss">
 @import '~@/components/common/base.scss';
+  .skeleton-template-box{
+    width:100%;
+    height: 72vh;
+  }
   .share-main-box{
-    padding-top: 15px;
+    padding-top: 5.2rem;
     overflow-y: auto;
     height: 100vh;
     @include scroll-bar-box;
@@ -62,7 +73,7 @@
   }
 
   #header{
-    height: 80px;
+    //height: 80px;
   }
 
   #doc-body{
@@ -105,9 +116,8 @@
 
 
 <script>
-import Editormd from '@/components/common/Editormd'
-import Tinymce from '@/components/common/Tinymce'
-import Luckysheet from '@/components/common/Luckysheet'
+
+import viewPage from '@/components/page/View'
 import BackToTop from '@/components/common/BackToTop'
 import pageHelper from '@/js/page-helper'
 
@@ -118,34 +128,38 @@ export default {
       itemList:{},
       content:"",
       page_title:'',
-      scrollBoxClass:'.share-main-box',
+      scrollBoxClass:'share-main-box',
       page_id:0,
       page_use:'',
+      page_info:{},
+      pageLoading:false
     };
   },
   components:{
-    Editormd,
-    Tinymce,
-    Luckysheet,
+    viewPage,
     BackToTop
   },
   methods:{
-    get_scroll(){
-      if(!this.isMobileDevice&&this.page_use!='excel'){
-        const ele = document.querySelector(this.scrollBoxClass);
-        let isBottom = ele.scrollTop+ele.clientHeight-ele.scrollHeight;
-        if(isBottom < 0){
-          this.$refs.child.onScroll(ele.scrollTop);
-        }else{
-          this.$refs.child.toScrollBottom();
-        }
+    async save_page(page_content=''){
+      var that = this ;
+      that.pageLoading = true;
+      let res = await pageHelper.savePage(this.page_info.cat_id,this.page_info.item_id,this.page_id,page_content,this.page_title,this.page_info.s_number,this.page_info.page_use)
+      if(res.error_code==0){
+        that.get_page_content(this.page_id);
       }
+      that.pageLoading = false;
+    },
+    get_scroll(){
+      this.$refs.viewPage.get_scroll();
     },
     async get_page_content(){
         var that = this ;
+        that.pageLoading = true;
         var page_id = that.$route.params.page_id ;
         let response = await pageHelper.getPage(page_id);
+        that.pageLoading = false;
         if (response.error_code === 0 ) {
+          that.page_info = response.data;
           that.content = response.data.page_content ;
           that.page_title = response.data.page_title ;
           that.page_id = response.data.page_id ;
@@ -169,7 +183,6 @@ export default {
       var header = document.getElementById('header') ;
       header.style.height = '10px';
     }
-
   },
   mounted () {
     this.get_page_content();

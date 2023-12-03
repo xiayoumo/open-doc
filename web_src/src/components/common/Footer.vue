@@ -3,7 +3,6 @@
 
     <span class="footer-pic">
       <img src="../../../static/logo/doc-log3.png" style="width:100px;height:36px;margin-bottom:-10px;" alt="">
-      <a href="https://beian.miit.gov.cn/#/Integrated/index" class="beian-btn" target="_blank">备案号：粤ICP备2023092563号-2</a>
     </span>
 <!--    <a href="https://www.opendoc.com.cn/" class="other-web-a" target="_blank"> 友情推荐：ShowDoc</a>-->
 

@@ -67,7 +67,6 @@
 
 
 <script>
-  import Editormd from '@/components/common/Editormd'
   export default {
   props:{
     get_page_content:'',
@@ -82,9 +81,6 @@
       openeds:[],
       menu:''
     }
-  },
-  components:{
-    Editormd
   },
   methods:{
     setLeftMenuEdit(){

@@ -2,10 +2,7 @@
   <div class="edit-page-box" @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
     <Header v-if="!is_children"> </Header>
     <el-container
-      v-loading="pageLoading"
-      element-loading-body="true"
       :class="containerNarrowClass"
-      element-loading-background="rgba(0, 0, 0, 0.2)"
       >
         <el-row class="masthead" id="edit-page-container">
             <el-form>
@@ -80,9 +77,17 @@
                 </el-descriptions-item>
               </el-descriptions>
             </el-form>
-            <Editormd v-if="page_use=='api'&&content"  :key="page_id" :content="content" :pageId="page_id" ref="Editormd"  type="editor" ></Editormd>
-            <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" ref="Tinymce"  type="editor" ></Tinymce>
-            <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="title" :sheetPageId="page_id" :sheetContent="content" ref="Luckysheet"  type="editor" ></Luckysheet>
+            <el-skeleton class="skeleton-template-box" :loading="pageLoading||pageSaveLoading" animated :throttle="1500">
+              <template slot="template">
+                <Skeleton :contentRow="15"></Skeleton>
+              </template>
+              <template>
+                <Editormd v-if="page_use=='api'&&content" :key="page_id" :content="content" :pageId="page_id" ref="editChild"  type="editor" ></Editormd>
+                <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" ref="editChild"  type="editor" ></Tinymce>
+                <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="title" :sheetPageId="page_id" :sheetContent="content" ref="editChild"  type="editor" ></Luckysheet>
+              </template>
+            </el-skeleton>
+
         </el-row>
 
         <!-- 更多模板 -->
@@ -126,6 +131,10 @@
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
 
+.skeleton-template-box{
+  width:100%;
+  height: 72vh;
+}
 .edit-tool-box{
   width: 100%;
 }
@@ -185,6 +194,7 @@
 import Editormd from '@/components/common/Editormd'
 import Tinymce from '@/components/common/Tinymce'
 import Luckysheet from '@/components/common/Luckysheet'
+import Skeleton from '@/components/common/Skeleton' // 骨架屏
 import JsonTool from '@/components/common/JsonTool'
 import TemplateList from '@/components/page/edit/TemplateList'
 import SystemTemplate from '@/components/page/edit/SystemTemplate'
@@ -201,6 +211,7 @@ export default {
     Tinymce,
     Editormd,
     Luckysheet,
+    Skeleton,
     JsonTool,
     TemplateList,
     SystemTemplate,
@@ -234,7 +245,7 @@ export default {
       page_id:0,
       copy_page_id:0,
       // catalogs:[],
-      pageLoading:false,
+      pageLoading:true,
       nowCatName:'',
       page_use:'',
     };
@@ -272,12 +283,14 @@ export default {
     //获取页面内容
     async get_page_content(targetPageId,isByCopy=false){
         var that = this ;
+        that.pageLoading = true;
         if (!targetPageId) {
           var targetPageId = isByCopy?that.copy_page_id:that.page_id;
         }
         that.$forceUpdate();// 必须强制更新
-        that.pageLoading = true;
+
         let response = await pageHelper.getPage(targetPageId);// 同步获取
+        that.pageLoading = false;
         if (response.error_code === 0) {
           that.page_use = response.data.page_use;
           that.editorType = that.getEditorTypeByPageUse(that.page_use);
@@ -292,18 +305,17 @@ export default {
         } else {
           that.$alert(response.error_message);
         }
-        that.pageLoading = false;
     },
     getContentByPageUse(nowPageUse='doc'){
       let content;
       if(nowPageUse=='api'){
-        content = this.$refs.Editormd.getMarkdown();
+        content = this.$refs.editChild.getMarkdown();
       }
       if(nowPageUse=='doc'){
-        content = this.$refs.Tinymce.getTinymceContent();
+        content = this.$refs.editChild.getTinymceContent();
       }
       if(nowPageUse=='excel'){
-        content = this.$refs.Luckysheet.getLuckysheetContent();
+        content = this.$refs.editChild.getLuckysheetContent();
       }
       return content;
     },
@@ -323,7 +335,7 @@ export default {
     getNewContentByPageUse(targetPageUse='doc',nowPageUse='doc'){// doc/api/excel
       let content = this.getContentByPageUse(nowPageUse);
       if(targetPageUse=='doc' && nowPageUse=='api'){// markdown 转 html
-        content = this.$refs.Editormd.markdownDataToHtml(content);
+        content = this.$refs.editChild.markdownDataToHtml(content);
         if(content.length==0){
           content = ' ';
         }
@@ -385,9 +397,9 @@ export default {
     //插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
     insertValue(value,is_cover){
       if (value) {
-          let editType = this.getEditorTypeByPageUse(this.page_use);
-          let refsKey = editType.toLowerCase();
-          let childRef = this.$refs[refsKey];//获取子组件
+          // let editType = this.getEditorTypeByPageUse(this.page_use);
+          // let refsKey = editType.toLowerCase();
+          let childRef = this.$refs.editChild;//获取子组件
           if (is_cover) {
             // 清空
             childRef?childRef.clear():'';
@@ -497,7 +509,7 @@ export default {
       var that = this ;
       var content;
       if(that.page_use=='api'){
-        let childRef = this.$refs.Editormd ;
+        let childRef = this.$refs.editChild ;
         content = childRef.getMarkdown() ;
       }else{
         content = that.content;

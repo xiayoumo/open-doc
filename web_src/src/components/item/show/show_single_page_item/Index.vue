@@ -5,17 +5,15 @@
       <el-container v-if="isShowDashboard" class="right-side" id="right-side">
         <ShowDashboard :item_info="item_info"></ShowDashboard>
       </el-container>
-      <!--      单页面展示内容-->
-      <div v-if="!isShowDashboard" id="header"></div>
-    <div
-      @scroll="get_scroll"
+      <div
       v-if="!isShowDashboard"
+      @scroll="get_scroll"
       v-loading="pageLoading"
+      element-loading-body="true"
       element-loading-background="rgba(0, 0, 0, 0.2)"
       :class="(isMobileDevice?'container-mobile':'container')+' doc-container'"
       >
-
-         <div class="doc-title-box">
+          <div class="doc-title-box">
             <h2 v-if="page_use!='excel'" id="doc-title">{{page_title}}</h2>
 
             <div class="tool-bar pull-right">
@@ -37,15 +35,22 @@
             </div>
 
         </div>
-        <div id="doc-body" >
-
-          <div id="page_md_content" >
-            <Editormd v-if="page_use=='api'&&content" :key="page_id" :content="content" pageType="single" :scrollBoxClass="scrollBoxClass"  ref="child" @doGoEdit="do_go_edit" type="html"></Editormd>
-            <Tinymce v-if="page_use=='doc'&&content" :key="page_id" :tinymceContent="content" pageType="single" :scrollBoxClass="scrollBoxClass" ref="child" @doGoEdit="do_go_edit" type="html" ></Tinymce>
-            <Luckysheet v-if="page_use=='excel'&&content" :key="page_id" :sheetTitle="page_title"  :sheetContent="content"  pageType="single" :scrollBoxClass="scrollBoxClass" ref="child"  @savePage="save_page" type="html"></Luckysheet>
-            <el-empty v-if="content==''" :description="$t('empty_data')" :image-size="250"  class="edit-model-box-empty"></el-empty>
+          <div id="doc-body" >
+            <div id="page_md_content" >
+              <viewPage
+                ref="viewPage"
+                :pageLoading="pageLoading"
+                :page_title="page_title"
+                pageType="single"
+                :page_use="page_use"
+                :content="content"
+                :page_id="page_id"
+                :scrollBoxClass="scrollBoxClass"
+                @doGoEdit="do_go_edit"
+                @savePage="save_page">
+              </viewPage>
+            </div>
           </div>
-        </div>
 
       </div>
       <el-dialog
@@ -74,6 +79,10 @@
 
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
+  .skeleton-template-box{
+    width:100%;
+    height: 72vh;
+  }
   .copy-link-btn{
     margin-right: 20px;
   }
@@ -89,7 +98,7 @@
     //@include scroll-bar-box;
   }
   .single-main-box{
-    padding-top: 15px;
+    padding-top: 5rem;
     overflow-y: auto;
     height: 100vh;
     @include scroll-bar-box;
@@ -130,7 +139,7 @@
   }
 
   #header{
-    height: 80px;
+    //height: 80px;
   }
 
   #doc-body{
@@ -179,9 +188,7 @@
 </style>
 
 <script>
-import Editormd from '@/components/common/Editormd'
-import Tinymce from '@/components/common/Tinymce'
-import Luckysheet from '@/components/common/Luckysheet'
+import viewPage from '@/components/page/View'
 import BackToTop from '@/components/common/BackToTop'
 import ShowDashboard from '@/components/item/show/Dashboard'
 import store from '@/store'
@@ -205,16 +212,14 @@ export default {
       isMobileDevice:false,
       pageLoading:false,
       goEdit:false,//前往编辑
-      scrollBoxClass:'.single-main-box',
+      scrollBoxClass:'single-main-box',
       page_info:{},
     };
   },
   created() {
   },
   components:{
-    Editormd,
-    Tinymce,
-    Luckysheet,
+    viewPage,
     BackToTop,
     ShowDashboard
   },
@@ -232,14 +237,8 @@ export default {
       this.goEdit = true;
     },
     get_scroll(){
-      if(!this.isMobileDevice&&this.page_use!='excel'){
-        const ele = document.querySelector(this.scrollBoxClass);
-        let isBottom = ele.scrollTop+ele.clientHeight-ele.scrollHeight;
-        if(isBottom < 0){
-          this.$refs.child.onScroll(ele.scrollTop);
-        }else{
-          this.$refs.child.toScrollBottom();
-        }
+      if(!this.isShowDashboard){
+        this.$refs.viewPage.get_scroll();
       }
     },
     async get_page_content(page_id){

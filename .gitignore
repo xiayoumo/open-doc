@@ -8,3 +8,4 @@ composer.phar
 /server/Application/Runtime/Logs
 /server/Application/Runtime/Temp
 /web
+/web

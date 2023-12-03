@@ -82,6 +82,10 @@ export default {
       type: String,
       default: '../../../static/editor.md',
     },
+    jqueryMinPath: {
+      type: String,
+      default: '../../../static/jquery.min.js',
+    },
     editorConfig: { // 参考官方：https://pandao.github.io/editor.md/examples/index.html
       type: Object,
       default() {
@@ -180,32 +184,33 @@ export default {
     };
   },
   mounted() {
-    //加载依赖""
-    $s([`${this.editorPath}/../jquery.min.js`,
-    	`${this.editorPath}/lib/raphael.min.js`,
-    	`${this.editorPath}/lib/flowchart.min.js`,
-
-    	],()=>{
-          $s([
-            `${this.editorPath}/../xss.min.js`,
-            `${this.editorPath}/lib/marked.min.js`,
-            `${this.editorPath}/lib/prettify.min.js`,
-            `${this.editorPath}/lib/underscore.min.js`,
-            `${this.editorPath}/lib/sequence-diagram.min.js`,
-            `${this.editorPath}/lib/jquery.flowchart.min.js`
-          ], () => {
-
-            $s([`${this.editorPath}/editormd.js`], () => {
-              this.initEditor();
-            });
-
-            $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
-              hljs.initHighlightingOnLoad();
-            });
+    if (typeof window.editormd !== 'undefined') { // 防止重复加载jq
+      this.initEditor();
+      hljs.initHighlightingOnLoad();
+    }else{
+      //加载依赖""
+      $s([
+        `${this.jqueryMinPath}`,
+        `${this.editorPath}/lib/raphael.min.js`,
+        `${this.editorPath}/lib/flowchart.min.js`
+      ],()=>{
+        $s([
+          `${this.editorPath}/../xss.min.js`,
+          `${this.editorPath}/lib/marked.min.js`,
+          `${this.editorPath}/lib/prettify.min.js`,
+          `${this.editorPath}/lib/underscore.min.js`,
+          `${this.editorPath}/lib/sequence-diagram.min.js`,
+          `${this.editorPath}/lib/jquery.flowchart.min.js`
+        ], () => {
+          $s([`${this.editorPath}/editormd.js`], () => {
+            this.initEditor();
+          });
+          $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
+            hljs.initHighlightingOnLoad();
+          });
         });
-    });
-
-
+      });
+    }
   },
   methods: {
     editormdFinishLoad(){// 当子组件加载完成后插入数据
@@ -460,8 +465,10 @@ export default {
     //   window.clearInterval(i);
     // };
     // 必须移除监听器，不然当该vue组件被销毁了，监听器还在就会出错
-    window.removeEventListener('scroll', this.onScroll)
+    window.removeEventListener('scroll', this.onScroll);
     //window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    // delete window.editormd;
+    // delete window.jquery;
   },
 };
 </script>

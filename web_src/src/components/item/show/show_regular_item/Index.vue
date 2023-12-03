@@ -22,7 +22,6 @@
           <el-header class="page-head-box">
             <div class="header-right">
               <!-- 登录的事情下 -->
-<!--              <router-link class="header-right-goback-btn" v-if="item_info.is_login" to="/item/index" >{{$t('goback')}} </router-link>-->
               <el-dropdown  v-if="item_info.is_login&&!isMobileDevice" @command="dropdown_callback">
                 <span class="el-dropdown-link">
                   {{$t('item')}}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -53,10 +52,18 @@
                       </div>
                     </transition>
                   </div>
-                  <Editormd  ref="child" v-if="page_id&&page_info.page_use=='api'" pageType="many" :scrollBoxClass="scrollBoxClass" @doGoEdit="do_go_edit" :content="content" type="html"></Editormd>
-                  <Tinymce ref="child" v-if="page_id&&page_info.page_use=='doc'" pageType="many" :scrollBoxClass="scrollBoxClass" @doGoEdit="do_go_edit" :tinymceContent="content" type="html"></Tinymce>
-                  <Luckysheet ref="child" v-if="page_id&&page_info.page_use=='excel'" pageType="many" :scrollBoxClass="scrollBoxClass" @savePage="save_page" :sheetTitle="page_title"  :sheetContent="content" type="html"></Luckysheet>
-                  <el-empty v-if="content==''" :description="$t('empty_data')" :image-size="250"  class="edit-model-box-empty"></el-empty>
+                  <viewPage
+                            ref="viewPage"
+                            :pageLoading="pageLoading"
+                            :page_title="page_title"
+                            pageType="many"
+                            :page_use="page_info.page_use"
+                            :content="content"
+                            :page_id="page_id"
+                            :scrollBoxClass="scrollBoxClass"
+                            @doGoEdit="do_go_edit"
+                            @savePage="save_page">
+                  </viewPage>
           </el-main>
           <div class="page-bar" v-show="show_page_bar && item_info.ItemPermn && item_info.is_archived < 1 && !isShowDashboard " >
             <PageBar v-if="page_id" :goEdit="goEdit" :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"></PageBar>
@@ -89,10 +96,8 @@
 </template>
 
 <script>
-  import Editormd from '@/components/common/Editormd'
-  import Tinymce from '@/components/common/Tinymce'
-  import Luckysheet from '@/components/common/Luckysheet'
   import EditPage from '@/components/page/edit/Index'
+  import viewPage from '@/components/page/View'
   import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
   import LeftMenuEdit from '@/components/item/show/show_regular_item/LeftMenuEdit'
   import PageBar from '@/components/item/show/show_regular_item/PageBar'
@@ -107,9 +112,11 @@
       get_item_menu:'',// 父级方法
     },
     components:{
-      Editormd,
-      Tinymce,
-      Luckysheet,
+      // Editormd,
+      // Tinymce,
+      // Luckysheet,
+      // Skeleton,
+      viewPage,
       LeftMenu,
       LeftMenuEdit,
       PageBar,
@@ -149,7 +156,7 @@
         isMobileDevice:false,
         pageLoading:false,
         goEdit:false,//前往编辑
-        scrollBoxClass:'.right-side',
+        scrollBoxClass:'right-side',
       }
     },
     methods:{
@@ -165,14 +172,8 @@
         this.goEdit = true;
       },
       get_scroll(){
-        if(!this.isMobileDevice&&this.page_info.page_use!='excel') {
-          const ele = document.querySelector(this.scrollBoxClass);
-          let isBottom = ele.scrollTop + ele.clientHeight - ele.scrollHeight;
-          if (isBottom < 0) {
-            this.$refs.child.onScroll(ele.scrollTop);
-          } else {
-            this.$refs.child.toScrollBottom();
-          }
+        if(!this.isShowDashboard) {
+          this.$refs.viewPage.get_scroll();
         }
       },
       async save_page(page_content=''){
@@ -290,7 +291,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '~@/components/common/base.scss';
-
+  .skeleton-template-box{
+    width:100%;
+    height: 72vh;
+  }
   .copy-link-btn{
     margin-right: 20px;
   }
@@ -306,7 +310,7 @@
     margin: 0px 10px;
   }
   .page-head-box{
-    padding-top: 70px;
+    //padding-top: 70px;
     width: 150px;
     height: 0px !important;
   }
@@ -351,7 +355,7 @@
   }
 
   .page_content_main{
-
+    margin-top: 3.6rem;
     //width: 70%;
     //margin-left: 15%;
     width: 95%;
