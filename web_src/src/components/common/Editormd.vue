@@ -1,17 +1,19 @@
 <template>
-  <div v-loading="editormdLoading" element-loading-background="transparent">
+  <div v-loading="editormdLoading" element-loading-background="transparent" class="editormd-box">
     <el-row  :gutter="20">
       <el-col :span="showMarkdownNav?18:24" >
-        <div v-if="type=='html'||type=='editor'" :id="id" class="main-editor">
+        <div v-if="type=='html'||type=='editor'" :id="id" :class="!isMobileDevice&&type=='editor'?'main-editor':''">
           <el-empty v-if="type=='html'&&content.trim().length==0" :description="$t('empty_data')" :image-size="300"  class="edit-model-box-empty"></el-empty>
-          <link href="../../../static/editor.md/css/editormd.css" rel="stylesheet">
+          <link href="/static/editor.md/css/editormd.css" rel="stylesheet">
           <textarea ref="editorMd" v-show="false" v-html="content" ></textarea>
           <!-- 放大图片 -->
           <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
         </div>
       </el-col>
       <el-col v-if="showMarkdownNav" :span="6">
-        <Quicknav ref="QuickNav" @doGoEdit="goEdit"></Quicknav>
+        <keep-alive>
+          <Quicknav ref="QuickNav" @doGoEdit="goEdit"></Quicknav>
+        </keep-alive>
       </el-col>
     </el-row>
 <!--    仅供渲染markdownToHtml-->
@@ -23,8 +25,33 @@
 </template>
 
 <style lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
+.editormd-box{
+  width: 100%;
+}
+
+.editormd-html-preview{
+  width: 100%;
+  font-size: 16px;
+  border-radius: 8px;
+  margin-bottom: 60px;
+  max-width: 95%;
+  min-height: 70vh;
+  //min-width: 70rem;
+}
+
+.editormd-html-preview-mobile{
+  width: 100%;
+  font-size: 16px;
+  border-radius: 8px;
+  //padding: 5px;
+  background: $theme-grey-color;
+  padding-bottom: 4rem;
+}
+.main-editor{
+  //min-width: 80rem;
+}
 .message-box{
   @include message-box;
 }
@@ -80,21 +107,23 @@ export default {
     },
     editorPath: {
       type: String,
-      default: '../../../static/editor.md',
+      default: '/static/editor.md',
     },
     jqueryMinPath: {
       type: String,
-      default: '../../../static/jquery.min.js',
+      default: '/static/jquery.min.js',
     },
     editorConfig: { // 参考官方：https://pandao.github.io/editor.md/examples/index.html
       type: Object,
       default() {
         return {
                // language:'en-US',// 'zh-CN','en-US'
-                path: '../../../static/editor.md/lib/',
+                path: '/static/editor.md/lib/',
                 height: '69vh',
+                width: '100%',
                 emoji:true,
                 tocm:true,
+                // markdown : '55555555555555555555555555555555555555555555555',
                 taskList        : true,
                 tex             : true,  // 默认不解析 Tex 科学公式语言 (TeX/LaTeX)
                 flowChart       : true,  // 默认不解析
@@ -154,7 +183,6 @@ export default {
                   tocAdd : "fa-reorder",  // 指定一个FontAawsome的图标类
                 },
                 onload: () => { // 只在编辑状态被调用，展示状态不执行
-                  this.editormdFinishLoad();
                     //this.$emit("finishLoad",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
                     console.log('onload');
                 }
@@ -219,19 +247,20 @@ export default {
         this.initContentToEditormd();
       }
     },
-    initContentToEditormd(){
-      // this.insertValue(this.content ,1) ;
+    initContentToEditormd(that){
+      // console.log(this.instance)
+      //this.insertValue(this.content ,1) ;
       //如果长度大于3000,则关闭预览
-      if (this.content.length > 3000) {
-        this.editor_unwatch();//关闭预览
-        if (!sessionStorage.getItem("page_id_unwatch_"+this.pageId) ){
-          this.$alert("检测到本页面内容比较多，OpenDoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
-          sessionStorage.setItem("page_id_unwatch_"+this.pageId,1)
+      if (that.content.length > 3000) {
+        that.editor_unwatch();//关闭预览
+        if (!sessionStorage.getItem("page_id_unwatch_"+that.pageId) ){
+          that.$alert("检测到本页面内容比较多，OpenDoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
+          sessionStorage.setItem("page_id_unwatch_"+that.pageId,1)
         }
       }else{
-        this.editor_watch();// 开启预览
+        that.editor_watch();// 开启预览
       }
-      this.editormdLoading = false;
+      that.editormdLoading = false;
     },
     markdownDataToHtml(markdownData){// 获取文件之间的翻译
       var newHtml = window.editormd.markdownToHTML("show-editormd-view", {
@@ -258,26 +287,33 @@ export default {
     },
     initEditor() {
       var that = this;
-      this.$nextTick((editorMD = window.editormd) => {
+      that.$nextTick((editorMD = window.editormd) => {
         if (editorMD) {
-          if (this.type == 'editor'){// 编辑
-            this.instance = editorMD(this.id, this.editorConfig);
+          if (that.type == 'editor'){// 编辑
+
+            that.editorConfig.markdown = that.content;
+            that.instance = editorMD(that.id, that.editorConfig);
+            // console.log(that.instance)
             //草稿
             //this.draft(); 鉴于草稿功能未完善。先停掉。
             //window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
             // 设置多语言
-            this.setLanguage(editorMD,this.$i18n.locale);// locale zh/en
+            that.setLanguage(editorMD,that.$i18n.locale);// locale zh/en
+            //that.insertValue(that.content ,1) ;
+            that.$nextTick(()=>{
+              that.editormdLoading = false;
+            })
           } else {// 查看
-            this.instance = editorMD.markdownToHTML(this.id, this.editorConfig);
-            this.editormdLoading = false;
+            that.instance = editorMD.markdownToHTML(that.id, that.editorConfig);
+            that.editormdLoading = false;
             //获取便捷目录
             // 获取便捷菜单内容
-            this.$refs.QuickNav.setQuickNavLoading(true);
-            this.markdownNavData = that.$refs.QuickNav.getMarkdownNavData();
-            this.$refs.QuickNav.initScrollNav();
-            this.$refs.QuickNav.setQuickNavLoading(false);
+            that.$refs.QuickNav.setQuickNavLoading(true);
+            that.markdownNavData = that.$refs.QuickNav.getMarkdownNavData();
+            that.$refs.QuickNav.initScrollNav();
+            that.$refs.QuickNav.setQuickNavLoading(false);
           }
-          this.deal_with_content();
+          that.deal_with_content();
 
         }
       });
@@ -334,7 +370,7 @@ export default {
           }).catch(()=>{
             localStorage.removeItem("page_content");
           });
-      };
+      }
 
     },
     //关闭前提示
@@ -453,7 +489,7 @@ export default {
       return s;
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     //清理所有定时器
     let vm = this
     if (vm.timer != null) {

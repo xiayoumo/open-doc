@@ -1,19 +1,23 @@
 <template>
-  <el-row class="tinymce-box" :gutter="20">
-    <el-col :span="showMarkdownNav?18:24">
-<!--      编辑页面-->
-      <div  v-if="type=='editor'" v-loading="tinymceLoading" element-loading-background="transparent" >
-        <TinymceEditor v-if="type=='editor'" :id="editViewId" v-model="tinymceHtml" :init="init"></TinymceEditor>
-      </div>
-<!--      查看页面-->
-      <div :id="htmlViewId" v-if="type=='html'&&tinymceHtml.trim().length>0" :class="isMobileDevice?'tinymce-html-preview-mobile':'tinymce-html-preview'" v-html="tinymceHtml"></div>
-      <el-empty v-if="type=='html'&&tinymceHtml.trim().length==0"  :description="$t('empty_data')" :image-size="300"  class="tinymce-html-preview edit-model-box-empty"></el-empty>
-    </el-col>
-    <el-col v-if="showMarkdownNav" :span="6">
-<!--      快速导航-->
-      <Quicknav ref="QuickNav"  @doGoEdit="goEdit"></Quicknav>
-    </el-col>
-  </el-row>
+  <div class="tinymce-box">
+      <el-row :gutter="20">
+        <el-col :span="showMarkdownNav?18:24">
+    <!--      编辑页面-->
+          <div  v-if="type=='editor'" v-loading="tinymceLoading" element-loading-background="transparent" >
+            <TinymceEditor v-if="type=='editor'" :id="editViewId" v-model="tinymceHtml" :init="init"></TinymceEditor>
+          </div>
+    <!--      查看页面-->
+          <div :id="htmlViewId" v-if="type=='html'&&tinymceHtml.trim().length>0" :class="isMobileDevice?'tinymce-html-preview-mobile':'tinymce-html-preview'" v-html="tinymceHtml"></div>
+          <el-empty v-if="type=='html'&&tinymceHtml.trim().length==0"  :description="$t('empty_data')" :image-size="300"  class="tinymce-html-preview edit-model-box-empty"></el-empty>
+        </el-col>
+        <el-col v-if="showMarkdownNav" :span="6">
+    <!--      快速导航-->
+          <keep-alive>
+            <Quicknav ref="QuickNav"  @doGoEdit="goEdit"></Quicknav>
+          </keep-alive>
+        </el-col>
+      </el-row>
+  </div>
 </template>
 
 <script>
@@ -33,10 +37,10 @@ import 'tinymce/plugins/lists';
 import 'tinymce/plugins/advlist';// 高级列表
 import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/image';
-import 'tinymce/plugins/imagetools';
+// import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/importcss';
-import 'tinymce/plugins/paste';
-import 'tinymce/plugins/print'; // 打印
+// import 'tinymce/plugins/paste';
+// import 'tinymce/plugins/print'; // 打印
 import 'tinymce/plugins/preview'; // 预览
 // import 'tinymce/plugins/toc'; // 目录
 import 'tinymce/plugins/link'; // 超链接插件
@@ -45,8 +49,9 @@ import 'tinymce/plugins/charmap' //特殊字符
 import 'tinymce/plugins/codesample' //代码示例
 import 'tinymce/plugins/searchreplace' //查找替换
 import 'tinymce/plugins/template' //内容模板
-import 'tinymce/plugins/hr';
-import 'tinymce/plugins/imagetools';
+import 'tinymce/icons/default/icons' //为了解决icons的问题
+// import 'tinymce/plugins/hr';
+// import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/autoresize';
 import TinymceEditor from '@tinymce/tinymce-vue'
 
@@ -79,7 +84,7 @@ export default {
     },
     jqueryMinPath: {
       type: String,
-      default: '../../../static/jquery.min.js',
+      default: '/static/jquery.min.js',
     },
     htmlViewId:{
       type:String,
@@ -91,7 +96,7 @@ export default {
     },
     defaultLanguageUrl:{
       type:String,
-      default: '../../../static/tinymce/plugins/langs/zh-Hans.json',// 必须放在static/tinymce/plugins/langs ，满足插件tpImportword的调用
+      default: '/static/tinymce/plugins/langs/zh-Hans.json',// 必须放在static/tinymce/plugins/langs ，满足插件tpImportword的调用
     },
   },
   watch:{
@@ -117,23 +122,23 @@ export default {
         language:this.defaultLanguage,
         language_url:this.defaultLanguageUrl,// 必须放在static/tinymce/plugins/langs ，满足插件tpImportword的调用
         selector: "#"+this.editViewId,
-        skin_url: "../../../static/tinymce/skins/ui/oxide-opendoc",
+        skin_url: "/static/tinymce/skins/ui/oxide-opendoc",
         height: '70vh',
         content_css: [
-          '../../../static/tinymce/innerLayout.css'
+          '/static/tinymce/innerLayout.css'
         ],
         external_plugins: {
-          'tpimportword': '../../../static/tinymce/plugins/tpImportword_plugin.min.js' // words的导入插件 指导文档https://tinymce-plugin.gitee.io/packages/tp-importword/quickStart.html
+          'tpimportword': '/static/tinymce/plugins/tpImportword_plugin.min.js' // words的导入插件 指导文档https://tinymce-plugin.gitee.io/packages/tp-importword/quickStart.html
         },
         default_link_target: "_blank",
         menubar: true, //顶部菜单栏显示
-        plugins: "tpimportword searchreplace lists image imagetools importcss code table wordcount paste preview print link charmap codesample",
+        plugins: "tpimportword searchreplace lists image importcss code table wordcount preview link charmap codesample",
         toolbar: "tpimportword bold italic underline strikethrough  | fontselect | fontsizeselect | formatselect  | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | removeformat| undo redo | link unlink image media insertdatetime table  hr pagebreak codesample | code fullscreen preview",
         branding: false,
         automatic_uploads: true,
-        paste_retain_style_properties: "all",
-        paste_word_valid_elements: "*[*]", //word需要它
-        paste_convert_word_fake_lists: true, // 插入word文档需要该属性
+        // paste_retain_style_properties: "all",
+        // paste_word_valid_elements: "*[*]", //word需要它
+        // paste_convert_word_fake_lists: true, // 插入word文档需要该属性
         paste_webkit_styles: "all",
         paste_merge_formats: true,
         nonbreaking_force_tab: false,
@@ -177,9 +182,9 @@ export default {
         statusbar: false,
         branding: false,
         toolbar: false,
-        skin_url: "../../../static/tinymce/skins/ui/oxide-opendoc",
+        skin_url: "/static/tinymce/skins/ui/oxide-opendoc",
         content_css: [
-          '../../../static/tinymce/innerLayout.css'
+          '/static/tinymce/innerLayout.css'
         ],
         setup: this.startTinymceLoading,// 开始渲染
         onpageload:this.onpageloadByTinymce,
@@ -257,55 +262,51 @@ export default {
       tinymce.get(this.editViewId).setContent('');
     },
     initData(){
-      let language = this.defaultLanguage;
-      let language_url = this.defaultLanguageUrl;
-      if(this.$i18n.locale=='en'){
+
+      var that = this;
+      let language = that.defaultLanguage;
+      let language_url = that.defaultLanguageUrl;
+      if(that.$i18n.locale=='en'){
         language = 'en';
         language_url = '';
       }
-      if (typeof tinymce === 'undefined') { // 防止重复加载jq
-        tinymce.init({}) // 特别注意这个空对象的存在，如果这个初始化空对象不存在依旧会报错
-      }
-      this.tinymceHtml = this.tinymceContent;
-      if(this.type=='editor'){ // 编辑
-          this.init.language_url = language_url;
-          this.init.language = language;
-          tinymce.init(this.init);
-          tinymce.util.I18n.setCode(language);// https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.util.i18n/#setCode
-      }else{ // 查看
-          // 初始化展示
-          this.tinymceHtmlViewConfig.language_url = language_url;
-          this.tinymceHtmlViewConfig.language = language;
-          tinymce.init(this.tinymceHtmlViewConfig);
-          //加载依赖""
-        if(this.showMarkdownNav) {
-          if (typeof window.$ !== 'undefined') { // 防止重复加载jq
-            this.initShowHtmlQuickNav();
-          } else {
-            $s([`${this.jqueryMinPath}`],()=>{
-                this.initShowHtmlQuickNav();
-            });
+      that.$nextTick(()=>{
+          if (typeof tinymce === 'undefined') { // 防止重复加载jq
+            tinymce.init({}) // 特别注意这个空对象的存在，如果这个初始化空对象不存在依旧会报错
           }
-        }
-      }
+          that.tinymceHtml = that.tinymceContent;
+          if(that.type=='editor'){ // 编辑
+              that.init.language_url = language_url;
+              that.init.language = language;
+              tinymce.init(that.init);
+              tinymce.util.I18n.setCode(language);// https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.util.i18n/#setCode
+          }else{ // 查看
+              // 初始化展示
+              that.tinymceHtmlViewConfig.language_url = language_url;
+              that.tinymceHtmlViewConfig.language = language;
+              tinymce.init(that.tinymceHtmlViewConfig);
+              //加载依赖""
+              if(that.showMarkdownNav) {
+                $s([`${that.jqueryMinPath}`],()=>{
+                  that.$refs.QuickNav.setQuickNavLoading(true);
+                  // 初始化快速导航需要的标题格式（与Editormd编辑器保持一致）
+                  that.initQuickNavByTpImportword('#'+that.htmlViewId);
+                  // 页面添加模式
+                  that.initQuickNavByInput('#'+that.htmlViewId);
+                  // 获取便捷菜单内容
+                  that.markdownNavData = that.$refs.QuickNav.getMarkdownNavData();
+                  that.$refs.QuickNav.initScrollNav();
+                  that.quickNavLoading = false;
+                  that.$refs.QuickNav.setQuickNavLoading(false);
+                });
+              }
+          }
+      });
       //界面自适应手机
-      if( this.isMobile() ||  window.screen.width< 1000) {
+      if( that.isMobile() ||  window.screen.width< 1000) {
         //$("#" + this.id).removeClass("editormd-html-preview").addClass("editormd-html-preview-mobile");
-        this.isMobileDevice = true;
+        that.isMobileDevice = true;
       }
-    },
-    initShowHtmlQuickNav(){
-      this.$refs.QuickNav.setQuickNavLoading(true);
-      // 初始化快速导航需要的标题格式（与Editormd编辑器保持一致）
-      // tpImportword 导入
-      this.initQuickNavByTpImportword('#'+this.htmlViewId);
-      // 页面添加模式
-      this.initQuickNavByInput('#'+this.htmlViewId);
-      // 获取便捷菜单内容
-      this.markdownNavData = this.$refs.QuickNav.getMarkdownNavData();
-      this.$refs.QuickNav.initScrollNav();
-      this.quickNavLoading = false;
-      this.$refs.QuickNav.setQuickNavLoading(false);
     },
     goEdit(data){
       this.$emit("doGoEdit",true) //increment: 随便自定义的事件名称   第二个参数是传值的数据
@@ -317,14 +318,14 @@ export default {
       this.$refs.QuickNav.onScroll(currentScrollTop);
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     tinymce.remove();
   }
 }
 </script>
 
 <style lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 #tinymce{
   background: $theme-grey-color;
 }
@@ -353,8 +354,11 @@ export default {
 }
 </style>
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
+.tinymce-box{
+  width: 100%;
+}
 .tinymce-html-preview {
   padding: 2rem 3rem;
   text-align: left;
@@ -365,7 +369,6 @@ export default {
   background-color: #fff;
   min-height: 70vh;
   border-radius: 10px;
-  margin-top: 10px;
 }
 
 .tinymce-html-preview-mobile {

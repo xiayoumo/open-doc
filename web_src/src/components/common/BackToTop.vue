@@ -38,13 +38,13 @@ export default {
       }, this.speed)
     }
   },
-  destroyed () {
+  unmounted () {
     clearInterval(this.timer)
   }
 }
 </script>
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 .gotop-box {
 	position: fixed;
 	cursor: pointer;

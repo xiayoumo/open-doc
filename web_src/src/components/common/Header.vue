@@ -1,23 +1,19 @@
 <template>
     <div class="common-header">
-      <i v-if="showHeadMenu" @click="handleShowLeftMenu()" class="el-icon-menu head-menu-btn"></i>
+      <el-icon v-if="showHeadMenu" @click="handleShowLeftMenu()" class="head-menu-btn"><Menu /></el-icon>
       <span v-if="headTitle!=''&&!isMobileDevice" class="coommon-header-title">{{ headTitle }}</span>
       <div class="header-right-menu-box">
           <Lang></Lang>
-          <el-button v-if="showHeadCountMenu && !isNowCountDashboard" type="text" class="hover-word-btn" @click="$router.replace('/item-count-show/'+ nowItemCode)">
+          <el-button text v-if="showHeadCountMenu && !isNowCountDashboard" class="hover-word-btn" @click="$router.replace('/item-count-show/'+ nowItemCode)">
             <span class="iconfont icon-24gf-chartPie word-btn-default"></span><span class="word-btn-content">{{$t('web_dashboard')}}</span>
           </el-button>
-<!--          <router-link v-if="showHeadCountMenu && !isNowCountDashboard" class="header-right-menu-btn" :to="'/item-count-show/'+ nowItemCode" append>-->
-<!--            <span v-if="!isMobileDevice" class="iconfont icon-24gf-chartPie"></span> {{$t('web_dashboard')}}-->
-<!--          </router-link>-->
-          <el-button v-if="isNowCountDashboard" type="text" class="hover-word-btn" @click="gobackUrl">
+
+          <el-button text v-if="isNowCountDashboard" class="hover-word-btn" @click="gobackUrl">
             <span class="iconfont icon-fanhui1 word-btn-default"></span><span class="word-btn-content">{{$t('goback')}}</span>
           </el-button>
-<!--          <el-button v-if="isNowCountDashboard" class="header-right-menu-btn" type="text" @click="gobackUrl">{{$t('goback')}}</el-button>-->
-<!--          <router-link class="header-right-menu-btn" to="/item/index">{{$t('web_home')}}</router-link>-->
-        <el-button type="text" class="hover-word-btn" @click="$router.replace('/item/index')">
-          <i class="el-icon-s-home word-btn-default"></i><span class="word-btn-content">{{$t('web_home')}}</span>
-        </el-button>
+          <el-button text class="hover-word-btn" @click="$router.replace('/item/index')">
+            <el-icon class="word-btn-default"><HomeFilled /></el-icon><span class="word-btn-content">{{$t('web_home')}}</span>
+          </el-button>
       </div>
 
     </div>
@@ -87,12 +83,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
 /* Float Shadow */
 .hover-word-btn {
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
   .word-btn-default{
     font-size: 16px;
     color: $theme-grey-color;
@@ -128,11 +125,11 @@ export default {
   }
 }
 .header-right-menu-btn{
-  margin-right: 5px;
-  margin-left: 5px;
+  margin: 5px;
+  border: none !important;
   color: $theme-grey-color !important;
   &:hover,&:focus{
-    border: none;
+    border: none !important;
     color: $theme-right-msg-color !important;
   }
 }
@@ -152,7 +149,8 @@ export default {
   width: 100%;
   padding-left: 2%;
   padding-right: 2%;
-  height: 60px;
+  min-height: 60px;
+  height: 5rem;
   color: $theme-grey-color;
   background: $theme-color;
   position: fixed;
@@ -164,15 +162,44 @@ export default {
 </style>
 
 <style lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
+.el-descriptions__header{
+  margin-bottom: 0px;
+}
+.el-input__wrapper{
+  background: $theme-input-color;
+}
+.el-input.is-disabled .el-input__wrapper {
+  background-color: $theme-input-color;
+}
+.text-center{
+  text-align: center;
+}
+body{
+  margin: auto;
+}
+a{
+  text-decoration: none;
+}
+ul{
+  list-style-type: none;
+}
+.pull-right{
+  float: right;
+}
 .edit-model-box-empty{
-  padding-top: 100px;
+  //margin-top: 80px;
+  height: 95vh;
   margin: 0 auto;
+  padding-bottom: 40vh;
 }
 
 .el-input .el-input__inner{
   height: 30px;
+  @include input-box;
+}
+.el-select .el-input__wrapper{
   @include input-box;
 }
 .el-form-item__content .el-input__inner{
@@ -212,8 +239,11 @@ a {
 .el-checkbox__input.is-checked+.el-checkbox__label{
   color: $theme-fourth-color;
 }
-.el-button--default,.el-button--medium{
+.el-button--default,.el-button--small,.el-button--primany,.el-button{
   @include yes-btn;
+}
+.el-button.is-text:hover {
+  color: $theme-right-msg-color;
 }
 .el-table tr,.el-table__body-wrapper{
   background: $theme-grey-color;
@@ -260,11 +290,22 @@ a {
   font-weight: bold;
 }
 .goback-full-btn{
+  margin-left: 1rem;
   @include no-btn;
 }
-
+.el-dropdown{
+  line-height: 24px;
+  border: none;
+  &:hover,&:focus,&:visited{
+    border: none !important;
+  }
+}
 .el-dropdown-link {
   color: $theme-color;
+  border: none;
+  &:hover,&:focus,&:visited{
+    border: none !important;
+  }
 }
 .el-select-dropdown{
   background-color: $theme-third-color;

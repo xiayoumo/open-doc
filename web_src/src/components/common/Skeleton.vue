@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
 .skeleton-image{
   width: 240px;

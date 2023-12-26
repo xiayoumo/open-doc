@@ -2,7 +2,7 @@
   <div class="login-footer">
 
     <span class="footer-pic">
-      <img src="../../../static/logo/doc-log3.png" style="width:100px;height:36px;margin-bottom:-10px;" alt="">
+      <img src="../../../public/static/logo/doc-log3.png" style="width:100px;height:36px;margin-bottom:-10px;" alt="">
     </span>
 <!--    <a href="https://www.opendoc.com.cn/" class="other-web-a" target="_blank"> 友情推荐：ShowDoc</a>-->
 
@@ -23,7 +23,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 .beian-btn{
   color: $theme-words-color;
   font-size: 16px;

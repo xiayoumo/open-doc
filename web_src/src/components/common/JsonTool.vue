@@ -1,37 +1,26 @@
 <template>
-	<div>
-		<el-dialog custom-class="json-tool-box" top="6vh" width="50%" :close-on-click-modal="false" :title="$t('json_tools')" :visible.sync="dialogFormVisible">
-      <Codemirror ref="codemirrorEditor" @input="setNowJson" :editorContent="content"></Codemirror>
+		<el-dialog class="json-tool-box" top="6vh" width="50%" :close-on-click-modal="false" :title="$t('json_tools')" v-model="dialogFormVisible">
+      <CodemirrorTool ref="codemirrorEditor" @inputData="setNowJson" :editorContent="content"></CodemirrorTool>
       <el-row class="check-json-box">
         <el-col>
-          <transition name="el-zoom-in-bottom">
-            <div v-show="showCheckTip" :class="checkStatus?'jsonc-check-success':'jsonc-check-error'"><i :class="checkStatus?'el-icon-success':'el-icon-error'"></i> {{validateJsonResult}}</div>
-          </transition>
+          <div v-show="showCheckTip" :class="checkStatus?'jsonc-check-success':'jsonc-check-error'"><i :class="checkStatus?'el-icon-success':'el-icon-error'"></i> {{validateJsonResult}}</div>
         </el-col>
       </el-row>
-		  <div slot="footer" class="dialog-footer">
-        <el-button @click="cleanJson()">清空内容</el-button>
-		    <el-button type="primary" @click="validateJson(content)">格式化校验</el-button>
-        <el-dropdown trigger="click" placement="top-start" size="small">
-          <el-button type="primary">
-            插入文档<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-plus" ><span @click="insertJson(content)">Json</span></el-dropdown-item>
-            <el-dropdown-item v-if="outputTabelType=='html'" icon="el-icon-s-grid" ><span @click="transform('data')">数据表格</span></el-dropdown-item>
-            <el-dropdown-item icon="el-icon-notebook-1"><span @click="transform('parameter')">参数说明表格</span></el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-		  </div>
+      <template #footer>
+          <el-button @click="cleanJson()">{{$t('clean_json')}}</el-button>
+          <el-button type="primary" @click="validateJson(content)">{{$t('format_json')}}</el-button>
+          <el-button-group class="button-group-box">
+            <el-button type="primary"  @click="insertJson(content)" >{{$t('insert_json')}}</el-button>
+            <el-button type="primary" @click="transform('data')">{{$t('insert_table')}}</el-button>
+            <el-button type="primary" @click="transform('parameter')">{{$t('insert_parameter_json')}}</el-button>
+          </el-button-group>
+      </template>
 		</el-dialog>
-	</div>
-
-
 </template>
 
 <script>
 import jsonlint from '@/js/json-check.js';
-import Codemirror from '@/components/common/Codemirror';
+import CodemirrorTool from '@/components/common/Codemirror';
 
 export default {
   name: 'JsonToTable',
@@ -44,7 +33,7 @@ export default {
     }
   },
   components: {
-    Codemirror
+    CodemirrorTool
   },
   data () {
     return {
@@ -58,6 +47,17 @@ export default {
     }
   },
   methods:{
+    handleInsertCommand(type){
+      if(type=='insertJson'){
+        this.insertJson(this.content);
+      }
+      if(type=='transformData'){
+        this.transform('data');
+      }
+      if(type=='transformParameter'){
+        this.transform('parameter');
+      }
+    },
     cleanJson(){
       this.$refs.codemirrorEditor.resetData();
       this.showCheckMessage('已清空.',true);
@@ -332,7 +332,7 @@ export default {
 
 
 <style lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 .json-tool-box .el-dialog__body{
   padding: 0px;
 }
@@ -345,8 +345,11 @@ export default {
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
+.button-group-box{
+  margin-left: 1rem;
+}
 .jsonc-check-success{
   color: $theme-fourth-color;
 }

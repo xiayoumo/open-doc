@@ -1,14 +1,11 @@
 <template>
-  <el-dropdown @command="handleLangCommand">
-      <span class="el-dropdown-link header-right-menu-btn">
-        <span v-if="!isMobileDevice" :class="'iconfont swich-lang-icon '+nowLangIcon"></span> {{ nowLangTitle }} <i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="(item) in langOption" :key="item.value" :command="item.value">
-          <span :class="'iconfont swich-lang-icon '+item.icon"></span>　{{item.title}}
-        </el-dropdown-item>
-      </el-dropdown-menu>
-  </el-dropdown>
+  <el-switch
+      v-model="isChinese"
+      inline-prompt
+      style="--el-switch-on-color: #aa000a; --el-switch-off-color: #13ce66"
+      active-text="English"
+      inactive-text="中文"
+  />
 </template>
 
 <script>
@@ -16,35 +13,24 @@ export default {
   name: "lang",
   data () {
     return {
+      isChinese:true,
       isMobileDevice:false,
-      langOption:[
-        {title:'中文',value:'zh',icon:'icon-zhongyingqiehuan-qiehuanzhongwen'},
-        {title:'English',value:'en',icon:'icon-zhongyingqiehuan-qiehuanyingwen'}
-      ],
-      nowLang:'zh',
-      nowLangTitle:'中文',
-      nowLangIcon:'icon-zhongyingqiehuan-qiehuanzhongwen'
-     // nowLangIcon:'icon-a-zhongyingwenzhongwen'
+    }
+  },
+  watch:{
+    "isChinese"(nowValue,oldValue){
+      if(nowValue){
+        this.handleLangCommand('zh');
+      }else{
+        this.handleLangCommand('en');
+      }
     }
   },
   created() {
-    this.nowLang = this.$i18n.locale;
-    this.langOption.map(item=>{
-      if(item.value == this.nowLang){
-        this.nowLangTitle = item.title;
-        this.nowLangIcon = item.icon;
-      }
-    })
+    this.isChinese = this.$i18n.locale == 'zh';
   },
   methods: {
     handleLangCommand(langType = 'zh') {
-      this.nowLang = langType;
-      this.langOption.map(item => {
-        if (item.value == langType) {
-          this.nowLangTitle = item.title;
-          this.nowLangIcon = item.icon;
-        }
-      })
       this.$i18n.locale = langType
       localStorage.setItem('lang', langType);
     },
@@ -59,18 +45,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
-.header-right-menu-btn{
-  margin-right: 12px;
-  margin-left: 12px;
-  color: $theme-grey-color !important;
-  &:hover,&:focus{
-    border: none;
-    color: $theme-right-msg-color !important;
-  }
-}
-.swich-lang-icon{
-  font-size: 20px;
-}
 </style>

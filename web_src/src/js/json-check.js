@@ -1,9 +1,9 @@
-var jsonlint = function() {
-  var a = !0,
+const jsonlint = function() {
+  const a = !0,
     b = !1,
     c = {},
     d = function() {
-      var a = {
+      const a = {
           trace: function() {},
           yy: {},
           symbols_: {
@@ -72,7 +72,7 @@ var jsonlint = function() {
             [25, 3]
           ],
           performAction: function(b, c, d, e, f, g, h) {
-            var i = g.length - 1;
+            const i = g.length - 1;
             switch (f) {
               case 1:
                 this.$ = b.replace(/\\(\\|")/g, "$1").replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(/\\t/g, "	").replace(/\\v/g, "").replace(/\\f/g, "\f").replace(/\\b/g, "\b");
@@ -310,7 +310,7 @@ var jsonlint = function() {
             }
 
             function p() {
-              var a;
+              let a;
               return a = c.lexer.lex() || 1, typeof a != "number" && (a = c.symbols_[a] || a), a
             }
             var c = this,
@@ -325,9 +325,9 @@ var jsonlint = function() {
               l = 2,
               m = 1;
             this.lexer.setInput(b), this.lexer.yy = this.yy, this.yy.lexer = this.lexer, typeof this.lexer.yylloc == "undefined" && (this.lexer.yylloc = {});
-            var n = this.lexer.yylloc;
+            let n = this.lexer.yylloc;
             f.push(n), typeof this.yy.parseError == "function" && (this.parseError = this.yy.parseError);
-            var q, r, s, t, u, v, w = {},
+            let q, r, s, t, u, v, w = {},
               x, y, z, A;
             for (;;) {
               s = d[d.length - 1], this.defaultActions[s] ? t = this.defaultActions[s] : (q == null && (q = p()), t = g[s] && g[s][q]);
@@ -378,7 +378,7 @@ var jsonlint = function() {
           }
         },
         b = function() {
-          var a = {
+          const a = {
             EOF: 1,
             parseError: function(b, c) {
               if (!this.yy.parseError) throw new Error(b);
@@ -393,9 +393,9 @@ var jsonlint = function() {
               }, this
             },
             input: function() {
-              var a = this._input[0];
+              const a = this._input[0];
               this.yytext += a, this.yyleng++, this.match += a, this.matched += a;
-              var b = a.match(/\n/);
+              const b = a.match(/\n/);
               return b && this.yylineno++, this._input = this._input.slice(1), a
             },
             unput: function(a) {
@@ -408,25 +408,25 @@ var jsonlint = function() {
               this._input = this.match.slice(a) + this._input
             },
             pastInput: function() {
-              var a = this.matched.substr(0, this.matched.length - this.match.length);
+              const a = this.matched.substr(0, this.matched.length - this.match.length);
               return (a.length > 20 ? "..." : "") + a.substr(-20).replace(/\n/g, "")
             },
             upcomingInput: function() {
-              var a = this.match;
+              let a = this.match;
               return a.length < 20 && (a += this._input.substr(0, 20 - a.length)), (a.substr(0, 20) + (a.length > 20 ? "..." : "")).replace(/\n/g, "")
             },
             showPosition: function() {
-              var a = this.pastInput(),
+              const a = this.pastInput(),
                 b = (new Array(a.length + 1)).join("-");
               return a + this.upcomingInput() + "\n" + b + "^"
             },
             next: function() {
               if (this.done) return this.EOF;
               this._input || (this.done = !0);
-              var a, b, c, d, e, f;
+              let a, b, c, d, e, f;
               this._more || (this.yytext = "", this.match = "");
-              var g = this._currentRules();
-              for (var h = 0; h < g.length; h++) {
+              const g = this._currentRules();
+              for (let h = 0; h < g.length; h++) {
                 c = this._input.match(this.rules[g[h]]);
                 if (c && (!b || c[0].length > b[0].length)) {
                   b = c, d = h;
@@ -451,7 +451,7 @@ var jsonlint = function() {
               })
             },
             lex: function() {
-              var b = this.next();
+              const b = this.next();
               return typeof b != "undefined" ? b : this.lex()
             },
             begin: function(b) {
@@ -471,7 +471,7 @@ var jsonlint = function() {
             }
           };
           return a.options = {}, a.performAction = function(b, c, d, e) {
-            var f = e;
+            const f = e;
             switch (d) {
               case 0:
                 break;

@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-var postUrl = DocConfig.server;
+const postUrl = DocConfig.server;
 export async function post_(url, data, callback, err){
-    var qs = require("querystring")
+    const qs = require("qs")
     data = qs.stringify(data);
     await axios.post(postUrl+url,data,{async:false})
                 .then(response => {

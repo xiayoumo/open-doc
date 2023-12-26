@@ -3,7 +3,9 @@
     <el-card class="markdown-nav-box latest-activity-card">
       <div class="latest-activity-card__badge">{{$t('quick_navigation')}}</div>
       <div>
-        <i v-if="quickNavLoading" class="el-icon-loading tree-node-loading"></i>
+        <el-icon  v-if="quickNavLoading" class="is-loading tree-node-loading">
+          <Loading />
+        </el-icon>
         <el-empty v-if="markdownNavData.length==0" :description="$t('empty_data')" :image-size="100"  class="edit-model-box-empty"></el-empty>
         <el-timeline hide-timestamp class="markdown-nav-timelie">
           <el-timeline-item
@@ -27,7 +29,7 @@ export default {
   props: {
     jqueryMinPath: {
       type: String,
-      default: '../../../static/editor.md/../jquery.min.js',
+      default: '/static/jquery.min.js',
     },
 
   },
@@ -87,7 +89,8 @@ export default {
       that.isScrollByNav = true;
       document.querySelector("#"+headId).scrollIntoView({block:'center',behavior:'smooth'});
       setTimeout(function (){
-        that.$set(that, 'isScrollByNav', false)
+        that.isScrollByNav = false;
+        // this.$set(this, 'isScrollByNav', false)
       }, 800)
     },
     setContentTitleSelected(headId=''){
@@ -244,18 +247,18 @@ export default {
       return that.markdownNavData;
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     //清理所有定时器
     for (var i = 1; i < 999; i++){
       window.clearInterval(i);
-    };
+    }
     // 必须移除监听器，不然当该vue组件被销毁了，监听器还在就会出错
     window.removeEventListener('scroll', this.onScroll)
   }
 }
 </script>
 <style lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
 .tree-node-loading{
   margin: 0 auto;
@@ -290,6 +293,7 @@ export default {
   padding-bottom: 5px;
 }
 .markdown-nav-timelie .el-timeline-item__wrapper {
+  top:0px;
   //padding-left: 18px;
 }
 .el-timeline-item__wrapper .el-timeline-item__content{
@@ -310,8 +314,9 @@ export default {
 
 .nav-box{
   position: fixed;
-  top: 11rem;
-  width: 20%;
+  //top: 10.8rem;
+  width: 21%;
+  //left: 75%;
 }
 .markdown-nav-box{
   margin-left: 0px;
@@ -359,7 +364,7 @@ export default {
   background-size: auto 100%;
   top: 0;
   left: -8px;
-  background-image: url(../../../static/images/nav-head-badge-corner.svg);
+  background-image: url(../../../public/static/images/nav-head-badge-corner.svg);
 }
 .latest-activity-card__badge {
   position: absolute;

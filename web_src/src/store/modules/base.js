@@ -7,7 +7,7 @@
 // 5.Module：将vuex进行分模块
 const base = {
 	 state: {
-	    nowHeadTitle:'',// 当前项目名称
+	     nowHeadTitle:'5555',// 当前项目名称
       showHeadMenu:false,// 头部菜单
       showLeftMenu:true,// 右侧菜单栏
       isAdmin:false,// 是否管理员

@@ -3,9 +3,8 @@
 </template>
 
 <script>
-import "../../../static/js/echarts-theme-open-doc.js";
+import "../../../public/static/js/echarts-theme-open-doc.js";
 import echarts from "@/js/echarts";
-// import * as echarts from 'echarts';
 import debounce from "lodash/debounce";
 import { addListener, removeListener} from "resize-detector";
 
@@ -31,7 +30,7 @@ export default {
     this.renderChart();
      addListener(this.$refs.chartDom, this.resize);
   },
-  beforeDestroy() {
+  beforeUnmount() {
      removeListener(this.$refs.chartDom, this.resize);
      this.chart.dispose();
      this.chart = null;

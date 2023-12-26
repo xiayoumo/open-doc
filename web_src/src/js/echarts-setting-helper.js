@@ -4,9 +4,9 @@
 export default {
     // 柱形图
     getBarOption(barData={},dataUnit='ml',xAxisData=[],yAxisMaxNum=250,color=''){
-      let intervalNum = parseInt(yAxisMaxNum/5);
-      let yAxisSettingArray = [{name:'单位：'+dataUnit,axisLabelFormatter:'{value}',maxNum:yAxisMaxNum,intervalNum:intervalNum}];
-      let chartDataArray = [];
+      const intervalNum = parseInt(yAxisMaxNum/5);
+      const yAxisSettingArray = [{name:'单位：'+dataUnit,axisLabelFormatter:'{value}',maxNum:yAxisMaxNum,intervalNum:intervalNum}];
+      const chartDataArray = [];
       //实现思路：通过Object.keys()对象方法将对象的key转化为一个数组，再通过forEach遍历出数组的值，再通过[key]去获取对象的value值。
       Object.keys(barData).forEach(key=>{
         //yAxisSettingArray.push({name:key,axisLabelFormatter:'{value} ' + dataUnit,maxNum:250,intervalNum:50})
@@ -16,9 +16,9 @@ export default {
     },
     // 线形图
     getLineOption(lineData={},dataUnit='°C',xAxisData=[],yAxisMaxNum=25,color=''){
-      let intervalNum = parseInt(yAxisMaxNum/5);
-      let yAxisSettingArray = [{name:'单位：'+dataUnit,axisLabelFormatter:'{value}',maxNum:yAxisMaxNum,intervalNum:intervalNum}];
-      let chartDataArray = [];
+      const intervalNum = parseInt(yAxisMaxNum/5);
+      const yAxisSettingArray = [{name:'单位：'+dataUnit,axisLabelFormatter:'{value}',maxNum:yAxisMaxNum,intervalNum:intervalNum}];
+      const chartDataArray = [];
       //实现思路：通过Object.keys()对象方法将对象的key转化为一个数组，再通过forEach遍历出数组的值，再通过[key]去获取对象的value值。
       Object.keys(lineData).forEach(key=>{
         //yAxisSettingArray.push({name:key,axisLabelFormatter:'{value} ' + dataUnit,maxNum:250,intervalNum:50})
@@ -27,16 +27,16 @@ export default {
       return this.getOptionByData(chartDataArray,yAxisSettingArray,xAxisData,dataUnit,color);
     },
     getOptionByData(chartData=[],yAxisSetting=[],xAxisSettingData=[],dataUnit='ml',color=''){
-      let seriesData = [];
-      let legendData = chartData.map(cData =>{
-        let seriesItem = this.getSeriesSettingByType(cData.name,cData.type,cData.data,dataUnit);
+      const seriesData = [];
+      const legendData = chartData.map(cData =>{
+        const seriesItem = this.getSeriesSettingByType(cData.name,cData.type,cData.data,dataUnit);
         seriesData.push(seriesItem);
         return cData.name;
       });
-      let yAxisData = yAxisSetting.map(yData =>{
+      const yAxisData = yAxisSetting.map(yData =>{
         return this.getYAxisSettingByType(yData.name,yData.axisLabelFormatter,yData.maxNum,yData.intervalNum)
       });
-      let optionSetting = {
+      const optionSetting = {
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -87,7 +87,7 @@ export default {
       };
     },
     getSeriesSettingByType(name='',type='bar',numData=[],dataUnit='ml'){
-      let valueFormatterData = function (value) {return value + ' '+dataUnit};
+      const valueFormatterData = function (value) {return value + ' '+dataUnit};
       return {
         name: name,
         type: type,

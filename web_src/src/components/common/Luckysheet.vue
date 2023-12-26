@@ -6,13 +6,15 @@
     <link rel='stylesheet' :href="editorPath+'/assets/iconfont/iconfont.css'" />
     <!--    <link rel='stylesheet' :href="editorPath+'/expendPlugins/chart/chartmix.css'" />-->
 <!--    打印预览 start    -->
-    <el-button id="printPreviewBtn" style="display: none;" @click="printExcel()">{{ $t('excel_print_preview') }}</el-button>
-    <el-button id="printExcelBtn" style="display: none;" plain
-               v-print="{ id: 'print_html', popTitle: 'test111' }">{{ $t('excel_print') }}</el-button>
-    <div id="print_html" class="procedure" style="text-align: center;z-index: 0;"></div>
+    <el-row>
+      <el-button id="printPreviewBtn" style="display: none;" @click="printExcel()">{{ $t('excel_print_preview') }}</el-button>
+      <el-button id="printExcelBtn" style="display: none;" plain
+                 v-print="{ id: 'print_html', popTitle: 'test111' }">{{ $t('excel_print') }}</el-button>
+      <div id="print_html" class="procedure" style="text-align: center;z-index: 0;"></div>
+    </el-row>
+
 <!--    打印预览 start    -->
-    <el-row v-if="type=='editor'">
-        <el-col class="upload-excel-file-box">
+        <el-row v-if="type=='editor'" class="upload-excel-file-box">
           <el-button type="primary" :loading="downloadFileLoading" size="small" @click="exportExcel">{{ $t('excel_export') }}</el-button>
           <el-upload
             class="upload-excel-file"
@@ -25,10 +27,8 @@
 
             <el-button :loading="uploadFileLoading" size="small" type="primary">{{ $t('excel_upload_excel') }}</el-button>
           </el-upload>
-          <div class="show-upload-file-div">
-            <transition name="el-zoom-in-center">
-              <div v-show="nowUploadFileName" class="now-upload-file-name-box">  <i class="el-icon-date"></i>  {{ nowUploadFileName }} <i class="el-icon-success upload-file-success"></i></div>
-            </transition>
+          <div v-if="nowUploadFileName" class="show-upload-file-div">
+              <div  class="now-upload-file-name-box">  <i class="el-icon-date"></i>  {{ nowUploadFileName }} <i class="el-icon-success upload-file-success"></i></div>
           </div>
           <el-button type="primary" size="small" class="clean-excel-btn" @click="cleanSheet">{{ $t('excel_clean') }}</el-button>
 
@@ -36,16 +36,22 @@
               <el-checkbox class="start-share-btn" v-model="sheetAllowEdit">{{ $t('excel_open_share') }}</el-checkbox>
             </el-tooltip>
 
-        </el-col>
-    </el-row>
+        </el-row>
     <!--web spreadsheet组件-->
-    <div :class="type=='editor'?'excel':'excel-html'" v-loading="luckysheetLoading" element-loading-background="transparent">
-      <div v-if="type=='editor'" :key="sheetPageId+'-'+type" :id="sheetEditId+sheetPageId" class="luckysheet-view-box"></div>
-      <div v-if="type=='html'" :key="sheetPageId+'-'+type" :id="sheetHtmlId+sheetPageId" class="luckysheet-view-box"></div>
-    </div>
+      <el-row>
+        <div :class="type=='editor'?'excel':'excel-html'" v-loading="luckysheetLoading" element-loading-background="transparent">
+          <div v-if="type=='editor'" :key="sheetPageId+'-'+type" :id="sheetEditId+sheetPageId" class="luckysheet-view-box"></div>
+          <div v-if="type=='html'" :key="sheetPageId+'-'+type" :id="sheetHtmlId+sheetPageId" class="luckysheet-view-box"></div>
+        </div>
+      </el-row>
   </el-row>
 </template>
 
+<!--<script setup>-->
+<!--import print from "vue3-print-nb";-->
+<!--const vPrint = print;-->
+<!--// 语法糖写法  替代了 directives: { print }-->
+<!--</script>-->
 <script>
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
@@ -54,14 +60,19 @@ if (typeof window !== 'undefined') {
 // 官方：https://mengshukeji.gitee.io/LuckysheetDocs/zh/guide/#%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F
 //引入依赖包
 import LuckyExcel from 'luckyexcel'
-import { exportExcel } from '@/js/export-sheet.js';
-// 支持打印
-import Vue from 'vue'
-import Print from 'vue-print-nb'
-Vue.use(Print)
+import { exportExcel } from '@/js/export-sheet.js'
+// 支持打印 参考文档（https://blog.csdn.net/qxy2018/article/details/133030390）
+// vue2
+// import Vue from 'vue'
+// import Print from 'vue-print-nb'
+// Vue.use(Print)
+import print from 'vue3-print-nb'
 
 export default {
   name: 'luckysheet',
+  directives: { // vue3 特性
+    print
+  },
   watch:{
     '$i18n.locale'(newValue) {
       window.luckysheet.changLang(newValue);//暂支持`"zh"`、`"en"`、`"es"`；默认为`"zh"`；
@@ -74,10 +85,10 @@ export default {
     sheetContent:{type: String, default: ''},
     sheetTitle:{type: String, default: 'title'},
     type: {type:String, default: 'editor'},
-    editorPath: {type: String,default: '../../../static/luckysheet'},
+    editorPath: {type: String,default: '/static/luckysheet'},
     jqueryMinPath: {
       type: String,
-      default: '../../../static/jquery.min.js',
+      default: '/static/jquery.min.js',
     },
   },
   data() {
@@ -153,7 +164,7 @@ export default {
   methods: {
     async init() {
       var that = this;
-      that.$forceUpdate();// 解决页面来回切换后的顶部出现断层问题
+      // that.$forceUpdate();// 解决页面来回切换后的顶部出现断层问题
       var luckysheet = window.luckysheet
       let dataConfig = that.getConfig();
       // var loadUrl = DocConfig.server+'/api/page/getExcelTableByGridKey';
@@ -345,14 +356,14 @@ export default {
     },
 
   },
-  beforeDestroy() {
+  beforeUnmount() {
      //window.luckysheet.destroy();// 销毁会提示错误
   }
 }
 </script>
 
 <style lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
 .luckysheet-modal-dialog{
   @include dialog-box;
@@ -420,8 +431,10 @@ export default {
   color:$theme-right-msg-color;
 }
 .excel {
+  //width: 100%;
   z-index: 0;
-  height: 70vh !important;
+  //height: 70vh !important;
+  height: 65vh !important;
 }
 .excel-html {
   z-index: 0;
@@ -429,6 +442,7 @@ export default {
 }
 .excel-html .luckysheet{
   //height: 72vh !important;
+
   border-radius: 8px;
 }
 .excel .luckysheet{
@@ -466,14 +480,13 @@ export default {
 }
 </style>
 <style scoped lang="scss">
-@import '~@/components/common/base.scss';
+@import '~@/assets/base.scss';
 
 .clean-excel-btn{
   margin-left: 10px;
 }
 .start-share-btn{
   margin-left: 10px;
-  margin-top: 8px;
 }
 .luckysheet-view-box{
   margin: 0px;

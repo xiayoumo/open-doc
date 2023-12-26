@@ -1,7 +1,7 @@
 import { post_ } from '@/js/request.js';
 import axios from "axios";
 
-export let uploadUrl = DocConfig.server+'/api/page/uploadImg';
+export const uploadUrl = DocConfig.server+'/api/page/uploadImg';
 
 export default {
     //开启同步请求（异步请求会导致取不到数据）
@@ -27,8 +27,8 @@ export default {
     //开启同步请求（异步请求会导致取不到数据）
     async execUpload(fileData={}) {
         let postData = {};
-        let postObjectData = fileData;
-        var formdata = new FormData();
+        const postObjectData = fileData;
+        const formdata = new FormData();
         formdata.append("editormd-image-file", postObjectData,"image.png");
         await axios.post(uploadUrl, formdata, {async:false}).then(res => {
             //  console.log(res);
@@ -48,7 +48,7 @@ export default {
      * @returns {Promise<{}>}
      */
     async execGet(getUrl = '', getCondisionObject = {}) {
-        let getUrlByCondision = this.setGetCondisionByObject(getUrl,getCondisionObject);
+        const getUrlByCondision = this.setGetCondisionByObject(getUrl,getCondisionObject);
         let getData = {};
         await axios.get(getUrlByCondision,(res) => {
             if (res.error_code == 0) {
@@ -86,7 +86,7 @@ export default {
      * @returns {string}
      */
     setGetCondisionByObject(getUrl='',getObject={}){
-        let getString = this.getCondisionStringByObject(getObject);
+        const getString = this.getCondisionStringByObject(getObject);
         if(getString){
             getUrl += '?' + getString;
         }
@@ -98,7 +98,7 @@ export default {
      * @returns {string}
      */
     getCondisionStringByObject(getObject={}){
-        let getStringArray = [];
+        const getStringArray = [];
         for (const key in getObject) {
             getStringArray.push(key + '=' + getObject[key]);
         }
@@ -111,7 +111,7 @@ export default {
      */
     getUploadFormByImgSrc(imgSrc=''){
         //上传到后端
-        var tempArray = imgSrc.split(','), mime = tempArray[0].match(/:(.*?);/)[1],
+        let tempArray = imgSrc.split(','), mime = tempArray[0].match(/:(.*?);/)[1],
             bstr = atob(tempArray[1]), n = bstr.length, u8arr = new Uint8Array(n);
         while(n--){
             u8arr[n] = bstr.charCodeAt(n);
@@ -124,7 +124,7 @@ export default {
      * @returns {string}
      */
     getImgSrcByUploadFile(data_file={}){
-        let urlCreator = window.URL || window.webkitURL;
+        const urlCreator = window.URL || window.webkitURL;
         return urlCreator.createObjectURL(data_file);
     }
 

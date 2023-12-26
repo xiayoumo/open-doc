@@ -8,7 +8,7 @@ export default {
   scrollPageById(idName='right-side',scrollType='top',that){
     that.$nextTick(()=>{
       setTimeout(function(){
-        let chat = document.getElementById(idName);
+        const chat = document.getElementById(idName);
         if(scrollType=='top'){// 滚动到头（向上）
           chat.scrollTo({ top: 0, behavior: 'smooth' });
         }else{// 滚动到底（向下）
@@ -19,8 +19,8 @@ export default {
 
   },
   async savePage(cat_id=0,item_id=0,page_id=0,page_content='',page_title='',s_number=99,page_use='api'){
-    let url = '/api/page/save';
-    let params = {
+    const url = '/api/page/save';
+    const params = {
       page_id:page_id,
       item_id:item_id,
       s_number:s_number,
@@ -30,13 +30,13 @@ export default {
       cat_id:cat_id,
       page_use:page_use
     };
-    let res = await httpHelper.execPost(url, params);
+    const res = await httpHelper.execPost(url, params);
     return res;
   },
   async getPage(page_id=0){
-    let url = '/api/page/info';
-    let params = {page_id:page_id};
-    let res = await httpHelper.execPost(url, params);
+    const url = '/api/page/info';
+    const params = {page_id:page_id};
+    const res = await httpHelper.execPost(url, params);
     return res;
   },
 };

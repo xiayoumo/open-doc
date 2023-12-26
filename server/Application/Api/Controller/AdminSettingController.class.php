@@ -44,15 +44,15 @@ class AdminSettingController extends BaseController {
                     D("User")->register($ldap_user,$ldap_user.time());
                 }
             }
-            D("Options")->set("ldap_form" , json_encode( $ldap_form)) ;
+            D("Options")->set("ldap_form" , json_encode($ldap_form,JSON_UNESCAPED_UNICODE)) ;
         }
         D("Options")->set("ldap_open" ,$ldap_open) ;
         // logo
         D("Options")->set("custom_logo_open" ,$custom_logo_open) ;
-        D("Options")->set("custom_logo_form" , json_encode( $custom_logo_form)) ;
+        D("Options")->set("custom_logo_form" , json_encode($custom_logo_form,JSON_UNESCAPED_UNICODE)) ;
         // 外链
         D("Options")->set("outside_btn_open" ,$outside_btn_open) ;
-        D("Options")->set("outside_btn_form" , json_encode( $outside_btn_form)) ;
+        D("Options")->set("outside_btn_form" , json_encode($outside_btn_form,JSON_UNESCAPED_UNICODE)) ;
 
         $this->sendResult(array());
     }
@@ -110,7 +110,8 @@ class AdminSettingController extends BaseController {
             $this->error($upload->getError());
             return;
         }else{// 上传成功 获取上传文件信息
-            $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['file']['savepath'].$info['file']['savename'] ;
+            $url = $_SERVER['HTTP_X_FORWARDED_PROTO'].'://'.$_SERVER['HTTP_HOST'].'/Public/Uploads/'.$info['file']['savepath'].$info['file']['savename'];
+//            $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['file']['savepath'].$info['file']['savename'] ;
             echo json_encode(array("url"=>$url,"success"=>1));
         }
     }

@@ -57,11 +57,11 @@ var setBorder = function (luckyBorderInfo, worksheet) {
     // 现在只兼容到borderType 为range的情况
     // console.log('ele', elem)
     if (elem.rangeType === 'range') {
-      let border = borderConvert(elem.borderType, elem.style, elem.color)
-      let rang = elem.range[0]
+      const border = borderConvert(elem.borderType, elem.style, elem.color)
+      const rang = elem.range[0]
       // console.log('range', rang)
-      let row = rang.row
-      let column = rang.column
+      const row = rang.row
+      const column = rang.column
       for (let i = row[0] + 1; i < row[1] + 2; i++) {
         for (let y = column[0] + 1; y < column[1] + 2; y++) {
           worksheet.getCell(i, y).border = border
@@ -79,7 +79,7 @@ var setBorder = function (luckyBorderInfo, worksheet) {
       const borderData = Object.assign({}, elem.value)
       delete borderData.col_index
       delete borderData.row_index
-      let border = addborderToCell(borderData, row_index, col_index)
+      const border = addborderToCell(borderData, row_index, col_index)
       // console.log('bordre', border, borderData)
       worksheet.getCell(row_index + 1, col_index + 1).border = border
     }
@@ -96,10 +96,10 @@ var setStyleAndValue = function (cellArr, worksheet) {
       if (!cell) {
         return true
       }
-      let fill = fillConvert(cell.bg)
+      const fill = fillConvert(cell.bg)
 
-      let font = fontConvert(cell.ff, cell.fc, cell.bl, cell.it, cell.fs, cell.cl, cell.ul)
-      let alignment = alignmentConvert(cell.vt, cell.ht, cell.tb, cell.tr)
+      const font = fontConvert(cell.ff, cell.fc, cell.bl, cell.it, cell.fs, cell.cl, cell.ul)
+      const alignment = alignmentConvert(cell.vt, cell.ht, cell.tb, cell.tr)
       let value = ''
 
       if (cell.f) {
@@ -114,8 +114,8 @@ var setStyleAndValue = function (cellArr, worksheet) {
         value = cell.v
       }
       //  style 填入到_value中可以实现填充色
-      let letter = createCellPos(columnid)
-      let target = worksheet.getCell(letter + (rowid + 1))
+      const letter = createCellPos(columnid)
+      const target = worksheet.getCell(letter + (rowid + 1))
       // console.log('1233', letter + (rowid + 1))
       for (const key in fill) {
         target.fill = fill
@@ -135,7 +135,7 @@ var fillConvert = function (bg) {
     return {}
   }
   // const bgc = bg.replace('#', '')
-  let fill = {
+  const fill = {
     type: 'pattern',
     pattern: 'solid',
     fgColor: { argb: bg.replace('#', '') }
@@ -165,7 +165,7 @@ var fontConvert = function (ff = 0, fc = '#000000', bl = 0, it = 0, fs = 10, cl 
   }
   // 出现Bug，导入的时候ff为luckyToExcel的val
 
-  let font = {
+  const font = {
     name: typeof ff === 'number' ? luckyToExcel[ff] : ff,
     family: 1,
     size: fs,
@@ -211,7 +211,7 @@ var alignmentConvert = function (vt = 'default', ht = 'default', tb = 'default',
     }
   }
 
-  let alignment = {
+  const alignment = {
     vertical: luckyToExcel.vertical[vt],
     horizontal: luckyToExcel.horizontal[ht],
     wrapText: luckyToExcel.wrapText[tb],
@@ -250,11 +250,11 @@ var borderConvert = function (borderType, style = 1, color = '#000') {
       13: 'thick'
     }
   }
-  let template = {
+  const template = {
     style: luckyToExcel.style[style],
     color: { argb: color.replace('#', '') }
   }
-  let border = {}
+  const border = {}
   if (luckyToExcel.type[borderType] === 'all') {
     border['top'] = template
     border['right'] = template
@@ -268,7 +268,7 @@ var borderConvert = function (borderType, style = 1, color = '#000') {
 }
 
 function addborderToCell(borders, row_index, col_index) {
-  let border = {}
+  const border = {}
   const luckyExcel = {
     type: {
       l: 'left',
@@ -313,10 +313,10 @@ function addborderToCell(borders, row_index, col_index) {
 }
 
 function createCellPos(n) {
-  let ordA = 'A'.charCodeAt(0)
+  const ordA = 'A'.charCodeAt(0)
 
-  let ordZ = 'Z'.charCodeAt(0)
-  let len = ordZ - ordA + 1
+  const ordZ = 'Z'.charCodeAt(0)
+  const len = ordZ - ordA + 1
   let s = ''
   while (n >= 0) {
     s = String.fromCharCode((n % len) + ordA) + s
